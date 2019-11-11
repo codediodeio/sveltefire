@@ -1,0 +1,41 @@
+{
+  "version": "0.0.2",
+  "name": "sveltefire",
+  "svelte": "src/index.js",
+  "main": "dist/index.js",
+  "description": "Cybernetically Enhanced Firebase Apps",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "e2e": "cypress open --config watchForFileChanges=true",
+    "test": "jest",
+    "dev:ex": "cd example && npm run dev",
+    "emulate": "cd example && firebase emulators:start --only firestore",
+    "test:watch": "concurrently \"npm:dev:ex\" \"npm:emulate\" \"npm:e2e\" "
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codediodeio/sveltefire.git"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.0",
+    "cypress": "^3.6.1",
+    "firebase": "^7.3.0",
+    "firebase-tools": "^7.7.0",
+    "jest": "^24.9.0",
+    "rollup": "^1.11.0",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-svelte": "^5.0.0",
+    "svelte": "^3.12.1"
+  },
+  "keywords": [
+    "svelte"
+  ],
+  "files": [
+    "README.md",
+    "dist/**/*",
+    "src/**/*"
+  ]
+}

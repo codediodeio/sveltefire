@@ -1,0 +1,170 @@
+<script>
+  export let name;
+  import { writable } from "svelte/store";
+  import { FirebaseApp, Doc, Collection, User } from "sveltefire";
+
+  import firebase from "firebase/app";
+  import "firebase/firestore";
+  import "firebase/auth";
+  import "firebase/performance"; // Optional
+  import "firebase/analytics"; // Optional
+
+  const config = {
+    apiKey: "AIzaSyAMHfJp1ec85QBo-mnke89qtiYGen9zTSE",
+    authDomain: "sveltefire-testing.firebaseapp.com",
+    databaseURL: "https://sveltefire-testing.firebaseio.com",
+    projectId: "sveltefire-testing",
+    storageBucket: "sveltefire-testing.appspot.com",
+    messagingSenderId: "1030648105982",
+    appId: "1:1030648105982:web:2afebc34841fa242ed4eaf",
+    measurementId: "G-null"
+  };
+
+  firebase.initializeApp(config);
+
+  let appName;
+  let eventData = {};
+  let eventRef = {};
+
+  function onData(e) {
+    eventData = e.detail.data;
+  }
+  function onRef(e) {
+    eventRef = e.detail.ref;
+  }
+
+  const useEmulator = async e => {
+    const firebase = e.detail.firebase;
+
+    if (location.hostname === "localhost") {
+      const db = firebase.firestore();
+
+      db.settings({ host: "localhost:8080", ssl: false });
+
+      appName = firebase.app().name;
+
+      await db.doc("posts/slow-post").delete();
+
+      await db.doc("posts/event-post").set({ title: "Event Post" });
+
+      setTimeout(() => {
+        console.log();
+        db.doc("posts/slow").set({ title: "Slowness" });
+      }, 7000);
+
+    }
+  };
+</script>
+
+<style>
+
+</style>
+
+<FirebaseApp {firebase} on:initializeApp={useEmulator} perf analytics>
+
+  <h1>Firebase Ready {appName}</h1>
+
+  <h1>User Login</h1>
+  <User let:user let:auth>
+
+    <div slot="signed-out">
+      <button on:click={() => auth.signInAnonymously()}>Sign In</button>
+      <br />
+      <button>Sign Out</button>
+      (NOOP for Cypress)
+    </div>
+
+    <!-- Start User Default -->
+    UID: {user.uid}
+    <button on:click={() => auth.signOut()}>Sign Out</button>
+
+    <h2>Firestore</h2>
+
+    <Doc path={`posts/first-post`} let:data={post} let:ref={postRef} log>
+      <div slot="loading">Loading...</div>
+      <div slot="fallback">
+        <button
+          on:click={() => postRef.set({ uid: user.uid, title: 'My Post' })}>
+          Create Post
+        </button>
+      </div>
+
+      <!-- Start Post Default -->
+
+      <h2>{post.title}</h2>
+      <p>By {post.uid}</p>
+
+      <Collection
+        path={postRef.collection('comments')}
+        query={ref => ref.where('uid', '==', post.uid)}
+        let:data={comments}
+        let:ref={commentsRef}
+        traceId={'readComments'}
+        log>
+
+        <div slot="loading">Loading...</div>
+
+        <div slot="fallback">Unable to display comments...</div>
+
+        <!-- Start Comments Default -->
+
+        <button
+          on:click={() => commentsRef.add({
+              uid: user.uid,
+              text: 'My Awesome Comment'
+            })}>
+          Add Comment
+        </button>
+        <div id="posts">
+          {#each comments as comment}
+            <span>
+              <h5>{comment.text} {comment.id}</h5>
+              <button on:click={() => comment.ref.delete()}>Delete</button>
+            </span>
+          {/each}
+        </div>
+
+      </Collection>
+    </Doc>
+  </User>
+
+  <h3>Error Fallback</h3>
+  <Doc path={`secure/anything`} let:data={secure} let:error={err}>
+    <h3>Secure Post</h3>
+
+    <div slot="loading">Trying to load...</div>
+
+    <div slot="fallback">Unable to read secure doc {err}</div>
+  </Doc>
+
+  <h3>Timeout Fallback</h3>
+
+  <Doc
+    path={`posts/slow`}
+    maxWait={3000}
+    startWith={ {title: 'vanilla'} }
+    let:ref={slowRef}
+    let:data={slow}
+    let:error={err}>
+
+    <p>Slow Post has loaded</p>
+    {JSON.stringify(slow)}
+
+
+    <div slot="loading">Loading slow doc</div>
+
+    <div slot="fallback">Unable to read slow doc {err}</div>
+
+      <button on:click={() => slowRef.delete()}>X</button>
+  </Doc>
+
+  <h2>Events</h2>
+
+  <p>Path: {eventRef.path}</p>
+  <p>Event Data: {eventData && eventData.title}</p>
+  <button on:click={() => eventRef.update({ title: 'My Data Changed' })}>
+    Update Event
+  </button>
+
+  <Doc path={'posts/event-post'} on:data={onData} on:ref={onRef} />
+</FirebaseApp>

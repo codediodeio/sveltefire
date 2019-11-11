@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+      match /secure/{docId} {
+          allow read, write: if false;
+      }
+
+      match /posts/{postId=**} {
+          allow read, write;
+      }
+
+
+
+  }
+}
