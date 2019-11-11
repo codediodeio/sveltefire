@@ -1,40 +1,54 @@
 <script>
-    export let path;
-    export let query = null;
-    export let traceId = '';
-    export let log = false;
-    export let startWith = undefined;
-    export let maxWait = 10000;
-    import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  export let path;
+  export let query = null;
+  export let traceId = "";
+  export let log = false;
+  export let startWith = undefined;
+  export let maxWait = 10000;
 
-    import { collectionStore } from './firestore';
+  import { onDestroy, createEventDispatcher } from "svelte";
 
-    const store = collectionStore(path, query, { startWith, traceId, log, maxWait });
+  import { collectionStore } from "./firestore";
 
-    const dispatch = createEventDispatcher();
+  let store = collectionStore(path, query, {
+    startWith,
+    traceId,
+    log,
+    maxWait
+  });
 
-    let unsub;
+  const dispatch = createEventDispatcher();
 
-    onMount(() => {
-        dispatch('ref', { ref: store.ref });
+  let unsub;
 
-        unsub = store.subscribe(data => {
-            dispatch('data', {
-                data
-            });
-        });
+  // Props changed
+  $: {
+    if (unsub) {
+      unsub();
+      store = collectionStore(path, query, {
+        startWith,
+        traceId,
+        log,
+        maxWait
+      });
+    }
+
+    dispatch("ref", { ref: store.ref });
+
+    unsub = store.subscribe(data => {
+      dispatch("data", {
+        data
+      });
     });
+  }
 
-    onDestroy(() => unsub());
-
-
+  onDestroy(() => unsub());
 </script>
 
-
 {#if $store}
-    <slot data={$store} ref={store.ref} error={store.error}></slot>
+  <slot data={$store} ref={store.ref} error={store.error} />
 {:else if store.loading}
-    <slot name="loading"></slot>
+  <slot name="loading" />
 {:else}
-    <slot name="fallback"></slot>
+  <slot name="fallback" />
 {/if}

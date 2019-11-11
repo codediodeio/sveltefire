@@ -49,7 +49,7 @@ Create a Svelte App and install Firebase.
 npx degit sveltejs/template fireapp
 cd fireapp
 
-npm install sveltefire firebase
+npm i && npm install sveltefire firebase
 ```
 
 
@@ -375,6 +375,8 @@ Slot Props & Events:
 
 - *data* collection data as array. 
 - *ref* CollectionReference for writes
+- *first* the first result in the query, useful for pagination. 
+- *last* the last result in the query, useful for pagination. 
 - *error* current error
 
 ```html
@@ -385,6 +387,8 @@ Slot Props & Events:
     log
     let:data={comments} 
     let:ref={commentsRef} 
+    let:last={firstComment}
+    let:first={lastComment}
     on:data
     on:ref
 >
