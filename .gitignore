@@ -4,3 +4,6 @@ yarn.lock
 package-lock.json
 index.js
 index.mjs
+dist/
+firebase-debug.log
+firestore-debug.log

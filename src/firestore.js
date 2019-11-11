@@ -110,29 +110,28 @@ export function collectionStore(path, queryFn, opts) {
 
     _teardown = (query || ref).onSnapshot(
       snapshot => {
+
+        // Will always return an array
         const data = snapshot.docs.map(docSnap => ({
           ...docSnap.data(),
           // Allow end user override fields mapped for ID and Ref
           ...(idField ? { [idField]: docSnap.id } : null),
           ...(refField ? { [refField]: docSnap.ref } : null)
         }));
-        const len = data.length;
+
         if (log) {
           const type = _loading ? 'New Query' : 'Updated Query';
-          console.groupCollapsed(`${type} ${ref.id} | ${len} hits`);
+          console.groupCollapsed(`${type} ${ref.id} | ${data.length} hits`);
           console.log(`${ref.path}`);
           console.log(`Snapshot: `, snapshot);
           console.groupEnd();
         }
-
-        _error = null;
         next(data);
       },
 
       error => {
         console.error(error);
-        _error = error;
-        next(null);
+        next(null, error);
       }
     );
 
