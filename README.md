@@ -1,11 +1,12 @@
 # SvelteFire
 
-Cybernetically enhanced Firebase apps 💪🔥  
+[Cybernetically](https://svelte.dev/) enhanced [Firebase](https://firebase.google.com/) apps 💪🔥  
 
 ## Basics
 
 - Use Firebase declaratively in Svelte components. 
-- Handle complex relational data with simple loading & fallback states. 
+- Handle complex relational data between Auth and Firestore.  
+- Built in loading & fallback states for async data. (Similar to React Suspense) 
 - Automatic data disposal to prevent memory/cost leaks, plus enhanced logging.  
 - Automatic performance monitoring & Google Analytics.  
 
@@ -169,13 +170,31 @@ In most cases, state flows from *loading* -> *default*. For errors, non-existent
     Data loaded, yay 🍦!
 
     <!-- Only shown when loading -->
-    <div slot="loading">
-        Loading...
-    </div>
+    <div slot="loading"></div>
 
     <!-- Shown on error or if nothing loads after maxWait time-->
+    <div slot="fallback"></div>
+</Doc>
+```
+
+Error handling made easy:
+
+```html
+<Doc {path} let:error>
+
     <div slot="fallback">
-        whoops!
+        😔 This doc cannot be read {error}
+    </div>
+</Doc>
+```
+
+Loading state made easy:
+
+```html
+<Doc {path}>
+
+    <div slot="loading">
+        ⌛
     </div>
 </Doc>
 ```
@@ -183,8 +202,10 @@ In most cases, state flows from *loading* -> *default*. For errors, non-existent
 You can bypass the loading state entirely by passing a `startWith` prop. 
 
 ```html
-<Doc path={'foods/ice-cream'}  startWith={ {flavor: 'vanilla'} }>
+<Doc {path} startWith={ {flavor: 'vanilla'} }>
 ```
+
+
 
 ### Slot Props
 
