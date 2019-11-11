@@ -43,12 +43,17 @@ Handle multiple levels of async relational data (and their loading & fallback st
 
 ## Quick Start
 
+Create a Svelte App and install Firebase. 
+
 ```bash
+npx degit sveltejs/template fireapp
+cd fireapp
+
 npm install sveltefire firebase
 ```
 
 
-Create a web app from the [Firebase Console](https://console.firebase.google.com/) and grab your credentials. Enable **Anonymous Login** and create a **Firestore** database instance in test mode. 
+Create a web app from the [Firebase Console](https://console.firebase.google.com/) and grab your project config. Enable **Anonymous Login** and create a **Firestore** database instance in test mode. 
 
 
 Initialize the Firebase app in the `App.svelte` file. 
