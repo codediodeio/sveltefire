@@ -18,7 +18,7 @@ describe('SvelteFire app', function() {
     cy.contains('Sign In').click();
     cy.contains('UID').should('exist');
     cy.contains('Sign Out').should('exist');
-    cy.wait(15000); // Emulator takes long time to respond here...
+    cy.wait(7000); // Emulator takes long time to respond here...
   })
 
   it('fetches a document from Firestore', function() {
@@ -46,10 +46,17 @@ describe('SvelteFire app', function() {
     cy.get('#posts').children().should('be.have.length', 1);
   })
 
+  it('stops listening to updates when once prop is true', function() {
+    cy.contains('Once-Doc').should('exist')
+    cy.contains('Try to Delete').click();
+    cy.contains('Once-Doc').should('exist');
+  })
+
   it('listens to events from a parent component', function() {
     cy.contains('Path: posts/event-post').should('exist')
     cy.contains('Event Data').should('exist');
     cy.contains('Update Event').click();
     cy.contains('My Data Changed').should('exist');
   })
+
 })

@@ -2,17 +2,16 @@ import { writable } from 'svelte/store';
 import { assertApp } from './helpers';
 import { startTrace, stopTrace } from './perf';
 
-
-// Note. Doc without data flows from undefined -> null,
-
 // Svelte Store for Firestore Document
 export function docStore(path, opts) {
   const firestore = assertApp('firestore');
 
-  const { startWith, log, traceId, maxWait } = { maxWait: 10000, ...opts };
+  const { startWith, log, traceId, maxWait, once } = { maxWait: 10000, ...opts };
 
-
+  // Create the Firestore Reference
   const ref = typeof path === 'string' ? firestore.doc(path) : path;
+
+  // Performance trace
   const trace = traceId && startTrace(traceId);
 
   // Internal state
@@ -38,9 +37,12 @@ export function docStore(path, opts) {
     // Timout for fallback slot
     _waitForIt = maxWait && setTimeout(() => _loading && next(null, new Error(`Timeout at ${maxWait}. Using fallback slot.`) ), maxWait)
 
+    // Realtime firebase subscription
     _teardown = ref.onSnapshot(
       snapshot => {
         const data = snapshot.data() || startWith || null;
+
+        // Optional logging
         if (log) {
           console.groupCollapsed(`Doc ${snapshot.id}`);
           console.log(`Path: ${ref.path}`);
@@ -48,8 +50,14 @@ export function docStore(path, opts) {
           console.groupEnd();
         }
 
+        // Emit next value
         next(data);
+
+        // Teardown after first emitted value if once
+        once && _teardown();
       },
+
+      // Handle firebase thrown errors
       error => {
         console.error(error);
         next(null, error);
@@ -60,6 +68,7 @@ export function docStore(path, opts) {
     return () => _teardown();
   };
 
+  // Svelte store
   const store = writable(startWith, start);
 
   const { subscribe, set } = store;
@@ -81,10 +90,10 @@ export function docStore(path, opts) {
 export function collectionStore(path, queryFn, opts) {
   const firestore = assertApp('firestore');
 
-  const { startWith, log, traceId, idField, refField, maxWait } = {
+  const { startWith, log, traceId, maxWait, once, idField, refField } = {
     idField: 'id',
     refField: 'ref',
-    maxWait: 10000, 
+    maxWait: 10000,
     ...opts
   };
 
@@ -94,13 +103,21 @@ export function collectionStore(path, queryFn, opts) {
 
   let _loading = typeof startWith !== undefined;
   let _error = null;
+  let _meta = {};
   let _teardown;
   let _waitForIt;
+
+  // Metadata for result
+  const calcMeta = (val) => {
+    return val && val.length ? 
+      { first: val[0], last: val[val.length - 1] } : {}
+  }
 
   const next = (val, err) => {
     _loading = false; 
     _waitForIt && clearTimeout(_waitForIt);
     _error = err || null;
+    _meta = calcMeta(val);
     set(val);
     trace && stopTrace(trace);
   };
@@ -127,6 +144,7 @@ export function collectionStore(path, queryFn, opts) {
           console.groupEnd();
         }
         next(data);
+        once && _teardown();
       },
 
       error => {
@@ -150,6 +168,9 @@ export function collectionStore(path, queryFn, opts) {
     },
     get error() {
       return _error;
+    },
+    get meta() {
+      return _meta;
     }
   };
 }

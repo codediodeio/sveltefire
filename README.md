@@ -226,7 +226,33 @@ You can bypass the loading state entirely by passing a `startWith` prop.
 </Doc>
 ```
 
+### Reactive
 
+Components are reactive. When the input props change, they unsubscribe from the last stream and start a new one. 
+
+Example: Collections have a special slot props for pagination called `first` and `last`. Use them to create reactive pagination queries. 
+
+
+```html
+<script>
+let query = (ref) => ref.orderBy('flavor').limit(3)
+
+function nextPage(last) {
+    query = (ref) => ref.orderBy('flavor').startAfter(last.flavor).limit(3);
+}
+</script>
+
+<Collection path={'foods'} {query} let:data let:last>
+
+    {#each data as food}
+        {food.name}
+    {/each}
+
+    <button on:click={() => nextPage(last) }>Next</button>
+
+
+</Collection>
+```
 
 ### Events
 
@@ -314,6 +340,7 @@ Props:
 - *path (required)* - Path to document as `string` OR a DocumentReference i.e `db.doc('path')`
 - *startWith* any value. Bypasses loading state. 
 - *maxWait* `number` milliseconds to wait before showing fallback slot if nothing is returned. Default 10000. 
+- *once* single read execution, no realtime updates. Default `false`. 
 - *log* debugging info to the console. Default `false`.  
 - *traceId* `string` name that runs a Firebase Performance trace for latency.
 
@@ -361,6 +388,7 @@ Props:
 - *query* `function`, i.e (ref) => ref.where('age, '==', 23)
 - *startWith* any value. Bypasses loading state. 
 - *maxWait* `number` milliseconds to wait before showing fallback slot if nothing is returned. Default 10000. 
+- *once* single read execution, no realtime updates. Default `false`. 
 - *log* debugging info to the console. Default `false`. 
 - *traceId* `string` name that runs a Firebase Performance trace for latency.
 

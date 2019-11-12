@@ -4,16 +4,20 @@
   export let traceId = "";
   export let startWith = undefined; // Why? Firestore returns null for docs that don't exist, predictible loading state.
   export let maxWait = 10000;
+  export let once = false;
 
-  import { onDestroy, createEventDispatcher } from "svelte";
+  import { onDestroy, onMount, createEventDispatcher } from "svelte";
   import { docStore } from "./firestore";
 
-  let store = docStore(path, {
+  const opts = {
     startWith,
     traceId,
     log,
-    maxWait
-  });
+    maxWait,
+    once
+  }
+
+  let store = docStore(path, opts);
 
   const dispatch = createEventDispatcher();
 
@@ -22,16 +26,11 @@
   // Props changed
   $: {
     if (unsub) {
+      // Unsub and create new store
       unsub();
-      store = docStore(path, {
-        startWith,
-        traceId,
-        log,
-        maxWait
-      });
+      store = docStore(path, opts);
+      dispatch("ref", { ref: store.ref });
     }
-
-    dispatch("ref", { ref: store.ref });
 
     unsub = store.subscribe(data => {
       dispatch("data", {
@@ -40,6 +39,7 @@
     });
   }
 
+  onMount(() => dispatch("ref", { ref: store.ref }))
   onDestroy(() => unsub());
 </script>
 

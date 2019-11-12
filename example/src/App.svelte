@@ -1,6 +1,7 @@
 <script>
   export let name;
   import { writable } from "svelte/store";
+  import { onMount } from "svelte";
   import { FirebaseApp, Doc, Collection, User } from "sveltefire";
 
   import firebase from "firebase/app";
@@ -22,6 +23,7 @@
 
   firebase.initializeApp(config);
 
+
   let appName;
   let eventData = {};
   let eventRef = {};
@@ -33,8 +35,8 @@
     eventRef = e.detail.ref;
   }
 
-  const useEmulator = async e => {
-    const firebase = e.detail.firebase;
+   async function useEmulator() {
+    // const firebase = e.detail.firebase;
 
     if (location.hostname === "localhost") {
       const db = firebase.firestore();
@@ -43,17 +45,20 @@
 
       appName = firebase.app().name;
 
-      await db.doc("posts/slow-post").delete();
+      db.doc("posts/slow-post").delete();
 
-      await db.doc("posts/event-post").set({ title: "Event Post" });
+      db.doc("posts/event-post").set({ title: "Event Post" });
+      db.doc("posts/once").set({ title: "Once-Doc" });
 
       setTimeout(() => {
         console.log();
         db.doc("posts/slow").set({ title: "Slowness" });
-      }, 7000);
+      }, 5000);
 
     }
   };
+
+  onMount(useEmulator)
 </script>
 
 <style>
@@ -157,6 +162,20 @@
 
       <button on:click={() => slowRef.delete()}>X</button>
   </Doc>
+
+  <h3>One-Time Reads</h3>
+
+    <Doc
+    path={`posts/once`}
+    let:data={onceData}
+    let:ref={onceRef}
+    once>
+
+    {onceData.title}
+
+    <button on:click={() => onceRef.delete()}>Try to Delete</button>
+  </Doc>
+
 
   <h2>Events</h2>
 
