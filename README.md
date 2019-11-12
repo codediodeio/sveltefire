@@ -47,9 +47,10 @@ Create a Svelte App and install Firebase.
 
 ```bash
 npx degit sveltejs/template fireapp
-cd fireapp
+cd fireapp 
+npm install
 
-npm i && npm install sveltefire firebase
+npm install sveltefire firebase
 ```
 
 
@@ -226,11 +227,19 @@ You can bypass the loading state entirely by passing a `startWith` prop.
 </Doc>
 ```
 
+### Events
+
+[Events](https://svelte.dev/tutorial/component-events) **emit data up** to the parent. You can use components as a mechanism to read documents without actually rendering UI. Also useful for trigging side effects. 
+
+```html
+<Doc path={'food/ice-cream'} on:data={(e) => console.log(e.detail.data)} />
+```
+
 ### Reactive
 
-Components are reactive. When the input props change, they unsubscribe from the last stream and start a new one. 
+Components are reactive. When props change, they unsubscribe from the last stream and start a new one. This means you can change the document path or query function by simplying changing a prop value. 
 
-Example: Collections have a special slot props for pagination called `first` and `last`. Use them to create reactive pagination queries. 
+Example: Collections have special slot props for pagination called `first` and `last`. Use them to create reactive pagination queries. 
 
 
 ```html
@@ -252,14 +261,6 @@ function nextPage(last) {
 
 
 </Collection>
-```
-
-### Events
-
-[Events](https://svelte.dev/tutorial/component-events) **emit data up** to the parent. You can use components as a mechanism to read documents without actually rendering UI. Also useful for trigging side effects. 
-
-```html
-<Doc path={'food/ice-cream'} on:data={(e) => console.log(e.detail.data)} />
 ```
 
 ### Stores
