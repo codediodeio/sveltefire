@@ -43,6 +43,8 @@
   onDestroy(() => unsub());
 </script>
 
+<slot name="before" />
+
 {#if $store}
   <slot data={$store} ref={store.ref} error={store.error} />
 {:else if store.loading}
@@ -50,3 +52,5 @@
 {:else}
   <slot name="fallback" />
 {/if}
+
+<slot name="after" />

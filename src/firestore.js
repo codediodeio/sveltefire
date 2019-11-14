@@ -70,7 +70,6 @@ export function docStore(path, opts) {
 
   // Svelte store
   const store = writable(startWith, start);
-
   const { subscribe, set } = store;
 
   return {

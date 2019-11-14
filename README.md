@@ -293,7 +293,7 @@ Sets Firebase app context
 
 Props:
 
-- *firebase (required)* Firebase app
+- *firebase* Firebase instance. If empty, it will attempt to use `window.firebase`. 
 - *perf* Starts Firebase Performance Monitoring
 - *analytics* Starts Firebase/Google Analytics
 
