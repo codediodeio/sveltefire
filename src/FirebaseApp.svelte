@@ -16,8 +16,6 @@
     setContext("firebase", firebase);
 
   onMount(() => {
-    console.log(firebase)
-
     if (!firebase) {
       throw Error(
         "No firebase app was provided. You must provide an initialized Firebase app or make it available globally."
