@@ -149,7 +149,7 @@ Run it on localhost:5000
 npm run dev
 ```
 
-If you see the error 'openDb' is not exported by node_modules\idb\build\idb.js`, go in the `rollup.config.js` and add this line: 
+If you see the error **'openDb' is not exported by node_modules\idb\build\idb.js**, go in the `rollup.config.js` and add this line: 
 
 ```js
     resolve({
