@@ -51,7 +51,6 @@
       db.doc("posts/once").set({ title: "Once-Doc" });
 
       setTimeout(() => {
-        console.log();
         db.doc("posts/slow").set({ title: "Slowness" });
       }, 5000);
 
