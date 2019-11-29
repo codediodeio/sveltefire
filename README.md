@@ -215,7 +215,7 @@ You can bypass the loading state entirely by passing a `startWith` prop.
 
 ### Slot Props
 
-[Slot props](https://svelte.dev/tutorial/slot-props) **pass data down** to children in the component tree. SvelteFire exposes the data you needed for the UI and the reference to performance writes. For example, `let:data` is the document data, while `={icecream}` is the variable name you use to reference it in your code. Use `ref` to set, update, or delete the document at this path. [Slot props](https://svelte.dev/tutorial/slot-props) **pass data down** to children in the component tree. SvelteFire exposes the data you needed for the UI and the reference to performance writes. For example, `let:data` is the document data, while `={icecream}` is the variable name you use to reference it in your code. Use `ref` to set, update, or delete the document at this path.
+[Slot props](https://svelte.dev/tutorial/slot-props) **pass data down** to children in the component tree. SvelteFire exposes the data you needed for the UI and the reference to performance writes. For example, `let:data` is the document data, while `={icecream}` is the variable name you use to reference it in your code. Use `ref` to set, update, or delete the document at this path. 
 
 
 ```html
