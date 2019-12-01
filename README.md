@@ -436,3 +436,76 @@ Slot Props & Events:
 ```
 
 Note: Each data item in the collection contains the document data AND fields for the `id` and `ref` (DocumentReference). 
+
+### `<File>`
+
+Retrives a file from Firebase storage.
+
+Props:
+
+- *path (required)* to file in storage i.e `images/mountain.jpg`
+
+Slots: 
+
+- *default slot*  shown when file is available. 
+- *loading*  shown when waiting for response. 
+- *fallback* shown when error occurs. 
+
+
+Slot Props & Events: 
+
+- *url* url to resource
+- *ref* File Reference for direct acess
+
+```html
+<File {path} let:url let:ref>
+  
+    <img src={url} />
+
+    <div slot="loading">
+        Loading...
+    </div>
+
+    <div slot="fallback">
+        Error
+    </div>
+
+</File>
+```
+
+### `<Upload>`
+
+Props:
+
+- *path (required)* to upload to i.e "images/mountain.jpg"
+- *file* file to upload as a file object `Blob` or `Unit8Array`
+
+Slots: 
+
+- *default slot*  shown before upload is complete.
+- *complete*  shown when upload is complete.
+- *fallback* shown when error occurs or upload is cancelled.
+
+
+Slot Props & Events: 
+
+- *url* url to uploaded file.
+- *task* Firebase upload task.
+- *snapshot* snapshot of upload, useful for monitoring progress.
+
+
+```html
+<Upload {file} {path} let:task let:snapshot let:url>
+
+   Uploading your file... {snaphot.bytesTransferred}
+
+  <div slot="complete">
+    Download here {url}
+  </div>
+
+  <div slot="fallback">
+    Error or canceled
+  </div>
+
+</Upload>
+```
