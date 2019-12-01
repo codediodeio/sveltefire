@@ -1,5 +1,5 @@
 {
-  "version": "0.0.8",
+  "version": "0.1.0",
   "name": "sveltefire",
   "svelte": "src/index.js",
   "main": "dist/index.js",
