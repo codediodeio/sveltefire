@@ -3,10 +3,10 @@ import { assertApp } from './helpers';
 import { startTrace, stopTrace } from './perf';
 
 // Svelte Store for Storage file
-export function fileStore(path, opts) {
+export function fileDownloadStore(path, opts) {
   const storage = assertApp('storage');
 
-  const { startWith, log, traceId, maxWait, once } = { maxWait: 10000, ...opts };
+  const { log, traceId, startWith, url, meta, } = { url: true, ...opts };
 
   const storageRef = storage.ref();
   const ref = typeof path === 'string' ? storageRef.child(path) : path;
@@ -17,14 +17,11 @@ export function fileStore(path, opts) {
   // Internal state
   let _loading = typeof startWith !== undefined;
   let _error = null;
-  let _teardown;
-  let _waitForIt;
 
   // State should never change without emitting a new value
   // Clears loading state on first call
   const next = (val, err) => {
     _loading = false; 
-    _waitForIt && clearTimeout(_waitForIt);
     _error = err || null;
     set(val);
     trace && stopTrace(trace);
@@ -32,37 +29,19 @@ export function fileStore(path, opts) {
 
   // Timout
   // Runs of first subscription
-  const start = () => {
+    const start = async() => {
 
-    // Timout for fallback slot
-    _waitForIt = maxWait && setTimeout(() => _loading && next(null, new Error(`Timeout at ${maxWait}. Using fallback slot.`) ), maxWait)
+      const requests = [url && ref.getDownloadURL(), meta && ref.getMetadata()];
 
-    // Realtime firebase subscription
-    _teardown = ref.on("value",
-      snapshot => {
-        // Emit next value
-        snapshot.getDownloadURL().then((url) => {
-          next(url);
-          if (log) console.log(`URl: ${url}`);
-        });
+      Promise.all(requests)
+              .then(result => next({
+                url: result[0],
+                metadata: result[1]
+              }))
+              .catch(e => next(null, e))
 
-        
-        if (log) console.log('Snapshot:', snapshot);
+    };
 
-        // Teardown after first emitted value if once
-        once && _teardown();
-      },
-
-      // Handle firebase thrown errors
-      error => {
-        console.error(error);
-        next(null, error);
-      }
-    );
-
-    // Removes firebase listener when store completes
-    return () => _teardown();
-  };
 
   // Svelte store
   const store = writable(startWith, start);
@@ -70,7 +49,7 @@ export function fileStore(path, opts) {
 
   return {
     subscribe,
-    firestore,
+    storage,
     ref,
     get loading() {
       return _loading;
@@ -81,65 +60,64 @@ export function fileStore(path, opts) {
   };
 }
 
-export function uploadFileStore(path, opts) {
+export function uploadTaskStore(path, file, opts) {
   const storage = assertApp('storage');
 
-  const { startWith, log, traceId } = { maxWait: 10000, ...opts };
+  const { log, traceId } = { ...opts };
 
   const storageRef = storage.ref();
+  
   const ref = typeof path === 'string' ? storageRef.child(path) : path;
-  let snapshot;
-  let task;
 
   // Performance trace
   const trace = traceId && startTrace(traceId);
 
   // Internal state
-  let _loading = typeof startWith !== undefined;
   let _error = null;
-  let _waitForIt;
+  let _url = ''; // download url
+  let _task; // upload task
 
-  // State should never change without emitting a new value
-  // Clears loading state on first call
+  // Emits UploadTaskSnapshot
   const next = (val, err) => {
-    _loading = false; 
-    _waitForIt && clearTimeout(_waitForIt);
     _error = err || null;
     set(val);
-    trace && stopTrace(trace);
   };
 
-  // Timout
-  // Runs of first subscription
-  const start = () => {};
+  const start = () => {
+    _task = ref.put(file);
 
-  // Svelte store
-  const store = writable(startWith, start);
-  let { subscribe, set } = store;
+    const _teardown = _task.on('state_changed', {
+      next: (snap) => next(snap),
+      error: (e) => next(_task.snapshot, e),
+      complete: () => {
+        console.log('done')
+        ref.getDownloadURL().then(url => {
+          next(_task.snapshot);
+          _url = url;
+          if (log) console.log(`Upload Complete: ${url}`);
+          trace && stopTrace(trace);
+        });
+      }
+    });
 
-  const _set = set;
-  set = (val) => {
-    task = ref.put(val).then(snap => {
-      snapshot = snap;
-      ref.getDownloadURL().then((url) => {
-        next(url);
-        if (log) console.log(`URl: ${url}`);
-      });
-    });
-    task.on('state_changed', snap => {
-      snapshot = snap;
-    });
-  }
+    return () => _teardown();
+  };
+
+  const store = writable(null, start);
+  const { subscribe, set } = store;
 
   return {
     subscribe,
-    firestore,
+    storage,
     ref,
-    get loading() {
-      return _loading;
+    get downloadURL() {
+      return _url;
+    },
+    get task() {
+      return _task;
     },
     get error() {
       return _error;
-    }
+    },
   };
 }

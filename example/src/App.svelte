@@ -2,11 +2,12 @@
   export let name;
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
-  import { FirebaseApp, Doc, Collection, User } from "sveltefire";
+  import { FirebaseApp, Doc, Collection, User, UploadTask, StorageRef } from "sveltefire";
 
   import firebase from "firebase/app";
   import "firebase/firestore";
   import "firebase/auth";
+  import "firebase/storage";
   import "firebase/performance"; // Optional
   import "firebase/analytics"; // Optional
 
@@ -27,6 +28,8 @@
   let appName;
   let eventData = {};
   let eventRef = {};
+
+  let readyToUpload = false;
 
   function onData(e) {
     eventData = e.detail.data;
@@ -61,14 +64,18 @@
 </script>
 
 <style>
-
+  h1 {
+    border-bottom: 1px dashed rgb(185, 185, 185);
+  }
 </style>
 
 <FirebaseApp {firebase} on:initializeApp={useEmulator} perf analytics>
 
-  <h1>Firebase Ready {appName}</h1>
+  <h1>FirebaseApp</h1>
 
-  <h1>User Login</h1>
+  <p>Firebase Ready {appName}</p>
+
+  <h1>User</h1>
   <User let:user let:auth>
 
     <div slot="signed-out">
@@ -82,7 +89,7 @@
     UID: {user.uid}
     <button on:click={() => auth.signOut()}>Sign Out</button>
 
-    <h2>Firestore</h2>
+    <h1>Firestore</h1>
 
     <Doc path={`posts/first-post`} let:data={post} let:ref={postRef} log>
       <div slot="loading">Loading...</div>
@@ -176,7 +183,7 @@
   </Doc>
 
 
-  <h2>Events</h2>
+  <h3>Events</h3>
 
   <p>Path: {eventRef.path}</p>
   <p>Event Data: {eventData && eventData.title}</p>
@@ -185,4 +192,43 @@
   </button>
 
   <Doc path={'posts/event-post'} on:data={onData} on:ref={onRef} />
+
+
+
+
+  <h1>Storage</h1>
+
+  <button on:click={(e) => readyToUpload = true }>Start Upload</button>
+
+  {#if readyToUpload}
+
+    <h3>UploadTask:</h3>
+
+    <UploadTask path={'myfile.txt'} file={new File(['hello world'], 'filename')} let:task let:snapshot let:downloadURL>
+
+      Progress  {(snapshot.bytesTransferred / snapshot.totalBytes) * 100} <br>
+      State {snapshot.state}
+
+      <button on:click={() => task.pause()}>Pause</button>
+
+      <div slot="complete">DownloadURL: {downloadURL}</div>
+
+    </UploadTask>
+
+  {/if}
+
+
+  <h3>File</h3>
+
+  <StorageRef path={'myfile.txt'} meta let:metadata let:downloadURL>
+
+    URL: {downloadURL} <br>
+    Meta: {JSON.stringify(metadata)}
+
+    <div slot="loading">Loading file...</div>
+  </StorageRef>
+
+
 </FirebaseApp>
+
+<div style="height: 500px"></div>

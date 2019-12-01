@@ -1,23 +1,18 @@
 <script>
   export let path;
+  export let file;
   export let log = false;
   export let traceId = "";
-  export let startWith = undefined; // Why? Firestore returns null for docs that don't exist, predictible loading state.
-  export let maxWait = 10000;
-  export let once = false;
 
   import { onDestroy, onMount, createEventDispatcher } from "svelte";
-  import { fileStore } from "./storage";
+  import { uploadTaskStore } from "./storage";
 
   const opts = {
-    startWith,
     traceId,
     log,
-    maxWait,
-    once
   }
 
-  let store = fileStore(path, opts);
+  let store = uploadTaskStore(path, file, opts);
 
   const dispatch = createEventDispatcher();
 
@@ -28,13 +23,13 @@
     if (unsub) {
       // Unsub and create new store
       unsub();
-      store = fileStore(path, opts);
+      store = uploadTaskStore(path, file, opts);
       dispatch("ref", { ref: store.ref });
     }
 
-    unsub = store.subscribe(url => {
-      dispatch("url", {
-        url
+    unsub = store.subscribe(snapshot => {
+      dispatch("snapshot", {
+        snapshot
       });
     });
   }
@@ -46,11 +41,18 @@
 <slot name="before" />
 
 {#if $store}
-  <slot url={$store} ref={store.ref} error={store.error} />
-{:else if store.complete}
-  <slot name="complete" />
+  <slot 
+    snapshot={$store} 
+    ref={store.ref} 
+    task={store.task}
+    downloadURL={store.downloadURL} 
+    error={store.error} />
 {:else}
   <slot name="fallback" />
+{/if}
+
+{#if store.downloadURL}
+  <slot name="complete" />
 {/if}
 
 <slot name="after" />
