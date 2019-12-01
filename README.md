@@ -439,7 +439,7 @@ Note: Each data item in the collection contains the document data AND fields for
 
 ### `<StorageRef>`
 
-Retrives a downloadURL and metada from Firebase storage.
+Retrives a downloadURL and metadata from Firebase storage.
 
 Props:
 
