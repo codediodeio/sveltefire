@@ -436,3 +436,84 @@ Slot Props & Events:
 ```
 
 Note: Each data item in the collection contains the document data AND fields for the `id` and `ref` (DocumentReference). 
+
+### `<StorageRef>`
+
+Retrives a downloadURL and metada from Firebase storage.
+
+Props:
+
+- *path (required)* to file in storage i.e `images/mountain.jpg` or a [Reference](https://firebase.google.com/docs/reference/js/firebase.storage.Reference)
+- *meta* include metadata with file. Default `false`. 
+- *startWith* start with a default URL. Pass an object like `{ url: someURL }`
+
+Slots: 
+
+- *default slot*  shown when downloadURL is available. 
+- *loading*  shown when waiting for response. 
+- *fallback* shown when error occurs. 
+
+
+Slot Props & Events: 
+
+- *downloadURL* url to resource
+- *metadata* file metadata
+- *ref* Storage Reference for direct access
+
+```html
+<StorageRef {path} let:downloadURL let:ref meta let:metadata> 
+  
+    <img src={downloadURL} />
+
+    <div slot="loading">
+        Loading...
+    </div>
+
+    <div slot="fallback">
+        Error
+    </div>
+
+</StorageRef>
+```
+
+### `<UploadTask>`
+
+Creates an [UploadTask](https://firebase.google.com/docs/reference/js/firebase.storage.UploadTask) that transmits a file to Firebase storage.
+
+Props:
+
+- *path (required)* to upload to i.e "images/mountain.jpg" or a [Reference](https://firebase.google.com/docs/reference/js/firebase.storage.Reference)
+- *file* file to upload as a `File` object `Blob` or `Unit8Array`. 
+- 
+
+Slots: 
+
+- *default slot*  shown while task is created. 
+- *complete*  shown when task state is `success` and url is available.
+- *fallback* shown when error occurs or upload is cancelled.
+
+
+Slot Props & Events: 
+
+- *snapshot* snapshot of upload, useful for monitoring progress. 
+- *task* Firebase upload task. Use it to pause, resume, and cancel. `task.pause()`
+- *downLoadURL* url to uploaded file.
+
+
+```html
+<UploadTask {file} {path} let:task let:snapshot let:downloadURL={url}>
+
+   Uploading your file...
+
+   Progress: {(snapshot.bytesTransferred / snapshot.totalBytes) * 100} %
+
+  <div slot="complete">
+    Success! Download here {url}
+  </div>
+
+  <div slot="fallback">
+    Error or canceled
+  </div>
+
+</UploadTask>
+```

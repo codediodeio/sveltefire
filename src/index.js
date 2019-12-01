@@ -4,7 +4,9 @@ import Doc from './Doc.svelte';
 import Collection from './Collection.svelte';
 import { userStore } from './auth';
 import { docStore, collectionStore } from './firestore';
-
+import { fileDownloadStore, uploadTaskStore } from './storage';
+import StorageRef from './StorageRef.svelte';
+import UploadTask from './UploadTask.svelte';
 
 export {
     FirebaseApp,
@@ -14,4 +16,8 @@ export {
     userStore,
     docStore,
     collectionStore,
+    fileDownloadStore,
+    uploadTaskStore,
+    StorageRef,
+    UploadTask,
 }
