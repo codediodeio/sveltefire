@@ -29,6 +29,8 @@
   let eventData = {};
   let eventRef = {};
 
+  let file = new File(['hello world'], 'filename');
+
   let readyToUpload = false;
 
   function onData(e) {
@@ -204,7 +206,7 @@
 
     <h3>UploadTask:</h3>
 
-    <UploadTask path={'myfile.txt'} file={new File(['hello world'], 'filename')} let:task let:snapshot let:downloadURL>
+    <UploadTask path={'myfile.txt'} {file} let:task let:snapshot let:downloadURL>
 
       Progress  {(snapshot.bytesTransferred / snapshot.totalBytes) * 100} <br>
       State {snapshot.state}
