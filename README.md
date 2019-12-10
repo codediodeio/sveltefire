@@ -40,125 +40,41 @@ Handle multiple levels of async relational data (and their loading & fallback st
 ...
 ```
 
-
 ## Quick Start
 
-Create a Svelte App and install Firebase. 
+Grab the [sveltefire-template](https://github.com/codediodeio/sveltefire-template). 
 
 ```bash
-npx degit sveltejs/template fireapp
-cd fireapp 
+npx degit codediodeio/sveltefire-template fireapp
+cd fireapp
 npm install
-
-npm install sveltefire firebase
 ```
 
+Create a project at https://firebase.google.com/ and grab your web config:
 
-Create a web app from the [Firebase Console](https://console.firebase.google.com/) and grab your project config. Enable **Anonymous Login** and create a **Firestore** database instance in test mode. 
+![firebase config](https://firebasestorage.googleapis.com/v0/b/firestarter-96e46.appspot.com/o/project-config.PNG?alt=media&token=5eabb205-7ba2-4fc3-905f-e9547055e754)
 
 
-Initialize the Firebase app in the `App.svelte` file. 
 
-```html
-<script>
-    import { FirebaseApp, User, Doc, Collection } from 'sveltefire';
-    
-    // Import the Firebase Services you want bundled and call initializeApp
-    import firebase from "firebase/app";
-    import 'firebase/firestore';
-    import 'firebase/auth';
-    import 'firebase/performance';
-    import 'firebase/analytics';
+Opt-in to the following services from the Firebase console to run the demo. 
 
-	const firebaseConfig = {
-        apiKey: 'api-key',
-        authDomain: 'project-id.firebaseapp.com',
-        databaseURL: 'https://project-id.firebaseio.com',
-        projectId: 'project-id',
-        storageBucket: 'project-id.appspot.com',
-        messagingSenderId: 'sender-id',
-        appId: 'app-id',
-        measurementId: 'G-measurement-id',
-    }
+1. **Anonymous** Login under *authentication -> sign-in method*
+1. **Cloud Firestore** under *database*. Make sure it's in test mode (or provide write access to the `posts/` collection using Security Rules).
 
-    firebase.initializeApp(firebaseConfig)
-</script>
-```
 
-**Full Example**
-
-Start by building an **authenticated realtime CRUD app** . A user can sign-in, create posts, and add comments to that post. Paste this code into your app. 
-
-```html
-<!-- 1. 🔥 Firebase App -->
-<FirebaseApp {firebase}>
-
-  <!-- 2. 😀 Get the current user -->
-  <User let:user let:auth>
-
-    <p>Howdy, {user.uid}</p>
-    <button on:click={() => auth.signOut()}>Sign Out</button>
-
-    <div slot="signed-out">
-      <button on:click={() => auth.signInAnonymously()}>Sign In</button>
-    </div>
-
-    <!-- 3. 📜 Get a Firestore document owned by a user -->
-    <Doc path={`posts/${user.uid}`} let:data={post} let:ref={postRef} log>
-
-      <h2>{post.title}</h2>
-
-      <span slot="loading">Loading post...</span>
-      <span slot="fallback">
-        <p>Demo post not created yet...</p>
-
-        <button on:click={() => postRef.set({ title: 'I like Svelte' })}>
-          Create it Now
-        </button>
-      </span>
-
-      <!-- 4. 💬 Get all the comments in its subcollection -->
-      <Collection
-        path={postRef.collection('comments')}
-        let:data={comments}
-        let:ref={commentsRef}
-        log>
-		
-        {#each comments as comment}
-          <p>{comment.text}</p>
-          <button on:click={() => comment.ref.delete()}>Delete</button>
-        {/each}
-
-        <hr />
-
-        <button on:click={() => commentsRef.add({ text: 'Cool!' })}>
-          Add Comment
-        </button>
-
-        <span slot="loading">Loading comments...</span>
-
-      </Collection>
-    </Doc>
-  </User>
-</FirebaseApp>
-```
-
-Run it on localhost:5000
+Open `App.svelte` and replace the `firebaseConfig` prop with your Firebase project credentials. Run it:
 
 ```
 npm run dev
 ```
 
-If you see the error **'openDb' is not exported by node_modules\idb\build\idb.js**, go in the `rollup.config.js` and add this line: 
+![sveltefire demo app](https://firebasestorage.googleapis.com/v0/b/sveltefire-testing.appspot.com/o/sveltefire-demo.gif?alt=media&token=d5ea2807-7c50-4f94-bc73-8698b9528902)
 
-```js
-    resolve({
-        ...
-        mainFields: ['main', 'module'] /// <-- here
-    }),
-```
+Congrats! You are now running an authenticated realtime Svelte app. 
 
-## Concepts
+👀 See the [Install Guide](https://github.com/codediodeio/sveltefire/tree/master/docs/install.md) for additional options. 
+
+## Concepts and Examples
 
 SvelteFire allows you to use Firebase data anywhere in the Svelte component without the need to manage async state, promises, or streams. 
 
