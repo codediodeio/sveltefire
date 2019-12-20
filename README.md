@@ -50,6 +50,12 @@ cd fireapp
 npm install
 ```
 
+or install from NPM:
+
+````sh
+npm install svelte-spa-router
+````
+
 Create a project at https://firebase.google.com/ and grab your web config:
 
 ![firebase config](https://firebasestorage.googleapis.com/v0/b/firestarter-96e46.appspot.com/o/project-config.PNG?alt=media&token=5eabb205-7ba2-4fc3-905f-e9547055e754)
