@@ -53,7 +53,7 @@ npm install
 or install from NPM:
 
 ````sh
-npm install svelte-spa-router
+npm install sveltefire
 ````
 
 Create a project at https://firebase.google.com/ and grab your web config:
