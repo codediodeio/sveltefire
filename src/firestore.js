@@ -16,14 +16,17 @@ export function docStore(path, opts) {
 
   // Internal state
   let _loading = typeof startWith !== undefined;
+  let _firstValue = true;
   let _error = null;
   let _teardown;
   let _waitForIt;
+
 
   // State should never change without emitting a new value
   // Clears loading state on first call
   const next = (val, err) => {
     _loading = false; 
+    _firstValue = false;
     _waitForIt && clearTimeout(_waitForIt);
     _error = err || null;
     set(val);
@@ -40,7 +43,7 @@ export function docStore(path, opts) {
     // Realtime firebase subscription
     _teardown = ref.onSnapshot(
       snapshot => {
-        const data = snapshot.data() || startWith || null;
+        const data = snapshot.data() || (_firstValue && startWith) || null;
 
         // Optional logging
         if (log) {
