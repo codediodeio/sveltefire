@@ -1,7 +1,7 @@
 <script>
     export let defaultConfig = {};
     import { onMount, onDestroy, createEventDispatcher } from "svelte";
-    import { remoutConfigStore } from "./remoteConfig";
+    import { remoteConfigStore } from "./remoteConfig";
   
     let opts = {
         defaultConfig,
