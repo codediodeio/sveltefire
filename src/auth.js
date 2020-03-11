@@ -5,19 +5,19 @@ import { assertApp } from './helpers';
 export function userStore(opts = { persist: null }) {
 
     const auth = assertApp('auth');
-    const k = 'sveltefire_user';
+    const storageKey = 'sveltefire_user';
     let cached = null;
   
     const { persist } = opts;
   
     if (persist) {
-      cached = JSON.parse(opts.persist.getItem(k));
+      cached = JSON.parse(opts.persist.getItem(storageKey));
     }
   
     const store = writable(cached, () => {
       const teardown = auth.onAuthStateChanged(u => {
         set(u);
-        persist && opts.persist.setItem(k, JSON.stringify(u));
+        persist && opts.persist.setItem(storageKey, JSON.stringify(u));
       });
       return () => teardown;
     });
