@@ -1,3 +1,4 @@
+![sveltefire package](https://github.com/codediodeio/sveltefire/workflows/Sveltefire%20Package/badge.svg)
 # SvelteFire
 
 [Cybernetically](https://svelte.dev/) enhanced [Firebase](https://firebase.google.com/) apps 💪🔥  
