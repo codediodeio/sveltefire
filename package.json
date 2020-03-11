@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "sveltefire",
   "svelte": "src/index.js",
   "main": "dist/index.js",
@@ -18,17 +18,17 @@
     "url": "https://github.com/codediodeio/sveltefire.git"
   },
   "devDependencies": {
-    "concurrently": "^5.0.0",
-    "cypress": "^3.6.1",
-    "firebase": "^7.3.0",
-    "firebase-tools": "^7.7.0",
-    "jest": "^24.9.0",
-    "rollup": "^1.11.0",
+    "concurrently": "^5.1.0",
+    "cypress": "^4.1.0",
+    "firebase": "^7.10.0",
+    "firebase-tools": "^7.14.0",
+    "jest": "^25.1.0",
+    "rollup": "^2.0.3",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-svelte": "^5.0.0",
-    "svelte": "^3.12.1"
+    "svelte": "^3.19.2"
   },
   "keywords": [
     "svelte",
