@@ -11,11 +11,17 @@
   // Emit firebase
   const dispatch = createEventDispatcher();
 
-    // Set firebase context
-    firebase = firebase || window.firebase;
-    setContext("firebase", firebase);
+  // Must be a function to ensure changes after initialization are caught
+  setContext("firebase", { 
+    getFirebase: () => firebase
+  });
+
 
   onMount(() => {
+
+    // Set firebase context from window if needed
+    firebase = firebase || (window && window.firebase);
+
     if (!firebase) {
       throw Error(
         "No firebase app was provided. You must provide an initialized Firebase app or make it available globally."

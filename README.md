@@ -208,10 +208,12 @@ data.subscribe(v => doStuff(v) )
 
 ### Firebase App Context
 
-The Firebase SDK is available via the [Context API](https://svelte.dev/tutorial/context-api) under the key of `firebase`. 
+The Firebase SDK is available via the [Context API](https://svelte.dev/tutorial/context-api) under the key of `firebase` using the `getFirebase` function. 
 
 ```js
-const db = getContext('firebase').firestore();
+const app = getContext('firebase').getFirebase();
+const db = app.firestore();
+const auth = app.auth();
 ```
 
 ## API
