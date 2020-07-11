@@ -448,3 +448,25 @@ Slot Props & Events:
 
 </UploadTask>
 ```
+
+### `<RemoteConfig>`
+
+Allows for use of Firebase remote config.
+
+Props:
+
+- *defaultConfig* for remote config params. Used before config is loaded or if loading fails.
+
+Slots: 
+
+- *default slot* shown always with remote config params
+
+Slot Props & Events: 
+
+- *config* config either retreived from firebase otherwise default if not available.
+
+```html
+<RemoteConfig let:config={config} on:config>
+    Remote Config Message: {config.message}
+</RemoteConfig>
+```
