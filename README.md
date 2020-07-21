@@ -12,7 +12,7 @@
 - Automatic performance monitoring & Google Analytics.  
 
 
-**Psuedo Example**
+**Pseudo Example**
 
 Handle multiple levels of async relational data (and their loading & fallback states) entirely from the Svelte HTML. 
 
