@@ -90,7 +90,6 @@ export function uploadTaskStore(path, file, opts) {
       next: (snap) => next(snap),
       error: (e) => next(_task.snapshot, e),
       complete: () => {
-        console.log('done')
         ref.getDownloadURL().then(url => {
           next(_task.snapshot);
           _url = url;
