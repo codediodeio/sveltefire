@@ -4,6 +4,8 @@ Follow the instructions on the [sveltefire-template](https://github.com/codediod
 
 ## Install from Scratch
 
+<p class="callout warning">Note: sveltefire does not support Sapper. See https://github.com/codediodeio/sveltefire/issues/4 for details.</p>
+
 Create a Svelte App and install Firebase. 
 
 ```bash
