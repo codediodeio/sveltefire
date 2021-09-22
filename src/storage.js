@@ -29,7 +29,7 @@ export function fileDownloadStore(path, opts) {
 
   // Timout
   // Runs of first subscription
-    const start = async() => {
+    const start = () => {
 
       const requests = [url && ref.getDownloadURL(), meta && ref.getMetadata()];
 
