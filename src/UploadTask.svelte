@@ -1,13 +1,16 @@
-<script>
-  export let path;
-  export let file;
+<script lang="ts">
+import type { StorageReference } from "firebase/storage";
+
+  import { onDestroy, onMount, createEventDispatcher } from "svelte";
+  import type { Unsubscriber } from "svelte/store";
+  import { UploadOpts, uploadTaskStore } from "./storage";
+
+  export let path :string|StorageReference;
+  export let file :any;
   export let log = false;
   export let traceId = "";
 
-  import { onDestroy, onMount, createEventDispatcher } from "svelte";
-  import { uploadTaskStore } from "./storage";
-
-  const opts = {
+  const opts :UploadOpts = {
     traceId,
     log,
   }
@@ -16,7 +19,7 @@
 
   const dispatch = createEventDispatcher();
 
-  let unsub;
+  let unsub :Unsubscriber;
 
   // Props changed
   $: {

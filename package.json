@@ -1,43 +1,56 @@
 {
-  "version": "0.1.5",
   "name": "sveltefire",
-  "svelte": "src/index.js",
-  "main": "dist/index.js",
-  "description": "Cybernetically Enhanced Firebase Apps",
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "e2e": "cypress open --config watchForFileChanges=true",
-    "test": "jest",
-    "dev:ex": "cd example && npm run dev",
-    "emulate": "cd example && firebase emulators:start --only firestore",
-    "test:watch": "concurrently \"npm:dev:ex\" \"npm:emulate\" \"npm:e2e\" "
+  "version": "0.2.0",
+  "publishConfig": {
+    "access": "public"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/codediodeio/sveltefire.git"
   },
+  "main": "dist/sveltefire.js",
+  "module": "dist/sveltefire.es.js",
+  "scripts": {
+    "build": "vite build && npm run build:types",
+    "build:types": "svelte-type-generator",
+    "dev": "vite",
+    "prepublishOnly": "npm build",
+    "serve": "vite preview",
+    "e2e": "cypress open --config watchForFileChanges=true",
+    "emulate": "cd emulate && firebase emulators:start --only firestore",
+    "test:watch": "concurrently \"npm:serve\" \"npm:emulate\" \"npm:e2e\" "
+  },
+  "files": [
+    "README.md",
+    "dist",
+    "src"
+  ],
   "devDependencies": {
-    "concurrently": "^5.1.0",
-    "cypress": "^4.1.0",
-    "firebase": "^7.10.0",
-    "firebase-tools": "^7.14.0",
-    "jest": "^25.1.0",
-    "rollup": "^2.0.3",
-    "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-svelte": "^5.0.0",
-    "svelte": "^3.19.2"
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.9",
+    "@testing-library/svelte": "^3.0.3",
+    "concurrently": "^6.5.1",
+    "firebase": "^9.6.1",
+    "firebase-tools": "^10.0.1",
+    "postcss": "^8.2.13",
+    "postcss-load-config": "^3.0.1",
+    "svelte": "^3.38.1",
+    "svelte-hmr": "^0.14.3",
+    "svelte-htm": "^1.1.1",
+    "svelte-preprocess": "^4.7.2",
+    "svelte-type-generator": "^1.1.0",
+    "typescript": "^4.2.4",
+    "vite": "^2.2.3",
+    "vite-web-test-runner-plugin": "^0.0.3"
   },
   "keywords": [
     "svelte",
     "firebase",
     "javascript"
   ],
-  "files": [
-    "README.md",
-    "dist/**/*",
-    "src/**/*"
-  ]
+  "types": "dist/types",
+  "svelte": "src/index.js",
+  "dependencies": {
+    "cypress": "^9.2.0"
+  }
 }

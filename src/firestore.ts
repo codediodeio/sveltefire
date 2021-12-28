@@ -1,15 +1,53 @@
 import { writable } from 'svelte/store';
-import { assertApp } from './helpers';
+import type { Readable } from 'svelte/store';
+import { getFirebaseContext } from './helpers';
+import { CollectionReference, doc, DocumentReference, Firestore, getDocs, getFirestore, query, QuerySnapshot } from '@firebase/firestore';
+import type { DocumentData, QueryConstraint } from '@firebase/firestore';
+import { onSnapshot, collection } from '@firebase/firestore';
 import { startTrace, stopTrace } from './perf';
+import type { Unsubscribe } from '@firebase/util';
+
+export type DocumentDataStore = Readable<DocumentData> & {
+  firestore: Firestore,
+  ref: DocumentReference,
+  loading: boolean,
+  error: Error;
+};
+
+export type CollectionDataStore = Readable<DocumentData[]> & {
+  firestore: Firestore,
+  ref: CollectionReference,
+  loading: boolean,
+  error: Error;
+  meta: {first?:DocumentData, last?:DocumentData}
+};
+
+export type DocumentOpts = {
+  startWith? :DocumentData,
+  maxWait :number,
+  once :boolean
+  log :boolean,
+  traceId? :string,
+}
+
+const defaultDocumentOpts :DocumentOpts = {
+  startWith: undefined,
+  traceId: undefined,
+  log: false,
+  maxWait: 10000,
+  once: false
+}
+
 
 // Svelte Store for Firestore Document
-export function docStore(path, opts) {
-  const firestore = assertApp('firestore');
+export function docStore(path :string|DocumentReference, opts :DocumentOpts) {
+  const firebase = getFirebaseContext();
+  const firestore = getFirestore(firebase);
 
-  const { startWith, log, traceId, maxWait, once } = { maxWait: 10000, ...opts };
+  const { startWith, log, traceId, maxWait, once } = { ...defaultDocumentOpts, ...opts };
 
   // Create the Firestore Reference
-  const ref = typeof path === 'string' ? firestore.doc(path) : path;
+  const ref :DocumentReference = typeof path === 'string' ? doc(firestore, path) : path;
 
   // Performance trace
   const trace = traceId && startTrace(traceId);
@@ -17,14 +55,14 @@ export function docStore(path, opts) {
   // Internal state
   let _loading = typeof startWith !== undefined;
   let _firstValue = true;
-  let _error = null;
-  let _teardown;
-  let _waitForIt;
+  let _error :Error = null;
+  let _teardown :Unsubscribe;
+  let _waitForIt :NodeJS.Timeout;
 
 
   // State should never change without emitting a new value
   // Clears loading state on first call
-  const next = (val, err) => {
+  const next = (val :DocumentData, err? :Error) => {
     _loading = false; 
     _firstValue = false;
     _waitForIt && clearTimeout(_waitForIt);
@@ -41,7 +79,7 @@ export function docStore(path, opts) {
     _waitForIt = maxWait && setTimeout(() => _loading && next(null, new Error(`Timeout at ${maxWait}. Using fallback slot.`) ), maxWait)
 
     // Realtime firebase subscription
-    _teardown = ref.onSnapshot(
+    _teardown = onSnapshot(ref, 
       snapshot => {
         const data = snapshot.data() || (_firstValue && startWith) || null;
 
@@ -88,34 +126,56 @@ export function docStore(path, opts) {
   };
 }
 
+export type CollectionOpts = {
+  idField? :string,
+  refField? :string,
+  startWith? :DocumentData[],
+  traceId? :string,
+  log :boolean,
+  maxWait :number,
+  once :boolean
+}
+
+const defaultOpts :CollectionOpts = {
+  idField: 'id',
+  refField: 'ref',
+  startWith: undefined,
+  traceId: undefined,
+  log: false,
+  maxWait: 10000,
+  once: false
+}
+
+export type QueryFunction = (ref: CollectionReference)=>QueryConstraint|QueryConstraint[];
+
 // Svelte Store for Firestore Collection
-export function collectionStore(path, queryFn, opts) {
-  const firestore = assertApp('firestore');
+export function collectionStore(path :string|CollectionReference, queryFn :QueryFunction, opts :CollectionOpts) :CollectionDataStore {
+  const firebase = getFirebaseContext();
+  const firestore = getFirestore(firebase);
 
   const { startWith, log, traceId, maxWait, once, idField, refField } = {
-    idField: 'id',
-    refField: 'ref',
-    maxWait: 10000,
+    ...defaultOpts,
     ...opts
   };
 
-  const ref = typeof path === 'string' ? firestore.collection(path) : path;
-  const query = queryFn && queryFn(ref);
+  const ref = typeof path === 'string' ? collection(firestore, path) : path;
+  const constraints = queryFn && queryFn(ref);
+  const queryVal = constraints && (Array.isArray(constraints) ? query.apply(null,[ref, ...constraints]) : query(ref, constraints));
   const trace = traceId && startTrace(traceId);
 
   let _loading = typeof startWith !== undefined;
-  let _error = null;
-  let _meta = {};
-  let _teardown;
-  let _waitForIt;
+  let _error :Error = null;
+  let _meta :{first?:DocumentData, last?:DocumentData}= {};
+  let _teardown :Unsubscribe;
+  let _waitForIt :NodeJS.Timeout;
 
   // Metadata for result
-  const calcMeta = (val) => {
+  const calcMeta = (val :DocumentData[]) => {
     return val && val.length ? 
       { first: val[0], last: val[val.length - 1] } : {}
   }
 
-  const next = (val, err) => {
+  const next = (val :DocumentData[], err? :Error) => {
     _loading = false; 
     _waitForIt && clearTimeout(_waitForIt);
     _error = err || null;
@@ -127,11 +187,10 @@ export function collectionStore(path, queryFn, opts) {
   const start = () => {
     _waitForIt = maxWait && setTimeout(() => _loading && next(null, new Error(`Timeout at ${maxWait}. Using fallback slot.`) ), maxWait)
 
-    _teardown = (query || ref).onSnapshot(
-      snapshot => {
+    _teardown = onSnapshot((queryVal || ref), (snapshot :QuerySnapshot) => {
 
         // Will always return an array
-        const data = snapshot.docs.map(docSnap => ({
+        const data :DocumentData[] = snapshot.docs.map(docSnap => ({
           ...docSnap.data(),
           // Allow end user override fields mapped for ID and Ref
           ...(idField ? { [idField]: docSnap.id } : null),
@@ -149,7 +208,7 @@ export function collectionStore(path, queryFn, opts) {
         once && _teardown();
       },
 
-      error => {
+      (error :Error) => {
         console.error(error);
         next(null, error);
       }
@@ -176,3 +235,4 @@ export function collectionStore(path, queryFn, opts) {
     }
   };
 }
+

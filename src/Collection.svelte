@@ -1,17 +1,18 @@
-<script>
-  export let path;
-  export let query = null;
+<script lang="ts">
+  import type { CollectionReference } from "firebase/firestore";
+  import { onDestroy, onMount, createEventDispatcher } from "svelte";
+  import type { Unsubscriber } from "svelte/store";
+  import { CollectionOpts, collectionStore, QueryFunction } from "./firestore";
+
+  export let path :string|CollectionReference;
+  export let query :QueryFunction = null;
   export let traceId = "";
   export let log = false;
   export let startWith = undefined;
   export let maxWait = 10000;
   export let once = false;
 
-  import { onDestroy, onMount, createEventDispatcher } from "svelte";
-
-  import { collectionStore } from "./firestore";
-
-  const opts = {
+  const opts :CollectionOpts = {
     startWith,
     traceId,
     log,
@@ -23,7 +24,7 @@
 
   const dispatch = createEventDispatcher();
 
-  let unsub;
+  let unsub :Unsubscriber;
 
   // Props changed
   $: {

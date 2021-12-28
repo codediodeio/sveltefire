@@ -1,4 +1,8 @@
-<script>
+<script lang="ts">
+  import { onDestroy, onMount, createEventDispatcher } from "svelte";
+  import type { Unsubscriber } from "svelte/store";
+  import { DownloadOpts, fileDownloadStore } from "./storage";
+
   export let path = "";
   export let log = false;
   export let traceId = "";
@@ -6,10 +10,7 @@
   export let url = true;
   export let meta = false;
 
-  import { onDestroy, onMount, createEventDispatcher } from "svelte";
-  import { fileDownloadStore } from "./storage";
-
-  const opts = {
+  const opts :DownloadOpts = {
     startWith,
     traceId,
     log,
@@ -21,7 +22,7 @@
 
   const dispatch = createEventDispatcher();
 
-  let unsub;
+  let unsub :Unsubscriber;
 
   // Props changed
   $: {
@@ -35,8 +36,8 @@
     unsub = store.subscribe(result => {
      if (result) {
       dispatch("storageResult", {
-        downloadURL: result[0],
-        metadata: result[1],
+        downloadURL: result.url,
+        metadata: result.metadata,
       });
      }
 

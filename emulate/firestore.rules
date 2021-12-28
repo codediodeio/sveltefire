@@ -10,7 +10,5 @@ service cloud.firestore {
           allow read, write;
       }
 
-
-
   }
 }

@@ -1,15 +1,14 @@
-<script>
-  export let name;
-  import { writable } from "svelte/store";
+<script lang="ts">
   import { onMount } from "svelte";
-  import { FirebaseApp, Doc, Collection, User, UploadTask, StorageRef } from "sveltefire";
-
-  import firebase from "firebase/app";
-  import "firebase/firestore";
-  import "firebase/auth";
-  import "firebase/storage";
-  import "firebase/performance"; // Optional
-  import "firebase/analytics"; // Optional
+  import FirebaseApp from "../src/FirebaseApp.svelte";
+  import Doc from "../src/Doc.svelte";
+  import Collection from "../src/Collection.svelte";
+  import User from "../src/User.svelte";
+  import UploadTask from "../src/UploadTask.svelte";
+  import StorageRef from "../src/StorageRef.svelte";
+  import { initializeApp } from "@firebase/app"
+  import { addDoc, collection, CollectionReference, deleteDoc, doc, DocumentData, DocumentReference, getFirestore, initializeFirestore, setDoc, updateDoc, where } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
 
   const config = {
     apiKey: "AIzaSyAMHfJp1ec85QBo-mnke89qtiYGen9zTSE",
@@ -21,22 +20,20 @@
     appId: "1:1030648105982:web:2afebc34841fa242ed4eaf",
     measurementId: "G-null"
   };
+  const firebaseApp = initializeApp(config);
 
-  firebase.initializeApp(config);
-
-
-  let appName;
-  let eventData = {};
-  let eventRef = {};
+  let appName :string;
+  let eventData :DocumentData = {} as DocumentData;
+  let eventRef :DocumentReference = {} as DocumentReference;
 
   let file = new File(['hello world'], 'filename');
 
   let readyToUpload = false;
 
-  function onData(e) {
+  function onData(e :CustomEvent<{data:DocumentData}>) {
     eventData = e.detail.data;
   }
-  function onRef(e) {
+  function onRef(e :CustomEvent<{ref:DocumentReference}>) {
     eventRef = e.detail.ref;
   }
 
@@ -44,19 +41,19 @@
     // const firebase = e.detail.firebase;
 
     if (location.hostname === "localhost") {
-      const db = firebase.firestore();
+      initializeFirestore(firebaseApp, { host: "localhost:8080", ssl: false });
+      const db = getFirestore(firebaseApp);
 
-      db.settings({ host: "localhost:8080", ssl: false });
+      appName = firebaseApp.name;
 
-      appName = firebase.app().name;
+      deleteDoc(doc(db,"posts/slow-post"));
 
-      db.doc("posts/slow-post").delete();
-
-      db.doc("posts/event-post").set({ title: "Event Post" });
-      db.doc("posts/once").set({ title: "Once-Doc" });
+      
+      setDoc(doc(db,"posts/event-post"), { title: "Event Post" });
+      setDoc(doc(db,"posts/once"), { title: "Once-Doc" });
 
       setTimeout(() => {
-        db.doc("posts/slow").set({ title: "Slowness" });
+        setDoc(doc(db,"posts/slow"), { title: "Slowness" });
       }, 5000);
 
     }
@@ -71,7 +68,7 @@
   }
 </style>
 
-<FirebaseApp {firebase} on:initializeApp={useEmulator} perf analytics>
+<FirebaseApp firebase={firebaseApp} on:initializeApp={useEmulator} perf analytics>
 
   <h1>FirebaseApp</h1>
 
@@ -81,7 +78,7 @@
   <User let:user let:auth>
 
     <div slot="signed-out">
-      <button on:click={() => auth.signInAnonymously()}>Sign In</button>
+      <button on:click={() => signInAnonymously(auth)}>Sign In</button>
       <br />
       <button>Sign Out</button>
       (NOOP for Cypress)
@@ -97,7 +94,7 @@
       <div slot="loading">Loading...</div>
       <div slot="fallback">
         <button
-          on:click={() => postRef.set({ uid: user.uid, title: 'My Post' })}>
+          on:click={() => setDoc(postRef, { uid: user.uid, title: 'My Post' })}>
           Create Post
         </button>
       </div>
@@ -108,8 +105,8 @@
       <p>By {post.uid}</p>
 
       <Collection
-        path={postRef.collection('comments')}
-        query={ref => ref.where('uid', '==', post.uid)}
+        path={collection(postRef,'comments')}
+        query={ref => where('uid', '==', post.uid)}
         let:data={comments}
         let:ref={commentsRef}
         traceId={'readComments'}
@@ -122,17 +119,20 @@
         <!-- Start Comments Default -->
 
         <button
-          on:click={() => commentsRef.add({
+          on:click={() => {
+            addDoc(commentsRef, {
               uid: user.uid,
               text: 'My Awesome Comment'
-            })}>
+            });
+          }
+          }>
           Add Comment
         </button>
         <div id="posts">
           {#each comments as comment}
             <span>
               <h5>{comment.text} {comment.id}</h5>
-              <button on:click={() => comment.ref.delete()}>Delete</button>
+              <button on:click={() => deleteDoc(comment.ref)}>Delete</button>
             </span>
           {/each}
         </div>
@@ -168,7 +168,7 @@
 
     <div slot="fallback">Unable to read slow doc {err}</div>
 
-      <button on:click={() => slowRef.delete()}>X</button>
+      <button on:click={() => deleteDoc(slowRef)}>X</button>
   </Doc>
 
   <h3>One-Time Reads</h3>
@@ -181,7 +181,7 @@
 
     {onceData.title}
 
-    <button on:click={() => onceRef.delete()}>Try to Delete</button>
+    <button on:click={() => deleteDoc(onceRef)}>Try to Delete</button>
   </Doc>
 
 
@@ -189,7 +189,7 @@
 
   <p>Path: {eventRef.path}</p>
   <p>Event Data: {eventData && eventData.title}</p>
-  <button on:click={() => eventRef.update({ title: 'My Data Changed' })}>
+  <button on:click={() => updateDoc(eventRef, { title: 'My Data Changed' })}>
     Update Event
   </button>
 

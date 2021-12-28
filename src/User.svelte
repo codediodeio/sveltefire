@@ -1,12 +1,13 @@
-<script>
-  export let persist = null;
+<script lang="ts">
+  export let persist :Storage = null;
   import { onMount, onDestroy, createEventDispatcher } from "svelte";
+import type { Unsubscriber } from "svelte/store";
   import { userStore } from "./auth";
 
   let store = userStore({ persist });
 
   const dispatch = createEventDispatcher();
-  let unsub;
+  let unsub :Unsubscriber;
   onMount(() => {
     unsub = store.subscribe(user => {
       dispatch("user", {

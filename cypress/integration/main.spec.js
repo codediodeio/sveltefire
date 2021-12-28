@@ -4,7 +4,7 @@ describe('SvelteFire app', function() {
   this.beforeAll(() => {
     // cy.clearCookies()
     // cy.clearLocalStorage()
-    cy.visit('http://localhost:5000')
+    cy.visit('http://localhost:3000')
     cy.contains('Sign Out').click();
   })
 
