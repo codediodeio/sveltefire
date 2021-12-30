@@ -6,9 +6,9 @@
   import User from "../src/User.svelte";
   import UploadTask from "../src/UploadTask.svelte";
   import StorageRef from "../src/StorageRef.svelte";
-  import { initializeApp } from "@firebase/app"
-  import { addDoc, collection, CollectionReference, deleteDoc, doc, DocumentData, DocumentReference, getFirestore, initializeFirestore, setDoc, updateDoc, where } from "firebase/firestore";
-import { signInAnonymously } from "firebase/auth";
+  import { initializeApp } from "firebase/app"
+  import { addDoc, collection, deleteDoc, doc, DocumentData, DocumentReference, getFirestore, initializeFirestore, setDoc, updateDoc, where } from "firebase/firestore";
+  import { signInAnonymously } from "firebase/auth";
 
   const config = {
     apiKey: "AIzaSyAMHfJp1ec85QBo-mnke89qtiYGen9zTSE",

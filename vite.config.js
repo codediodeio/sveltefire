@@ -11,6 +11,14 @@ export default defineConfig({
   clearScreen: false,
   plugins: [svelte()],
   build: {
+    rollupOptions: {
+      external: [
+        "firebase",
+        "@firebase",
+        /firebase.*/,
+        /@firebase.*/
+      ]
+    },
     lib: {
       entry: path.resolve(__dirname, 'src/index.js'),
       name,

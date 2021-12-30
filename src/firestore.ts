@@ -1,11 +1,12 @@
 import { writable } from 'svelte/store';
 import type { Readable } from 'svelte/store';
 import { getFirebaseContext } from './helpers';
-import { CollectionReference, doc, DocumentReference, Firestore, getDocs, getFirestore, query, QuerySnapshot } from '@firebase/firestore';
-import type { DocumentData, QueryConstraint } from '@firebase/firestore';
-import { onSnapshot, collection } from '@firebase/firestore';
+import { CollectionReference, doc, DocumentReference, Firestore, getDocs, getFirestore, query, QuerySnapshot } from 'firebase/firestore';
+import type { DocumentData, QueryConstraint } from 'firebase/firestore';
+import { onSnapshot, collection } from 'firebase/firestore';
 import { startTrace, stopTrace } from './perf';
-import type { Unsubscribe } from '@firebase/util';
+
+type Unsubscribe = () => void;
 
 export type DocumentDataStore = Readable<DocumentData> & {
   firestore: Firestore,

@@ -30,7 +30,7 @@
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.9",
     "@testing-library/svelte": "^3.0.3",
     "concurrently": "^6.5.1",
-    "firebase": "^9.6.1",
+    "cypress": "^9.2.0",
     "firebase-tools": "^10.0.1",
     "postcss": "^8.2.13",
     "postcss-load-config": "^3.0.1",
@@ -43,14 +43,14 @@
     "vite": "^2.2.3",
     "vite-web-test-runner-plugin": "^0.0.3"
   },
+  "peerDependencies": {
+    "firebase": "^9.0.0"
+  },
   "keywords": [
     "svelte",
     "firebase",
     "javascript"
   ],
   "types": "dist/types",
-  "svelte": "src/index.js",
-  "dependencies": {
-    "cypress": "^9.2.0"
-  }
+  "svelte": "src/index.js"
 }

@@ -1,6 +1,6 @@
 import { getFirebaseContext } from './helpers';
-import { getPerformance, trace } from '@firebase/performance';
-import type { PerformanceTrace } from '@firebase/performance';
+import { getPerformance, trace } from 'firebase/performance';
+import type { PerformanceTrace } from 'firebase/performance';
 
 export function startTrace(name :string) :PerformanceTrace {
     const firebaseApp = getFirebaseContext();

@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount, setContext, createEventDispatcher } from "svelte";
-  import type { FirebaseApp } from "@firebase/app";
-  import { initializePerformance } from "@firebase/performance";
-  import { initializeAnalytics } from "@firebase/analytics";
-  export let firebase :FirebaseApp;
+  import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
+  import { initializePerformance } from "firebase/performance";
+  import { initializeAnalytics } from "firebase/analytics";
+  export let firebase :FirebaseApp = null;
+  export let config :FirebaseOptions = null;
   export let perf = false;
   export let analytics = false;
 
@@ -22,12 +23,15 @@
 
   onMount(() => {
 
+    if (config) {
+      firebase = initializeApp(config);
+    }
     // Set firebase context from window if needed
     firebase = firebase || (window && ((window as any)['firebaseApp'] as FirebaseApp));
 
     if (!firebase) {
       throw Error(
-        "No firebase app was provided. You must provide an initialized Firebase app or make it available globally as window.firebaseApp."
+        "No firebase app was provided. You must provide a Firebase configuration as parameter 'config', or an initialized app as parameter 'firebaseApp' or make it available globally as window.firebaseApp."
       );
     } else {
 
@@ -50,5 +54,5 @@
 </script>
 
 {#if ready}
-  <slot />
+  <slot firebaseApp={firebase} />
 {/if}
