@@ -224,17 +224,44 @@ Sets Firebase app context
 
 Props:
 
-- *firebase* Firebase instance. If empty, it will attempt to use `window.firebase`. 
+- *config* Firebase configuration, if provided will be used to create the Firebase app
+- *firebase* Firebase app instance. If empty, it will attempt to use `window.firebaseApp`. 
 - *perf* Starts Firebase Performance Monitoring
 - *analytics* Starts Firebase/Google Analytics
 
 
 ```html
-<FirebaseApp firebase={firebase} perf analytics>
+<script>
+  const config = {
+    apiKey: "...",
+    authDomain: "...",
+    // .. etc ...
+  };
+</script>
+
+<FirebaseApp config={config} perf analytics>
     <!-- default slot -->
 </FirebaseApp>
 ```
 
+```html
+<script>
+  import { initializeApp } from 'firebase/app';
+
+  const config = {
+    apiKey: "...",
+    authDomain: "...",
+    // .. etc ...
+  };
+
+  const app = initializeApp(config);
+</script>
+
+<FirebaseApp firebase={app} perf analytics>
+    <!-- default slot -->
+</FirebaseApp>
+
+```
 
 ### `<User>`
 
