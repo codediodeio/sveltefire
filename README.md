@@ -166,7 +166,7 @@ You can bypass the loading state entirely by passing a `startWith` prop.
 
 ### Reactive
 
-Components are reactive. When props change, they unsubscribe from the last stream and start a new one. This means you can change the document path or query function by simplying changing a prop value. 
+Components are reactive. When props change, they unsubscribe from the last stream and start a new one. This means you can change the document path or query function by simplifying changing a prop value. 
 
 Example: Collections have special slot props for pagination called `first` and `last`. Use them to create reactive pagination queries. 
 
