@@ -38,6 +38,10 @@ Svelte makes it possible to dramatically simplify the way developers work with F
 
 1. Install Firebase `npm i firebase` v9+ and initialize it in a file like `lib/firebase.js`:
 
+```
+npm i sveltefire firebase
+```
+
 ```ts
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
@@ -170,7 +174,7 @@ Technically optional, this component puts Firebase into Svelte context. This avo
 
 Note: Components outside a FirebaseApp will need the auth/firestore prop, i.e `<User auth={auth}>`
 
-#### User
+### User
 
 Get the current user. 
 
