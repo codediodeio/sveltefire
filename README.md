@@ -80,7 +80,9 @@ Use the `$` as much as you want - it will only result in one Firebase read reque
 Or better yet, use the built in `Doc` and `Collection` components. See below. 
 
 
-## Examples
+## Stores
+
+Stores are the building blocks of SvelteFire.
 
 ### Auth Store
 
@@ -100,7 +102,7 @@ Listen to the current user. Render UI conditionally based on the auth state:
 {/if}
 ```
 
-## Firestore Stores
+### Firestore Stores
 
 Subscribe to realtime data. The store will unsubscribe automatically to avoid unnecessary Firestore reads. 
 
@@ -164,12 +166,11 @@ Technically optional, this component puts Firebase into Svelte context. This avo
     <!-- other sveltefire components here -->
 
 </FirebaseApp>
-
-<!-- components outside context require the auth or firestore prop -->
-<User auth={auth} let:user></User>
 ```
 
-### User
+Note: Components outside a FirebaseApp will need the auth/firestore prop, i.e `<User auth={auth}>`
+
+#### User
 
 Get the current user. 
 
@@ -255,7 +256,7 @@ For complex queries that required dynamic data, it can be useful to build the qu
   <Collection ref={buildQuery(user.uid)} />
 </User>
 ```
-### Putting it all Totgether
+### Using Components Together
 
 These components can be combined to build complex realtime apps. It's especially powerful when fetching data that requires the current user's UID or a related document's path.
 
@@ -290,9 +291,7 @@ These components can be combined to build complex realtime apps. It's especially
 ```
 
 
-
-
-# Notes
+## Notes
 
 - This library should only run the the client, it is not for server-side data fetching. 
 - Requires Firebase v9 or greater. 
