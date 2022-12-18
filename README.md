@@ -1,450 +1,299 @@
-![sveltefire package](https://github.com/codediodeio/sveltefire/workflows/Sveltefire%20Package/badge.svg)
 # SvelteFire
 
-[Cybernetically](https://svelte.dev/) enhanced [Firebase](https://firebase.google.com/) apps 💪🔥  
+A minimal, yet powerful library that puts realtime Firebase data into Svelte stores. 
 
-## Basics
-
-- Use Firebase declaratively in Svelte components. 
-- Handle complex relational data between Auth and Firestore.  
-- Built in loading & fallback states for async data. (Similar to React Suspense) 
-- Automatic data disposal to prevent memory/cost leaks, plus enhanced logging.  
-- Automatic performance monitoring & Google Analytics.  
-
-
-**Psuedo Example**
-
-Handle multiple levels of async relational data (and their loading & fallback states) entirely from the Svelte HTML. 
-
-
-```html
+```svelte
 <!-- 1. 🔥 Firebase App -->
-<FirebaseApp {firebase}>
+<FirebaseApp {auth} {firestore}>
 
-    <!-- 2. 😀 Get the current user -->
+    <!-- 2. 👤 Get the current user -->
     <User let:user>
 
         <p>Howdy, {user.uid}</p>
 
         <!-- 3. 📜 Get a Firestore document owned by a user -->
-        <Doc path={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
+        <Doc ref={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
             
             <h2>{post.title}</h2>
 
             <!-- 4. 💬 Get all the comments in its subcollection -->
-            <Collection path={postRef.collection('comments')} let:data={comments}>
+            <Collection ref={postRef.path + '/comments'} let:data={comments}>
                 {#each comments as comment}
 
                 {/each}
-
-
 ...
 ```
 
+## Why?
+
+Svelte makes it possible to dramatically simplify the way developers work with Firebase. Here are some problems the project solves:
+
+- Access users and realtime Firestore data as Svelte stores 
+- Automatic subscription disposal to prevent memory/cost leaks
+- Better TypeScript experience for Firebase
+- Handle complex relational data between Auth and Firestore
+- Easily hydrate SvelteKit server data into a realtime Firebase stream
+
 ## Quick Start
 
-Grab the [sveltefire-template](https://github.com/codediodeio/sveltefire-template). 
+1. Install Firebase `npm i firebase` v9+ and initialize it in a file like `lib/firebase.js`:
 
-```bash
-npx degit codediodeio/sveltefire-template fireapp
-cd fireapp
-npm install
+```ts
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+
+// Initialize Firebase
+const app = initializeApp(/* your firebase config */);
+export const db = getFirestore(app);
+export const auth = getAuth(app);
 ```
 
-or install from NPM:
+2. Get the Current user
 
-````sh
-npm install sveltefire
-````
-
-And do not forget to install firebase dependencies
-```sh
-npm install firebase
-```
-Please read the [Installation guide](https://github.com/codediodeio/sveltefire/blob/master/docs/install.md) for any frequenty encountered issues when integrating in a svelte project.
-
-Create a project at https://firebase.google.com/ and grab your web config:
-
-![firebase config](https://firebasestorage.googleapis.com/v0/b/firestarter-96e46.appspot.com/o/project-config.PNG?alt=media&token=5eabb205-7ba2-4fc3-905f-e9547055e754)
-
-
-
-Opt-in to the following services from the Firebase console to run the demo. 
-
-1. **Anonymous** Login under *authentication -> sign-in method*
-1. **Cloud Firestore** under *database*. Make sure it's in test mode (or provide write access to the `posts/` collection using Security Rules).
-
-
-Open `App.svelte` and replace the `firebaseConfig` prop with your Firebase project credentials. Run it:
-
-```
-npm run dev
-```
-
-![sveltefire demo app](https://firebasestorage.googleapis.com/v0/b/sveltefire-testing.appspot.com/o/sveltefire-demo.gif?alt=media&token=d5ea2807-7c50-4f94-bc73-8698b9528902)
-
-Congrats! You are now running an authenticated realtime Svelte app. 
-
-👀 See the [Install Guide](https://github.com/codediodeio/sveltefire/tree/master/docs/install.md) for additional options. 
-
-## Concepts and Examples
-
-SvelteFire allows you to use Firebase data anywhere in the Svelte component without the need to manage async state, promises, or streams. 
-
-### Slots
-
-[Slots](https://svelte.dev/tutorial/slots) render different UI templates based on the state of your data. The `loading` state is shown until the first response is received from Firebase. The `fallback` state is shown if there is an error or timeout.
-
-In most cases, state flows from *loading* -> *default*. For errors, non-existent data, or high-latency, state flows from *loading* -> *fallback* `maxWait` default is 10000ms). 
-
-
-```html
-<Doc path={'foods/ice-cream'}>
-
-    <!-- Default Slot -->
-    Data loaded, yay 🍦!
-
-    <!-- Only shown when loading -->
-    <div slot="loading"></div>
-
-    <!-- Shown on error or if nothing loads after maxWait time-->
-    <div slot="fallback"></div>
-</Doc>
-```
-
-Error handling made easy:
-
-```html
-<Doc {path} let:error>
-
-    <div slot="fallback">
-        😔 This doc cannot be read {error}
-    </div>
-</Doc>
-```
-
-Loading state made easy:
-
-```html
-<Doc {path}>
-
-    <div slot="loading">
-        ⌛
-    </div>
-</Doc>
-```
-
-You can bypass the loading state entirely by passing a `startWith` prop. 
-
-```html
-<Doc {path} startWith={ {flavor: 'vanilla'} }>
-```
-
-
-
-### Slot Props
-
-[Slot props](https://svelte.dev/tutorial/slot-props) **pass data down** to children in the component tree. SvelteFire exposes the data you needed for the UI and the reference to performance writes. For example, `let:data` is the document data, while `={icecream}` is the variable name you use to reference it in your code. Use `ref` to set, update, or delete the document at this path. 
-
-
-```html
-<Doc path={`food/ice-cream`} let:data={icecream} let:ref={docRef}>
-
-    {icecream.flavor} yay 🍦!
-
-    <button on:click={() => docRef.delete()}>Delete</button>
-</Doc>
-```
-
-### Events
-
-[Events](https://svelte.dev/tutorial/component-events) **emit data up** to the parent. You can use components as a mechanism to read documents without actually rendering UI. Also useful for trigging side effects. 
-
-```html
-<Doc path={'food/ice-cream'} on:data={(e) => console.log(e.detail.data)} />
-```
-
-### Reactive
-
-Components are reactive. When props change, they unsubscribe from the last stream and start a new one. This means you can change the document path or query function by simplying changing a prop value. 
-
-Example: Collections have special slot props for pagination called `first` and `last`. Use them to create reactive pagination queries. 
-
-
-```html
+```svelte
 <script>
-let query = (ref) => ref.orderBy('flavor').limit(3)
-
-function nextPage(last) {
-    query = (ref) => ref.orderBy('flavor').startAfter(last.flavor).limit(3);
-}
+  import { auth } from '$lib/firebase';
+  import { userStore } from 'sveltefire';
+  const user = userStore(auth);
 </script>
 
-<Collection path={'foods'} {query} let:data let:last>
+Hello {$user?.uid}
+```
 
-    {#each data as food}
-        {food.name}
-    {/each}
+3. Listen to realtime data. 
 
-    <button on:click={() => nextPage(last) }>Next</button>
+Use the `$` as much as you want - it will only result in one Firebase read request. When the all subscriptions are removed, it will automatically unsubscribe. 
+
+```svelte
+<script>
+  import { firestore } from '$lib/firebase';
+  import { docStore } from 'sveltefire';
+
+  const post = docStore(firestore, 'posts/test');
+</script>
+
+{$post?.content}
+{$post?.title}
+```
+
+Or better yet, use the built in `Doc` and `Collection` components. See below. 
 
 
+## Examples
+
+### Auth Store
+
+Listen to the current user. Render UI conditionally based on the auth state:
+
+```svelte
+<script>
+  import { userStore } from 'sveltefire';
+
+  const user = userStore(auth);
+</script>
+
+{#if $user}
+    <p>Hi {$user.uid}</p>
+{:else}
+    <p>Sign in...</p>
+{/if}
+```
+
+## Firestore Stores
+
+Subscribe to realtime data. The store will unsubscribe automatically to avoid unnecessary Firestore reads. 
+
+```svelte
+<script>
+  import { docStore, collectionStore } from 'sveltefire';
+
+  const post = docStore(firestore, 'posts/test');
+
+  // OR 
+
+  const posts = collectionStore(firestore, 'posts');
+</script>
+
+{$post?.content}
+
+{#each $posts as p}
+
+{/each}
+```
+
+Cast Firebase data to a TS interface:
+
+```ts
+interface Post {
+    id: string;
+    title: string;
+    content: string;
+}
+const post = docStore<Post>(firestore, 'posts/test');
+const posts = collectionStore<Post>(firestore, 'posts'); // returns 
+```
+
+Hydrate server-fetched data from SvelteKit into a realtime feed:
+
+```ts
+// Data fetched via server
+export let data: PageData;
+
+// Just give the store a startWith value 
+const store = docStore(db, 'posts/test', data.thing);
+```
+
+## Realtime Components
+
+In addition to stores, SvelteFire provides a set of components that can build complex realtime apps without leaving the HTML.
+
+### FirebaseApp
+
+Technically optional, this component puts Firebase into Svelte context. This avoids the need to pass `auth` and `firestore` down to every component. All other components should be nested below it. 
+```svelte
+<script>
+  // Initialize Firebase...
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+</script>
+
+<FirebaseApp {auth} {firestore}>
+
+    <User let:user></User>
+    <!-- other sveltefire components here -->
+
+</FirebaseApp>
+
+<!-- components outside context require the auth or firestore prop -->
+<User auth={auth} let:user></User>
+```
+
+### User
+
+Get the current user. 
+
+```svelte
+<User let:user>
+    Hello {user.uid}
+
+    <div slot="signedOut">You are signed out</div>
+</User>
+```
+
+### Doc
+
+Fetch a single document and listen to data in realtime. The `data` slot prop provides access to the fetched data, while `ref` is the Firestore document reference.
+
+```svelte
+<Doc ref="posts/test" let:data let:ref>
+    {data.content}
+    {ref.path}
+</Doc>
+```
+
+Slot props can be renamed:
+
+```svelte
+<Doc ref="posts/test" let:data={post} let:ref={postRef}>
+    {post.content}
+    {postRef.path}
+</Doc>
+
+All Firestore components can also handle loading states:
+  
+```svelte
+<Doc path="posts/test">
+    <!-- data renders here in the default slot -->
+    <div slot="loading">Loading.... This will disappear when data is defined</div>
+</Doc>
+```
+
+Pass a `startWith` value to bypass the loading state. This is useful in SvelteKit when you need to hydrate server data into a realtime stream:
+
+```svelte
+<Doc ref="posts/test" startWith={dataFromServer} />
+```
+
+
+### Collection
+
+Collections provides array of objects containing the document data, as well as the `id` and `ref` for each result. It also provides a `count` slot prop for number of docs in the query. 
+
+```svelte
+<Collection ref="posts" let:data let:count>
+  <p>Fetched {count} documents</p>
+  {#each data as post}
+    {post.id}
+    {post.ref.path}
+    {post.content}
+  {/each}
 </Collection>
 ```
 
-### Stores
+Collections can also take a Firestore Query instead of a path:
 
-[Stores](https://svelte.dev/tutorial/custom-stores) are used under the hood to manage async data in components. It's an advanced use-case, but they can be used directly in a component script or plain JS. 
-
-```js
+```svelte
 <script>
-import { collectionStore } from 'sveltefire';
-
-const data = collectionStore('things', (ref => ref.orderBy('time') ));
-
-data.subscribe(v => doStuff(v) )
+    const testQuery = query(collection(firestore, 'posts'), where('test', '==', 'test'));
 </script>
+
+<Collection ref={testQuery} let:data>
+</Collection>
 ```
 
-### Firebase App Context
+For complex queries that required dynamic data, it can be useful to build the query reactively.
 
-The Firebase SDK is available via the [Context API](https://svelte.dev/tutorial/context-api) under the key of `firebase` using the `getFirebase` function. 
+```svelte
+<script>
+  $: buildQuery = (uid:string) => {
+    return query(collection(firestore, 'posts'), where('uid', '==', uid));
+  }
+</script>
 
-```js
-const app = getContext('firebase').getFirebase();
-const db = app.firestore();
-const auth = app.auth();
+<User let:user>
+  <Collection ref={buildQuery(user.uid)} />
+</User>
 ```
+### Putting it all Totgether
 
-## API
-
-### `<FirebaseApp>`
-
-Sets Firebase app context
-
-Props:
-
-- *firebase* Firebase instance. If empty, it will attempt to use `window.firebase`. 
-- *perf* Starts Firebase Performance Monitoring
-- *analytics* Starts Firebase/Google Analytics
+These components can be combined to build complex realtime apps. It's especially powerful when fetching data that requires the current user's UID or a related document's path.
 
 
-```html
-<FirebaseApp firebase={firebase} perf analytics>
-    <!-- default slot -->
+```svelte
+<FirebaseApp {auth} {firestore}>
+  <User let:user>
+      <p>UID: {user.uid}</p>
+      
+
+      <h3>Profile</h3>
+      <Doc ref={`posts/${user.uid}`} let:data={profile} let:ref={profileRef}>
+
+        {profile.content}
+
+
+        <h4>Comments</h4>
+        <Collection ref={profileRef.path + '/comments'} let:data={comments}>
+          {#each comments as comment}
+            <strong>{comment.content}</strong>
+          {/each}
+
+          <div slot="loading">Loading Comments...</div>
+        </Collection>
+
+        <div slot="loading">Loading Profile...</div>
+      </Doc>
+
+      <div slot="signedOut">Signed out</div>
+  </User>
 </FirebaseApp>
 ```
 
 
-### `<User>`
 
-Listens to the current user. 
 
-Props:
+# Notes
 
-- *persist* user in `sessionStorage` or `localStorage`. Can prevent flash if user refreshes browser. Default `null`;
-
-Slots: 
-
-- *default slot* shown to signed-in user
-- *signed-out* shown to signed-out user
-
-Slot Props & Events: 
-
-- *user* current FirebaseUser or `null`
-- *auth* Firebase Auth to call login methods. 
-
-```html
-<User persist={sessionStorage} let:user={user} let:auth={auth} on:user>
-    {user.uid}
-
-    <div slot="signed-out"></div>
-</User>
-```
-
-
-### `<Doc>`
-
-Retrieves and listens to a Firestore document. 
-
-Props:
-
-- *path (required)* - Path to document as `string` OR a DocumentReference i.e `db.doc('path')`
-- *startWith* any value. Bypasses loading state. 
-- *maxWait* `number` milliseconds to wait before showing fallback slot if nothing is returned. Default 10000. 
-- *once* single read execution, no realtime updates. Default `false`. 
-- *log* debugging info to the console. Default `false`.  
-- *traceId* `string` name that runs a Firebase Performance trace for latency.
-
-Slots: 
-
-- *default slot*  shown when document is available. 
-- *loading*  when waiting for first response. 
-- *fallback* when error occurs. 
-
-
-Slot Props & Events: 
-
-- *data* Document data
-- *ref* DocumentReference for writes
-- *error* current error
-
-```html
-<Doc 
-    path={'posts/postId'} 
-    startWith={defaultData}
-    log 
-    traceId={'postRead'} 
-    let:data={myData} 
-    let:ref={myRef} 
-    on:data 
-    on:ref
->
-
-
-    {post.title}
-
-    <span slot="loading">Loading...</span>
-    <span slot="fallback">Error...</span>
-</Doc>
-```
-
-
-### `<Collection>`
-
-Retrieves and listens to a Firestore collection or query. 
-
-Props:
-
-- *path (required)* to document as `string` OR  `CollectionReference` i.e `db.collection('path')`
-- *query* `function`, i.e (ref) => ref.where('age, '==', 23)
-- *startWith* any value. Bypasses loading state. 
-- *maxWait* `number` milliseconds to wait before showing fallback slot if nothing is returned. Default 10000. 
-- *once* single read execution, no realtime updates. Default `false`. 
-- *log* debugging info to the console. Default `false`. 
-- *traceId* `string` name that runs a Firebase Performance trace for latency.
-
-Slots: 
-
-- *default slot*  shown when document is available. 
-- *loading*  when waiting for first response. 
-- *fallback* when error occurs. 
-
-
-Slot Props & Events: 
-
-- *data* collection data as array. 
-- *ref* CollectionReference for writes
-- *first* the first result in the query, useful for pagination. 
-- *last* the last result in the query, useful for pagination. 
-- *error* current error
-
-```html
-<Collection 
-    path={'comments'} 
-    query={ (ref) => ref.orderBy(date).limit(10) } 
-    traceId={'readComments'} 
-    log
-    let:data={comments} 
-    let:ref={commentsRef} 
-    let:last={firstComment}
-    let:first={lastComment}
-    on:data
-    on:ref
->
-
-    {#each comments as comment}
-        {comment.text}
-    {/each}
-
-    <div slot="loading">Loading...</div>
-
-    <div slot="fallback">
-        Unable to display comments...
-    </div>
-
-</Collection>
-```
-
-Note: Each data item in the collection contains the document data AND fields for the `id` and `ref` (DocumentReference). 
-
-### `<StorageRef>`
-
-Retrives a downloadURL and metadata from Firebase storage.
-
-Props:
-
-- *path (required)* to file in storage i.e `images/mountain.jpg` or a [Reference](https://firebase.google.com/docs/reference/js/firebase.storage.Reference)
-- *meta* include metadata with file. Default `false`. 
-- *startWith* start with a default URL. Pass an object like `{ url: someURL }`
-
-Slots: 
-
-- *default slot*  shown when downloadURL is available. 
-- *loading*  shown when waiting for response. 
-- *fallback* shown when error occurs. 
-
-
-Slot Props & Events: 
-
-- *downloadURL* url to resource
-- *metadata* file metadata
-- *ref* Storage Reference for direct access
-
-```html
-<StorageRef {path} let:downloadURL let:ref meta let:metadata> 
-  
-    <img src={downloadURL} />
-
-    <div slot="loading">
-        Loading...
-    </div>
-
-    <div slot="fallback">
-        Error
-    </div>
-
-</StorageRef>
-```
-
-### `<UploadTask>`
-
-Creates an [UploadTask](https://firebase.google.com/docs/reference/js/firebase.storage.UploadTask) that transmits a file to Firebase storage.
-
-Props:
-
-- *path (required)* to upload to i.e "images/mountain.jpg" or a [Reference](https://firebase.google.com/docs/reference/js/firebase.storage.Reference)
-- *file* file to upload as a `File` object `Blob` or `Unit8Array`. 
-- 
-
-Slots: 
-
-- *default slot*  shown while task is created. 
-- *complete*  shown when task state is `success` and url is available.
-- *fallback* shown when error occurs or upload is cancelled.
-
-
-Slot Props & Events: 
-
-- *snapshot* snapshot of upload, useful for monitoring progress. 
-- *task* Firebase upload task. Use it to pause, resume, and cancel. `task.pause()`
-- *downLoadURL* url to uploaded file.
-
-
-```html
-<UploadTask {file} {path} let:task let:snapshot let:downloadURL={url}>
-
-   Uploading your file...
-
-   Progress: {(snapshot.bytesTransferred / snapshot.totalBytes) * 100} %
-
-  <div slot="complete">
-    Success! Download here {url}
-  </div>
-
-  <div slot="fallback">
-    Error or canceled
-  </div>
-
-</UploadTask>
-```
+- This library should only run the the client, it is not for server-side data fetching. 
+- Requires Firebase v9 or greater. 
+- I've have not been able to get TS generics to work right in the components yet, so no intellisense on the `data` slot prop. 

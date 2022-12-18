@@ -1,43 +1,29 @@
 {
-  "version": "0.1.5",
-  "name": "sveltefire",
-  "svelte": "src/index.js",
-  "main": "dist/index.js",
-  "description": "Cybernetically Enhanced Firebase Apps",
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "e2e": "cypress open --config watchForFileChanges=true",
-    "test": "jest",
-    "dev:ex": "cd example && npm run dev",
-    "emulate": "cd example && firebase emulators:start --only firestore",
-    "test:watch": "concurrently \"npm:dev:ex\" \"npm:emulate\" \"npm:e2e\" "
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/codediodeio/sveltefire.git"
-  },
-  "devDependencies": {
-    "concurrently": "^5.1.0",
-    "cypress": "^4.1.0",
-    "firebase": "^7.10.0",
-    "firebase-tools": "^7.14.0",
-    "jest": "^25.1.0",
-    "rollup": "^2.0.3",
-    "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-svelte": "^5.0.0",
-    "svelte": "^3.19.2"
-  },
-  "keywords": [
-    "svelte",
-    "firebase",
-    "javascript"
-  ],
-  "files": [
-    "README.md",
-    "dist/**/*",
-    "src/**/*"
-  ]
+	"name": "sveltefire",
+	"version": "0.2.0",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "svelte-kit sync && svelte-package",
+		"prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
+		"test": "playwright test",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test:unit": "vitest"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.28.1",
+		"@sveltejs/adapter-auto": "^1.0.0",
+		"@sveltejs/kit": "^1.0.0",
+		"@sveltejs/package": "^1.0.0",
+		"svelte": "^3.54.0",
+		"svelte-check": "^2.9.2",
+		"tslib": "^2.4.1",
+		"typescript": "^4.9.3",
+		"vite": "^4.0.0",
+		"vitest": "^0.25.3"
+	},
+	"type": "module",
+	"dependencies": {
+		"firebase": "^9.15.0"
+	}
 }

@@ -1,5 +1,0 @@
-.DS_Store
-node_modules
-public/bundle.*
-firestore-debug.log
-firebase-debug.log
