@@ -200,6 +200,7 @@ Slot props can be renamed:
     {post.content}
     {postRef.path}
 </Doc>
+```
 
 All Firestore components can also handle loading states:
   
