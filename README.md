@@ -2,6 +2,8 @@
 
 A minimal, yet powerful library that puts realtime Firebase data into Svelte stores. 
 
+Experimental! Do not use in production.
+
 ```svelte
 <!-- 1. 🔥 Firebase App -->
 <FirebaseApp {auth} {firestore}>
@@ -301,3 +303,4 @@ These components can be combined to build complex realtime apps. It's especially
 - This library should only run the the client, it is not for server-side data fetching. 
 - Requires Firebase v9 or greater. 
 - I've have not been able to get TS generics to work right in the components yet, so no intellisense on the `data` slot prop. 
+- How should we bundle it properly?

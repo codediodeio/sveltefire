@@ -27,6 +27,13 @@
 
 <FirebaseApp {auth} {firestore}>
 
+  <Doc ref="posts/test" startWith={{ content: 'sup'}} let:data={post}>
+    <p>{post.content}</p>
+    <div slot="loading">
+      <p>Loading...</p>
+    </div>
+  </Doc>
+
   <User let:user>
 
     <p>Hello {user?.uid}</p>  
@@ -40,7 +47,7 @@
 
     <h1>Your Posts</h1>
 
-    <Collection ref={makeQuery(user.uid)} let:data={posts} let:count>
+    <Collection ref={makeQuery(user.uid)} startWith={[]} let:data={posts} let:count>
 
       <p>You've made {count} posts</p>
 

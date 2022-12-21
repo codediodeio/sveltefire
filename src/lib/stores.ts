@@ -21,6 +21,17 @@ export function docStore<T>(
 ) {
   let unsubscribe: () => void;
 
+  // Fallback for SSR
+  if (!firestore || !globalThis.window) {
+    console.warn('Firestore is not initialized or not in browser');
+    const { subscribe } = writable(startWith);
+    return {
+      subscribe,
+      ref: null,
+      id: '',
+    }
+  }
+
   const docRef = typeof ref === 'string' ? doc(firestore, ref) : ref;
 
   const { subscribe } = writable<T | null>(startWith, (set) => {
@@ -51,6 +62,16 @@ export function collectionStore<T>(
 ) {
   let unsubscribe: () => void;
 
+  // Fallback for SSR
+  if (!firestore || !globalThis.window) {
+    console.warn('Firestore is not initialized or not in browser');
+    const { subscribe } = writable(startWith);
+    return {
+      subscribe,
+      ref: null,
+    }
+  }
+
   const colRef = typeof ref === 'string' ? collection(firestore, ref) : ref;
 
   const { subscribe } = writable(startWith, (set) => {
@@ -76,7 +97,15 @@ export function collectionStore<T>(
 export function userStore(auth: Auth) {
   let unsubscribe: () => void;
 
-  const { subscribe } = writable(auth.currentUser, (set) => {
+  if (!auth || !globalThis.window) {
+    console.warn('Auth is not initialized on not in browser');
+    const { subscribe } = writable(null);
+    return {
+      subscribe,
+    }
+  }
+
+  const { subscribe } = writable(auth?.currentUser ?? null, (set) => {
     unsubscribe = onAuthStateChanged(auth, (user) => {
       set(user);
     });
@@ -89,5 +118,5 @@ export function userStore(auth: Auth) {
   };
 }
 
-// Key for context
-export const key = Symbol();
+// SDK store for FirebaseApp comopnent
+export const sdk = writable<{ auth: Auth; firestore: Firestore }>();

@@ -4,8 +4,7 @@
     Firestore,
     Query,
   } from 'firebase/firestore';
-  import { getContext } from 'svelte';
-  import { collectionStore, key } from './stores';
+  import { collectionStore, sdk } from './stores';
 
   // TODO figure out how to make generics work
   // current setup will not work without mandatory startWith value
@@ -16,14 +15,12 @@
   // }
 
   interface $$Slots {
-    default: { data: any[]; ref: CollectionReference | Query; count: number },
+    default: { data: any[]; ref: CollectionReference | Query | null; count: number },
     loading: {},
   }
 
-  const config = getContext<any>(key);
-
   export let ref: string | CollectionReference | Query;
-  export let firestore: Firestore = config.getFirestore();
+  export let firestore: Firestore = $sdk?.firestore;
   export let startWith: any = undefined;
 
   let store = collectionStore(firestore, ref, startWith);

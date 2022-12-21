@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { DocumentReference, Firestore } from 'firebase/firestore';
-  import { getContext } from 'svelte';
-  import { docStore, key } from './stores';
+  import { docStore, sdk } from './stores';
 
   // TODO figure out how to make generics work
   // code below will not work without mandatory startWith value
@@ -13,14 +12,12 @@
   // }
 
   interface $$Slots {
-    default: { data: any; ref: DocumentReference },
+    default: { data: any; ref: DocumentReference | null },
     loading: {},
   }
 
-  const config = getContext<any>(key);
-
   export let ref: string | DocumentReference;
-  export let firestore: Firestore = config?.getFirestore();
+  export let firestore: Firestore = $sdk?.firestore;
   export let startWith: any = undefined;
 
   let store = docStore(firestore, ref, startWith);
