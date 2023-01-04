@@ -300,7 +300,7 @@ These components can be combined to build complex realtime apps. It's especially
 
 ## Notes
 
-- This library should only run the the client, it is not for server-side data fetching. 
+- This library should only run on the client, it is not for server-side data fetching. 
 - Requires Firebase v9 or greater. 
 - I've have not been able to get TS generics to work right in the components yet, so no intellisense on the `data` slot prop. 
 - How should we bundle it properly?
