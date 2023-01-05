@@ -1,24 +1,20 @@
 <script lang="ts">
-  import type { DocumentReference, Firestore } from 'firebase/firestore';
-  import { docStore, sdk } from './stores';
+  import type { DocumentReference, Firestore } from "firebase/firestore";
+  import { docStore, sdk } from "./stores";
 
-  // TODO figure out how to make generics work
-  // code below will not work without mandatory startWith value
-
-  // type T = $$Generic;
-
-  // interface $$Slots {
-  //   default: { data: T & { [key: string]: any}, ref: DocumentReference }
-  // }
+  type T = $$Generic<T>;
 
   interface $$Slots {
-    default: { data: any; ref: DocumentReference | null },
-    loading: {},
+    default: {
+      data: (T & { [key: string]: any }) | null;
+      ref: DocumentReference | null;
+    };
+    loading: {};
   }
 
   export let ref: string | DocumentReference;
   export let firestore: Firestore = $sdk?.firestore;
-  export let startWith: any = undefined;
+  export let startWith: T | undefined = undefined;
 
   let store = docStore(firestore, ref, startWith);
 </script>

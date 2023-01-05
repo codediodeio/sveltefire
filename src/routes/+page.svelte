@@ -28,7 +28,7 @@
 <FirebaseApp {auth} {firestore}>
 
   <Doc ref="posts/test" startWith={{ content: 'sup'}} let:data={post}>
-    <p>{post.content}</p>
+    <p>{post?.content}</p>
     <div slot="loading">
       <p>Loading...</p>
     </div>
@@ -39,7 +39,7 @@
     <p>Hello {user?.uid}</p>  
 
     <Doc ref="posts/test" let:data={post}>
-      <p>{post.content}</p>
+      <p>{post?.content}</p>
       <div slot="loading">
         <p>Loading...</p>
       </div>
@@ -60,11 +60,9 @@
       <button on:click={() => addPost(user.uid)}>Add Post</button>
     </Collection>
 
-
     <div slot="signedOut">
       <p>Sign in to do stuff</p>
       <button on:click={() => signInAnonymously(auth)}>Sign in</button>
     </div>
   </User>
-
 </FirebaseApp>
