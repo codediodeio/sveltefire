@@ -51,7 +51,7 @@ import { getAuth } from 'firebase/auth';
 
 // Initialize Firebase
 const app = initializeApp(/* your firebase config */);
-export const db = getFirestore(app);
+export const firestore = getFirestore(app);
 export const auth = getAuth(app);
 ```
 
@@ -96,6 +96,7 @@ Listen to the current user. Render UI conditionally based on the auth state:
 
 ```svelte
 <script>
+  import {auth} from '$lib/firebase'
   import { userStore } from 'sveltefire';
 
   const user = userStore(auth);
@@ -114,6 +115,7 @@ Subscribe to realtime data. The store will unsubscribe automatically to avoid un
 
 ```svelte
 <script>
+  import {firestore} from '$lib/firebase'
   import { docStore, collectionStore } from 'sveltefire';
 
   const post = docStore(firestore, 'posts/test');
@@ -162,7 +164,7 @@ Technically optional, this component puts Firebase into Svelte context. This avo
 ```svelte
 <script>
   // Initialize Firebase...
-  const db = getFirestore(app);
+  const firestore = getFirestore(app);
   const auth = getAuth(app);
 </script>
 
@@ -243,6 +245,7 @@ Collections can also take a Firestore Query instead of a path:
 
 ```svelte
 <script>
+    ...
     const testQuery = query(collection(firestore, 'posts'), where('test', '==', 'test'));
 </script>
 
