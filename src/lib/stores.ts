@@ -98,7 +98,7 @@ export function userStore(auth: Auth) {
   let unsubscribe: () => void;
 
   if (!auth || !globalThis.window) {
-    console.warn('Auth is not initialized on not in browser');
+    console.warn('Auth is not initialized or not in browser');
     const { subscribe } = writable(null);
     return {
       subscribe,
