@@ -42,7 +42,7 @@ export function docStore<T>(firestore: Firestore, ref: string | DocumentReferenc
 
 /**
  * @param  {Firestore} firestore firebase firestore instance
- * @param  {string|Query} ref collectionGroup ID, or query
+ * @param  {string|Query} ref collectionGroup ID, or a query
  * @param  {[]} startWith optional default data
  * @returns a store with realtime updates on collection group data
  */
