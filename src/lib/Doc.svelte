@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { DocumentReference, Firestore } from 'firebase/firestore';
-  import { docStore, sdk } from './stores';
+  import type {DocumentReference, Firestore} from 'firebase/firestore'
+  import {docStore, sdk} from './stores'
 
   // TODO figure out how to make generics work
   // code below will not work without mandatory startWith value
@@ -12,15 +12,15 @@
   // }
 
   interface $$Slots {
-    default: { data: any; ref: DocumentReference | null },
-    loading: {},
+    default: {data: any; ref: DocumentReference | null}
+    loading: object
   }
 
-  export let ref: string | DocumentReference;
-  export let firestore: Firestore = $sdk?.firestore;
-  export let startWith: any = undefined;
+  export let ref: string | DocumentReference
+  export let firestore: Firestore = $sdk?.firestore
+  export let startWith: any = undefined
 
-  let store = docStore(firestore, ref, startWith);
+  let store = docStore(firestore, ref, startWith)
 </script>
 
 {#if $store !== undefined}
