@@ -6,7 +6,9 @@ const config = {
   // Consult https://kit.svelte.dev/docs/integrations#preprocessors
   // for more information about preprocessors
   preprocess: vitePreprocess(),
-
+  package: {
+    dir: '../sveltefire-package',
+  },
   kit: {
     adapter: adapter(),
   },
