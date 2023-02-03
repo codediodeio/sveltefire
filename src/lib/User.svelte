@@ -3,6 +3,7 @@
   import {sdk, userStore} from './stores'
 
   interface $$Slots {
+    loading: object
     default: {user: User}
     signedOut: object
   }
@@ -14,6 +15,8 @@
 
 {#if $user}
   <slot user={$user} />
+{:else if $user === undefined}
+  <slot name="loading" />
 {:else}
   <slot name="signedOut" />
 {/if}

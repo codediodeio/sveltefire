@@ -2,6 +2,7 @@ import {writable} from 'svelte/store'
 import {doc, collection, collectionGroup, onSnapshot} from 'firebase/firestore'
 import type {Firestore, Query, CollectionReference, DocumentReference} from 'firebase/firestore'
 import {onAuthStateChanged, type Auth} from 'firebase/auth'
+import type {User} from 'firebase/auth'
 
 /**
  * @param  {Firestore} firestore firebase firestore instance
@@ -138,7 +139,7 @@ export function userStore(auth: Auth) {
     }
   }
 
-  const {subscribe} = writable(auth?.currentUser ?? null, (set) => {
+  const {subscribe} = writable<User | null | undefined>(auth?.currentUser ?? undefined, (set) => {
     unsubscribe = onAuthStateChanged(auth, (user) => {
       set(user)
     })

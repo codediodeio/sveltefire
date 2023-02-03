@@ -102,6 +102,8 @@ Listen to the current user. Render UI conditionally based on the auth state:
 
 {#if $user}
   <p>Hi {$user.uid}</p>
+{:else if $user === undefined}
+  <p>Loading...</p>
 {:else}
   <p>Sign in...</p>
 {/if}
@@ -179,7 +181,7 @@ Get the current user.
 ```svelte
 <User let:user>
   Hello {user.uid}
-
+  <div slot="loading">Loading...</div>
   <div slot="signedOut">You are signed out</div>
 </User>
 ```
