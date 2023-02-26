@@ -16,7 +16,7 @@ import { onAuthStateChanged, type Auth } from 'firebase/auth';
  */
 export function docStore<T>(
   firestore: Firestore,
-  ref: string | DocumentReference,
+  ref: string | DocumentReference<T>,
   startWith?: T
 ) {
   let unsubscribe: () => void;
@@ -32,7 +32,7 @@ export function docStore<T>(
     }
   }
 
-  const docRef = typeof ref === 'string' ? doc(firestore, ref) : ref;
+  const docRef = typeof ref === 'string' ? doc(firestore, ref) as DocumentReference<T> : ref;
 
   const { subscribe } = writable<T | null>(startWith, (set) => {
     unsubscribe = onSnapshot(docRef, (snapshot) => {
