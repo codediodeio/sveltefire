@@ -4,7 +4,7 @@
   import User from '$lib/User.svelte';
   import { db as firestore, auth } from './firebase';
   import { signInAnonymously } from "firebase/auth";
-  import { addDoc, collection, Firestore, orderBy, query, refEqual, where } from 'firebase/firestore';
+  import { addDoc, collection, orderBy, query, where } from 'firebase/firestore';
   import Collection from '$lib/Collection.svelte';
   import FirebaseApp from '$lib/FirebaseApp.svelte';
 
