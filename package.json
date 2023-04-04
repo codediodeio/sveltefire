@@ -13,7 +13,7 @@
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^1.0.0",
-		"@sveltejs/kit": "^1.0.0",
+		"@sveltejs/kit": "^1.15.1",
 		"@sveltejs/package": "^1.0.0",
 		"svelte": "^3.54.0",
 		"svelte-check": "^2.9.2",
