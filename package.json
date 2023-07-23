@@ -10,7 +10,8 @@
 		"test": "playwright test --ui",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"fire": "firebase emulators:start"
 	},
 	"exports": {
 		".": {
@@ -24,8 +25,8 @@
 		"!dist/**/*.spec.*"
 	],
 	"peerDependencies": {
-		"svelte": "^4.0.0",
-		"firebase": "^9.0.0"
+		"firebase": "^9.0.0",
+		"svelte": "^4.0.0"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -36,6 +37,7 @@
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.28.0",
 		"eslint-plugin-svelte": "^2.30.0",
+		"firebase-tools": "^12.4.5",
 		"publint": "^0.1.9",
 		"svelte": "^4.0.5",
 		"svelte-check": "^3.4.3",

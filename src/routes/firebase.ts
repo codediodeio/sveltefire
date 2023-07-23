@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { connectFirestoreEmulator, doc, getFirestore, setDoc } from "firebase/firestore";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { dev } from "$app/environment";
 
 
 const firebaseConfig = {
@@ -17,3 +18,15 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+if (dev) {
+    connectAuthEmulator(auth, "http://localhost:9099");
+    connectFirestoreEmulator(db, "localhost", 8080);
+
+    // Seed Firestore
+    setDoc(doc(db, "posts", "test"), {
+        title: "Hi Mom",
+        content: "this is a test"
+    });
+}
+
