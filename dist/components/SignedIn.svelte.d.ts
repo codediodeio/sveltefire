@@ -1,5 +1,5 @@
 import { SvelteComponent } from "svelte";
-import { signOut, type User } from "firebase/auth";
+import { signOut, type User, type Auth } from "firebase/auth";
 declare const __propDef: {
     props: Record<string, never>;
     events: {
@@ -8,6 +8,7 @@ declare const __propDef: {
     slots: {
         default: {
             user: User;
+            auth: Auth;
             signOut: () => Promise<void>;
         };
     };

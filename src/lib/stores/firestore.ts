@@ -132,14 +132,13 @@ export function collectionStore<T>(
 /**
  * experimental, fetch document based on curret user
  */
-export function userDataStore<T = DocumentData>(collectionPath = 'users'): Readable<T | null> {
-    const user = userStore();
-    return derived(user, ($user, set) => {
-        if (!$user) return set(null);
-        const fullPath = `${collectionPath}/${$user.uid}`;
-        return docStore<T>(fullPath).subscribe(set);
-    });
+export function userDataStore<T = DocumentData>(
+  collectionPath = "users"
+): Readable<T | null> {
+  const user = userStore();
+  return derived(user, ($user, set) => {
+    if (!$user) return set(null);
+    const fullPath = `${collectionPath}/${$user.uid}`;
+    return docStore<T>(fullPath).subscribe(set);
+  });
 }
-
-
-

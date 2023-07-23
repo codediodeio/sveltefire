@@ -1,11 +1,14 @@
 import { SvelteComponent } from "svelte";
+import type { Auth } from 'firebase/auth';
 declare const __propDef: {
     props: Record<string, never>;
     events: {
         [evt: string]: CustomEvent<any>;
     };
     slots: {
-        default: {};
+        default: {
+            auth: Auth;
+        };
     };
 };
 export type SignedOutProps = typeof __propDef.props;

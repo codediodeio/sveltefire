@@ -86,7 +86,7 @@ export function collectionStore(ref, startWith = []) {
 /**
  * experimental, fetch document based on curret user
  */
-export function userDataStore(collectionPath = 'users') {
+export function userDataStore(collectionPath = "users") {
     const user = userStore();
     return derived(user, ($user, set) => {
         if (!$user)

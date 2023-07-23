@@ -6,5 +6,5 @@ const user = userStore();
 </script>
   
   {#if $user}
-    <slot user={$user} signOut={() => signOut(auth)} />
+    <slot user={$user} {auth} signOut={() => signOut(auth)} />
   {/if}

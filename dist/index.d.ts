@@ -7,4 +7,5 @@ import SignedIn from './components/SignedIn.svelte';
 import { docStore } from './stores/firestore.js';
 import { collectionStore } from './stores/firestore.js';
 import { userStore } from './stores/auth.js';
-export { Doc, User, Collection, FirebaseApp, SignedOut, SignedIn, docStore, collectionStore, userStore };
+import { getFirebaseContext } from './stores/sdk.js';
+export { Doc, User, Collection, FirebaseApp, SignedOut, SignedIn, docStore, collectionStore, userStore, getFirebaseContext };
