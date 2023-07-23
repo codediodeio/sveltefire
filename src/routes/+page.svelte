@@ -1,12 +1,16 @@
 <script lang="ts">
-  import Doc from '$lib/Doc.svelte';
-  import { collectionStore, docStore, userStore } from '$lib/stores';
-  import User from '$lib/User.svelte';
-  import { db as firestore, auth } from './firebase';
-  import { signInAnonymously } from "firebase/auth";
+  import Doc from '$lib/components/Doc.svelte';
+  // import { collectionStore, docStore, userStore } from '$lib/stores';
+  import User from '$lib/components/User.svelte';
+  import { db as firestore, auth } from './firebase.js';
+  import { signInAnonymously, signOut } from "firebase/auth";
   import { addDoc, collection, Firestore, orderBy, query, refEqual, where } from 'firebase/firestore';
-  import Collection from '$lib/Collection.svelte';
-  import FirebaseApp from '$lib/FirebaseApp.svelte';
+  import Collection from '$lib/components/Collection.svelte';
+  import FirebaseApp from '$lib/components/FirebaseApp.svelte';
+  import SignedIn from '$lib/components/SignedIn.svelte';
+  import SignedOut from '$lib/components/SignedOut.svelte';
+  import { collectionStore, docStore, userDataStore } from '$lib/stores/firestore.js';
+  import { userStore } from '$lib/stores/auth.js';
 
   async function addPost(uid:string) {
     const posts = collection(firestore, `users/${uid}/posts`);
@@ -21,14 +25,31 @@
     return q;
   }
 
+  // const userData = userDataStore<any>();
+  // const userQuery= userQueryStore('posts');
+
+  const myUser = userStore();
+  const userData = docStore<{ name: string }>('users/Toy8wnsp9AMLdxtP8cR7idM8J263');
+  const users = collectionStore<any>('users');
 
 
 </script>
 
-<FirebaseApp {auth} {firestore}>
+<h1>Welcome to SvelteFire</h1>
 
-  <Doc ref="posts/test" startWith={{ content: 'sup'}} let:data={post}>
-    <p>{post.content}</p>
+  <SignedIn let:user let:signOut>
+    <p>Hi {user.displayName}</p>
+    <button on:click={signOut}>Sign Out</button>
+  </SignedIn>
+
+  <SignedOut>
+    <button on:click={() => signInAnonymously(auth)}>Sign in</button>
+  </SignedOut>
+
+
+
+  <Doc ref="posts/first-post" startWith={{ content: 'sup'}} let:data={post}>
+    <p>{post?.content}</p>
     <div slot="loading">
       <p>Loading...</p>
     </div>
@@ -38,8 +59,8 @@
 
     <p>Hello {user?.uid}</p>  
 
-    <Doc ref="posts/test" let:data={post}>
-      <p>{post.content}</p>
+    <Doc ref="posts/first-post" let:data={post}>
+      <p>{post?.content}</p>
       <div slot="loading">
         <p>Loading...</p>
       </div>
@@ -53,7 +74,7 @@
 
       <ul>
         {#each posts as post (post.id)}
-          <li>{post.content} ... { post.id }</li>
+          <li>{post?.content} ... { post.id }</li>
         {/each}
       </ul>
 
@@ -67,4 +88,20 @@
     </div>
   </User>
 
-</FirebaseApp>
+  <p>
+    <a href="/ssr">SSR Test</a>
+  </p>
+
+  <h1>User Query</h1>
+
+  {$myUser?.uid}
+
+  <!-- {#each $userQuery as post (post.id)}
+    <li>{post?.content} ... { post.id }</li>
+  {/each} -->
+
+  {$userData?.name}
+
+  {#each $users as user (user.id)}
+    <li>{user?.name} ... { user.id }</li>
+  {/each}
