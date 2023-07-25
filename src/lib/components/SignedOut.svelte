@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { getFirebaseContext } from "$lib/stores/sdk.js";
-    import { userStore } from "$lib/stores/auth.js";
-    import type { Auth, User } from 'firebase/auth';
-    getFirebaseContext
+    import { getFirebaseContext } from "../stores/sdk.js";
+    import { userStore } from "../stores/auth.js";
+    import type { Auth } from 'firebase/auth';
+
     const auth = getFirebaseContext().auth!;
-    const user = userStore()
+    const user = userStore(auth)
 
     interface $$Slots {
       default: { auth: Auth }

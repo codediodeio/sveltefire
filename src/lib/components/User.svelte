@@ -1,13 +1,15 @@
 <script lang="ts">
   import type { User } from "firebase/auth";
   import { userStore } from "$lib/stores/auth.js";
+  import { getFirebaseContext } from "$lib/index.js";
+
+  const auth = getFirebaseContext().auth!;
+  const user = userStore(auth)
 
   interface $$Slots {
     default: { user: User }
     signedOut: {}
   }
-
-  const user = userStore()
 </script>
 
 {#if $user}

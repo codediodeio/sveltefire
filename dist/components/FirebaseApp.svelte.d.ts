@@ -1,6 +1,6 @@
 import { SvelteComponent } from "svelte";
-import type { Auth } from 'firebase/auth';
-import type { Firestore } from 'firebase/firestore';
+import type { Auth } from "firebase/auth";
+import type { Firestore } from "firebase/firestore";
 declare const __propDef: {
     props: {
         firestore: Firestore;

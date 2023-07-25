@@ -4,5 +4,4 @@ export let auth;
 setFirebaseContext({ firestore, auth });
 </script>
 
-
 <slot />

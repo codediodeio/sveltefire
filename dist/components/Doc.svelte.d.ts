@@ -1,5 +1,5 @@
 import { SvelteComponent } from "svelte";
-import type { DocumentReference } from 'firebase/firestore';
+import type { DocumentReference, Firestore } from 'firebase/firestore';
 declare const __propDef: {
     props: {
         ref: string | DocumentReference;
@@ -12,6 +12,7 @@ declare const __propDef: {
         default: {
             data: any;
             ref: DocumentReference | null;
+            firestore?: Firestore | undefined;
         };
         loading: {};
     };

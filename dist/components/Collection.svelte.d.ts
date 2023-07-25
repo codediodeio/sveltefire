@@ -1,5 +1,5 @@
 import { SvelteComponent } from "svelte";
-import type { CollectionReference, Query } from 'firebase/firestore';
+import type { CollectionReference, Firestore, Query } from 'firebase/firestore';
 declare const __propDef: {
     props: {
         ref: string | CollectionReference | Query;
@@ -13,6 +13,7 @@ declare const __propDef: {
             data: any[];
             ref: CollectionReference | Query | null;
             count: number;
+            firestore?: Firestore | undefined;
         };
         loading: {};
     };

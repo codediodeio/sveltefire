@@ -2,7 +2,7 @@
 import { getFirebaseContext } from "../stores/sdk.js";
 import { signOut } from "firebase/auth";
 const auth = getFirebaseContext().auth;
-const user = userStore();
+const user = userStore(auth);
 </script>
   
   {#if $user}

@@ -1,15 +1,12 @@
-import { derived, writable } from "svelte/store";
-import { doc, collection, onSnapshot, query, where } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-import { getFirebaseContext } from "./sdk.js";
-import { userStore } from "./auth.js";
+import { writable } from "svelte/store";
+import { doc, collection, onSnapshot } from "firebase/firestore";
 /**
+ * @param  {Firestore} firestore firebase firestore instance
  * @param  {string|DocumentReference} ref document path or reference
  * @param  {T} startWith optional default data
  * @returns a store with realtime updates on document data
  */
-export function docStore(ref, startWith) {
-    const { firestore } = getFirebaseContext();
+export function docStore(firestore, ref, startWith) {
     let unsubscribe;
     // Fallback for SSR
     if (!globalThis.window) {
@@ -30,7 +27,7 @@ export function docStore(ref, startWith) {
             id: "",
         };
     }
-    const docRef = typeof ref === "string" ? doc(firestore, ref) : ref;
+    const docRef = typeof ref === 'string' ? doc(firestore, ref) : ref;
     const { subscribe } = writable(startWith, (set) => {
         unsubscribe = onSnapshot(docRef, (snapshot) => {
             set(snapshot.data() ?? null);
@@ -44,12 +41,12 @@ export function docStore(ref, startWith) {
     };
 }
 /**
+ * @param  {Firestore} firestore firebase firestore instance
  * @param  {string|Query|CollectionReference} ref collection path, reference, or query
  * @param  {[]} startWith optional default data
  * @returns a store with realtime updates on collection data
  */
-export function collectionStore(ref, startWith = []) {
-    const { firestore } = getFirebaseContext();
+export function collectionStore(firestore, ref, startWith = []) {
     let unsubscribe;
     // Fallback for SSR
     if (!globalThis.window) {
@@ -82,16 +79,4 @@ export function collectionStore(ref, startWith = []) {
         subscribe,
         ref: colRef,
     };
-}
-/**
- * experimental, fetch document based on curret user
- */
-export function userDataStore(collectionPath = "users") {
-    const user = userStore();
-    return derived(user, ($user, set) => {
-        if (!$user)
-            return set(null);
-        const fullPath = `${collectionPath}/${$user.uid}`;
-        return docStore(fullPath).subscribe(set);
-    });
 }

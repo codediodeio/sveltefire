@@ -1,33 +1,30 @@
-import { derived, writable } from "svelte/store";
-import { doc, collection, onSnapshot, query, where } from "firebase/firestore";
+import { writable } from "svelte/store";
+import { doc, collection, onSnapshot } from "firebase/firestore";
 import type {
-  Firestore,
   Query,
   CollectionReference,
   DocumentReference,
-  DocumentData,
+  Firestore,
 } from "firebase/firestore";
-import { onAuthStateChanged, type Auth } from "firebase/auth";
-import { getFirebaseContext } from "./sdk.js";
-import type { Readable } from "svelte/motion";
-import { userStore } from "./auth.js";
+
 
 interface DocStore<T> {
   subscribe: (cb: (value: T | null) => void) => void | (() => void);
-  ref: DocumentReference | null;
+  ref: DocumentReference<T> | null;
   id: string;
 }
 
 /**
+ * @param  {Firestore} firestore firebase firestore instance
  * @param  {string|DocumentReference} ref document path or reference
  * @param  {T} startWith optional default data
  * @returns a store with realtime updates on document data
  */
-export function docStore<T>(
-  ref: string | DocumentReference,
+export function docStore<T = any>(
+  firestore: Firestore,
+  ref: string | DocumentReference<T>,
   startWith?: T
 ): DocStore<T> {
-  const { firestore } = getFirebaseContext();
 
   let unsubscribe: () => void;
 
@@ -54,7 +51,7 @@ export function docStore<T>(
     };
   }
 
-  const docRef = typeof ref === "string" ? doc(firestore, ref) : ref;
+  const docRef = typeof ref === 'string' ? doc(firestore, ref) as DocumentReference<T> : ref;
 
   const { subscribe } = writable<T | null>(startWith, (set) => {
     unsubscribe = onSnapshot(docRef, (snapshot) => {
@@ -77,15 +74,16 @@ interface CollectionStore<T> {
 }
 
 /**
+ * @param  {Firestore} firestore firebase firestore instance
  * @param  {string|Query|CollectionReference} ref collection path, reference, or query
  * @param  {[]} startWith optional default data
  * @returns a store with realtime updates on collection data
  */
 export function collectionStore<T>(
+  firestore: Firestore,
   ref: string | Query | CollectionReference,
   startWith: T[] = []
 ): CollectionStore<T[]> {
-  const { firestore } = getFirebaseContext();
 
   let unsubscribe: () => void;
 
@@ -129,16 +127,3 @@ export function collectionStore<T>(
   };
 }
 
-/**
- * experimental, fetch document based on curret user
- */
-export function userDataStore<T = DocumentData>(
-  collectionPath = "users"
-): Readable<T | null> {
-  const user = userStore();
-  return derived(user, ($user, set) => {
-    if (!$user) return set(null);
-    const fullPath = `${collectionPath}/${$user.uid}`;
-    return docStore<T>(fullPath).subscribe(set);
-  });
-}

@@ -38,28 +38,21 @@ Svelte makes it possible to dramatically simplify the way developers work with F
 
 ## Quick Start
 
-1. Install Firebase `npm i firebase` v9+ and initialize it in a layout `+layout.svelte`:
+1. Install Firebase npm i firebase v9+ and initialize it in a file like lib/firebase.js:
 
 ```
 npm i sveltefire firebase
 ```
 
-```svelte
-<script lang="ts">
-    import { FirebaseApp } from 'sveltefire';
-    import { initializeApp } from 'firebase/app';
-    import { getFirestore } from 'firebase/firestore';
-    import { getAuth } from 'firebase/auth';
+```ts
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
-    // Initialize Firebase
-    const app = initializeApp(/* your firebase config */);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-</script>
-
-<FirebaseApp {auth} {firestore}>
-    <slot />
-</FirebaseApp>
+// Initialize Firebase
+const app = initializeApp(/* your firebase config */);
+export const db = getFirestore(app);
+export const auth = getAuth(app);
 ```
 
 2. Get the Current user
@@ -68,7 +61,7 @@ npm i sveltefire firebase
 <script>
   import { auth } from '$lib/firebase';
   import { userStore } from 'sveltefire';
-  const user = userStore();
+  const user = userStore(auth);
 </script>
 
 Hello {$user?.uid}
@@ -83,7 +76,7 @@ Use the `$` as much as you want - it will only result in one Firebase read reque
   import { firestore } from '$lib/firebase';
   import { docStore } from 'sveltefire';
 
-  const post = docStore('posts/test');
+  const post = docStore(firestore, 'posts/test');
 </script>
 
 {$post?.content}
@@ -105,7 +98,7 @@ Listen to the current user. Render UI conditionally based on the auth state:
 <script>
   import { userStore } from 'sveltefire';
 
-  const user = userStore();
+  const user = userStore(auth);
 </script>
 
 {#if $user}
@@ -123,11 +116,11 @@ Subscribe to realtime data. The store will unsubscribe automatically to avoid un
 <script>
   import { docStore, collectionStore } from 'sveltefire';
 
-  const post = docStore('posts/test');
+  const post = docStore(firestore, 'posts/test');
 
   // OR 
 
-  const posts = collectionStore('posts');
+  const posts = collectionStore(firestore, 'posts');
 </script>
 
 {$post?.content}
@@ -145,8 +138,8 @@ interface Post {
     title: string;
     content: string;
 }
-const post = docStore<Post>('posts/test');
-const posts = collectionStore<Post>('posts'); 
+const post = docStore<Post>(firestore, 'posts/test');
+const posts = collectionStore<Post>(firestore, 'posts'); 
 ```
 
 ## SSR
@@ -174,7 +167,7 @@ Second, pass the server data as the `startWith` value to a store. This will bypa
 export let data: PageData;
 
 // Just give the store a startWith value 
-const post = docStore('posts/test', data.post);
+const post = docStore(firestore, 'posts/test', data.post);
 ```
 
 ## Realtime Components
@@ -183,9 +176,10 @@ In addition to stores, SvelteFire provides a set of components that can build co
 
 ### FirebaseApp
 
-The `FirebaseApp` component puts the FirebaseSDK into Svelte context. This avoids the need to pass `auth` and `firestore` down to every component/store. It is typically placed in root layout.
+The `FirebaseApp` component puts the FirebaseSDK into Svelte context. This avoids the need to pass `auth` and `firestore` down to every component. It is typically placed in root layout.
 
 ```svelte
+<!-- +layout.svelte -->
 <script>
   // Initialize Firebase...
   const db = getFirestore(app);
@@ -200,7 +194,7 @@ The `FirebaseApp` component puts the FirebaseSDK into Svelte context. This avoid
 </FirebaseApp>
 ```
 
-You can easily access the Firebase SDK in any component via context. This is useful when using the Firebase SDK directly, which requires the SDK as an argument.
+You can use Svelte's context API to access the Firebase SDK in any component.
 
 ```svelte
 <script>
@@ -295,7 +289,6 @@ These components can be combined to build complex realtime apps. It's especially
   <SignedIn let:user>
       <p>UID: {user.uid}</p>
       
-
       <h3>Profile</h3>
       <Doc ref={`posts/${user.uid}`} let:data={profile} let:ref={profileRef}>
 
@@ -313,9 +306,11 @@ These components can be combined to build complex realtime apps. It's especially
 
         <div slot="loading">Loading Profile...</div>
       </Doc>
-
-      <div slot="signedOut">Signed out</div>
   </SignedIn>
+
+  <SignedOut>
+      <p>Sign in to see your profile</p>
+  </SignedOut>
 </FirebaseApp>
 ```
 

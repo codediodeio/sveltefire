@@ -4,7 +4,7 @@
     import { signOut, type User, type Auth } from "firebase/auth";
 
     const auth = getFirebaseContext().auth!;
-    const user = userStore()
+    const user = userStore(auth)
     
     interface $$Slots {
       default: { user: User, auth: Auth, signOut: () => Promise<void> }

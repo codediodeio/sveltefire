@@ -1,15 +1,14 @@
 import { writable } from "svelte/store";
 import { getFirebaseContext } from "./sdk.js";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, type Auth } from "firebase/auth";
 
 /**
+ * @param  {Auth} auth firebase auth instance
  * @param  {any} startWith optional default data. Useful for server-side cookie-based auth
  * @returns a store with the current firebase user
  */
-export function userStore(startWith = null) {
+export function userStore(auth: Auth, startWith = null) {
   let unsubscribe: () => void;
-
-  const { auth } = getFirebaseContext();
 
   // Fallback for SSR
   if (!globalThis.window) {

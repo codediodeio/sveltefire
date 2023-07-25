@@ -1,5 +1,7 @@
 <script>import { userStore } from "../stores/auth.js";
-const user = userStore();
+import { getFirebaseContext } from "../index.js";
+const auth = getFirebaseContext().auth;
+const user = userStore(auth);
 </script>
 
 {#if $user}
