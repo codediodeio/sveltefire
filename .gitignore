@@ -9,3 +9,6 @@ node_modules
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 package
+/test-results
+*-debug.log
+/dist

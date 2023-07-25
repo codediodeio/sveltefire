@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { setFirebaseContext } from '$lib/stores/sdk.js';
     import type { Auth } from 'firebase/auth';
     import type { Firestore } from 'firebase/firestore';
-    import { sdk } from './stores';
 
     export let firestore: Firestore;
     export let auth: Auth;
-    sdk.set({ firestore, auth });
+
+    setFirebaseContext({ firestore, auth });
 </script>
 
 

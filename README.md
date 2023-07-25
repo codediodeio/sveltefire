@@ -9,7 +9,7 @@ Experimental! Do not use in production.
 <FirebaseApp {auth} {firestore}>
 
     <!-- 2. 👤 Get the current user -->
-    <User let:user>
+    <SignedIn let:user>
 
         <p>Howdy, {user.uid}</p>
 
@@ -38,21 +38,28 @@ Svelte makes it possible to dramatically simplify the way developers work with F
 
 ## Quick Start
 
-1. Install Firebase `npm i firebase` v9+ and initialize it in a file like `lib/firebase.js`:
+1. Install Firebase `npm i firebase` v9+ and initialize it in a layout `+layout.svelte`:
 
 ```
 npm i sveltefire firebase
 ```
 
-```ts
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+```svelte
+<script lang="ts">
+    import { FirebaseApp } from 'sveltefire';
+    import { initializeApp } from 'firebase/app';
+    import { getFirestore } from 'firebase/firestore';
+    import { getAuth } from 'firebase/auth';
 
-// Initialize Firebase
-const app = initializeApp(/* your firebase config */);
-export const db = getFirestore(app);
-export const auth = getAuth(app);
+    // Initialize Firebase
+    const app = initializeApp(/* your firebase config */);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+</script>
+
+<FirebaseApp {auth} {firestore}>
+    <slot />
+</FirebaseApp>
 ```
 
 2. Get the Current user
@@ -61,7 +68,7 @@ export const auth = getAuth(app);
 <script>
   import { auth } from '$lib/firebase';
   import { userStore } from 'sveltefire';
-  const user = userStore(auth);
+  const user = userStore();
 </script>
 
 Hello {$user?.uid}
@@ -76,7 +83,7 @@ Use the `$` as much as you want - it will only result in one Firebase read reque
   import { firestore } from '$lib/firebase';
   import { docStore } from 'sveltefire';
 
-  const post = docStore(firestore, 'posts/test');
+  const post = docStore('posts/test');
 </script>
 
 {$post?.content}
@@ -98,7 +105,7 @@ Listen to the current user. Render UI conditionally based on the auth state:
 <script>
   import { userStore } from 'sveltefire';
 
-  const user = userStore(auth);
+  const user = userStore();
 </script>
 
 {#if $user}
@@ -116,16 +123,16 @@ Subscribe to realtime data. The store will unsubscribe automatically to avoid un
 <script>
   import { docStore, collectionStore } from 'sveltefire';
 
-  const post = docStore(firestore, 'posts/test');
+  const post = docStore('posts/test');
 
   // OR 
 
-  const posts = collectionStore(firestore, 'posts');
+  const posts = collectionStore('posts');
 </script>
 
 {$post?.content}
 
-{#each $posts as p}
+{#each $posts as post}
 
 {/each}
 ```
@@ -138,18 +145,36 @@ interface Post {
     title: string;
     content: string;
 }
-const post = docStore<Post>(firestore, 'posts/test');
-const posts = collectionStore<Post>(firestore, 'posts'); // returns 
+const post = docStore<Post>('posts/test');
+const posts = collectionStore<Post>('posts'); 
 ```
 
-Hydrate server-fetched data from SvelteKit into a realtime feed:
+## SSR
+
+SvelteFire is a client-side library, but allows you to hydrate server data into a realtime stream.
+
+First, fetch data from a load function like so:
+
+```ts
+import { doc, getDoc } from 'firebase/firestore';
+
+export const load = (async () => {
+    const ref = doc(firestore, 'posts', 'first-post');
+    const snapshot = await getDoc(ref);
+    return {
+      post: snapshot.data();
+    };
+});
+```
+
+Second, pass the server data as the `startWith` value to a store. This will bypass the loading state and ensure the data is rendered in the server HTML, then realtime listeners will be attached afterwards.
 
 ```ts
 // Data fetched via server
 export let data: PageData;
 
 // Just give the store a startWith value 
-const store = docStore(db, 'posts/test', data.thing);
+const post = docStore('posts/test', data.post);
 ```
 
 ## Realtime Components
@@ -158,7 +183,8 @@ In addition to stores, SvelteFire provides a set of components that can build co
 
 ### FirebaseApp
 
-Technically optional, this component puts Firebase into Svelte context. This avoids the need to pass `auth` and `firestore` down to every component. All other components should be nested below it. 
+The `FirebaseApp` component puts the FirebaseSDK into Svelte context. This avoids the need to pass `auth` and `firestore` down to every component/store. It is typically placed in root layout.
+
 ```svelte
 <script>
   // Initialize Firebase...
@@ -174,18 +200,27 @@ Technically optional, this component puts Firebase into Svelte context. This avo
 </FirebaseApp>
 ```
 
-Note: Components outside a FirebaseApp will need the auth/firestore prop, i.e `<User auth={auth}>`
+You can easily access the Firebase SDK in any component via context. This is useful when using the Firebase SDK directly, which requires the SDK as an argument.
+
+```svelte
+<script>
+  import { getFirebaseContext } from "sveltefire";
+  const { auth, firestore } = getFirebaseContext();
+</script>
+```
 
 ### User
 
 Get the current user. 
 
 ```svelte
-<User let:user>
+<SignedIn let:user>
     Hello {user.uid}
+</SignedIn>
 
-    <div slot="signedOut">You are signed out</div>
-</User>
+<SignedOut>
+    You need to sign in!
+</SignedOut>
 ```
 
 ### Doc
@@ -208,7 +243,7 @@ Slot props can be renamed:
 </Doc>
 ```
 
-All Firestore components can also handle loading states:
+Firestore components can also handle loading states:
   
 ```svelte
 <Doc path="posts/test">
@@ -220,7 +255,7 @@ All Firestore components can also handle loading states:
 Pass a `startWith` value to bypass the loading state. This is useful in SvelteKit when you need to hydrate server data into a realtime stream:
 
 ```svelte
-<Doc ref="posts/test" startWith={dataFromServer} />
+<Doc ref="posts/test" startWith={dataFromServer}>
 ```
 
 
@@ -243,26 +278,13 @@ Collections can also take a Firestore Query instead of a path:
 
 ```svelte
 <script>
-    const testQuery = query(collection(firestore, 'posts'), where('test', '==', 'test'));
+    const myQuery = query(collection(firestore, 'posts'), where('test', '==', 'test'));
 </script>
 
-<Collection ref={testQuery} let:data>
+<Collection ref={myQuery} let:data>
 </Collection>
 ```
 
-For complex queries that required dynamic data, it can be useful to build the query reactively.
-
-```svelte
-<script>
-  $: buildQuery = (uid:string) => {
-    return query(collection(firestore, 'posts'), where('uid', '==', uid));
-  }
-</script>
-
-<User let:user>
-  <Collection ref={buildQuery(user.uid)} />
-</User>
-```
 ### Using Components Together
 
 These components can be combined to build complex realtime apps. It's especially powerful when fetching data that requires the current user's UID or a related document's path.
@@ -270,7 +292,7 @@ These components can be combined to build complex realtime apps. It's especially
 
 ```svelte
 <FirebaseApp {auth} {firestore}>
-  <User let:user>
+  <SignedIn let:user>
       <p>UID: {user.uid}</p>
       
 
@@ -293,14 +315,14 @@ These components can be combined to build complex realtime apps. It's especially
       </Doc>
 
       <div slot="signedOut">Signed out</div>
-  </User>
+  </SignedIn>
 </FirebaseApp>
 ```
 
 
-## Notes
+## Roadmap
 
-- This library should only run the the client, it is not for server-side data fetching. 
-- Requires Firebase v9 or greater. 
-- I've have not been able to get TS generics to work right in the components yet, so no intellisense on the `data` slot prop. 
-- How should we bundle it properly?
+- Add support for Firebase Storage
+- Add support for Firebase RTDB
+- Add support for Firebase Analytics in SvelteKit
+- Find a way to make TS generics with with Doc/Collection components
