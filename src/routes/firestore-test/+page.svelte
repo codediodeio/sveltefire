@@ -1,24 +1,14 @@
 <script lang="ts">
   import Doc from "$lib/components/Doc.svelte";
   import SignedOut from '$lib/components/SignedOut.svelte';
-  import User from "$lib/components/User.svelte";
-  import { signInAnonymously, signOut } from "firebase/auth";
+  import { signInAnonymously } from "firebase/auth";
   import {
     addDoc,
     collection,
-    Firestore,
     orderBy,
     query,
-    refEqual,
-    where,
   } from "firebase/firestore";
   import Collection from "$lib/components/Collection.svelte";
-  import {
-    collectionStore,
-    docStore,
-    userDataStore,
-  } from "$lib/stores/firestore.js";
-  import { userStore } from "$lib/stores/auth.js";
   import SignedIn from "$lib/components/SignedIn.svelte";
   import { getFirebaseContext } from "$lib/stores/sdk.js";
 

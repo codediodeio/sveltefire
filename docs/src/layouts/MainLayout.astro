@@ -1,0 +1,37 @@
+---
+import SideNav from '../components/SideNav.astro';
+import TopNav from '../components/TopNav.astro'
+---
+
+<script>
+// On page load or when changing themes, best to add inline in `head` to avoid FOUC
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  document.documentElement.classList.add('dark')
+} else {
+  document.documentElement.classList.remove('dark')
+}
+</script>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+    <!-- <link rel="stylesheet" href="https://use.typekit.net/rcr1opg.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Overpass:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+       
+		<title>SvelteFire Documentation</title>
+	</head>
+	<body class="dark:bg-gray7 dark:text-white" hx-boost="true">
+        <TopNav />
+        <div class="flex mx-auto mr-2">
+            <SideNav />
+            <main class="max-w-screen-2xl ml-[24rem] prose dark:prose-invert">
+                <slot />
+            </main>
+        </div>
+	</body>
+</html>
