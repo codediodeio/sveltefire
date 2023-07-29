@@ -12,6 +12,6 @@
 
   </script>
   
-  {#if !$user}
+  {#if $user === null}
     <slot {auth} />
   {/if}
