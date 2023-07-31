@@ -1,9 +1,11 @@
 ---
-title: Why SvelteFire?
+title: SvelteFire?
 pubDate: 2023-07-23
 description: 'Why use SvelteFire over vanilla Firebase?'
-layout: ../../layouts/MainLayout.astro
+layout: ../layouts/MainLayout.astro
 ---
+
+# 🔥 SvelteFire
 
 SvelteFire is a minimal, yet powerful library that puts realtime Firebase data into Svelte stores. 
 

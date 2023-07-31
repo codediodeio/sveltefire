@@ -12,3 +12,4 @@ package
 /test-results
 *-debug.log
 /dist
+/.firebase

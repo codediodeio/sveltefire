@@ -1,20 +1,39 @@
-<nav class="w-[24rem] fixed h-full">
-    <ul class="px-4">
-        <h5 class="text-lg font-bold">Guide</h5>
-        <li><a href="/guide">Why?</a></li>
-        <li><a href="/guide/start">Get Started</a></li>
-        <li>guide</li>
-        <li>guide</li>
-        <h5 class="text-lg font-bold">API</h5>
-        <li>API</li>
-        <li>API</li>
-        <li>API</li>
-    </ul>
-
+<nav class="pt-12 w-1/6 min-w-[16rem] bg-gray1 dark:bg-gray7">
+  <ul class="pl-8 font-code mb-20">
+    <li class="heading">guide</li>
+    <li><a href="/">why?</a></li>
+    <li><a href="/guide/start">get started</a></li>
+    <li><a href="/guide/todo">common patterns</a></li>
+    <li><a href="/guide/todo">sveltekit ssr</a></li>
+    <li class="heading">app</li>
+    <li><a href="/app/firebase-app">&ltFirebaseApp&gt</a></li>
+    <li><a href="/app/context">getFirebaseContext</a></li>
+    <li class="heading">auth</li>
+    <li><a href="/auth/user-store">userStore</a></li>
+    <li><a href="/auth/signed-in">&ltSignedIn&gt</a></li>
+    <li><a href="/auth/signed-out">&ltSignedOut&gt</a></li>
+    <li class="heading">firestore</li>
+    <li><a href="/firestore/doc-store">docStore</a></li>
+    <li><a href="/firestore/collection-store">collectionStore</a></li>
+    <li><a href="/firestore/doc-component">&ltDoc&gt</a></li>
+    <li><a href="/firestore/collection-component">&ltCollection&gt</a></li>
+    <li class="heading">storage</li>
+    <li><a href="/guide/todo">uploadTaskStore</a></li>
+    <li><a href="/guide/todo">&ltFileUploader&gt</a></li>
+    <li><a href="/guide/todo">&ltDownloadURL&gt</a></li>
+    <li class="heading">analytics</li>
+    <li><a href="/guide/todo">&ltPageView&gt</a></li>
+  </ul>
 </nav>
 
 <style>
-    li {
-        @apply text-gray4 my-2;
-    }
+  li {
+    @apply dark:text-gray4 my-2;
+  }
+  .heading {
+    @apply my-6 text-gray6 dark:text-white;
+  }
+  a {
+    @apply text-blue-600 dark:text-blue-400 !important;
+  }
 </style>

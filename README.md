@@ -2,7 +2,7 @@
 
 A minimal, yet powerful library that puts realtime Firebase data into Svelte stores. 
 
-Experimental! Do not use in production.
+[Documentation](https://sveltefire.fireship.io)
 
 ```svelte
 <!-- 1. 🔥 Firebase App -->
