@@ -13,5 +13,13 @@
       "enabled": true
     },
     "singleProjectMode": true
+  },
+  "hosting": {
+    "public": "docs/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
   }
 }

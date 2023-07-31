@@ -9,10 +9,6 @@ module.exports = {
 		sans: ["Overpass", "sans-serif"],
 		body: ["Overpass", "sans-serif"],
 		code: ["Fira Mono", "sans-serif"],
-    //   sans: ["sofia-pro", "sans-serif"],
-    //   display: ["cubano", "sans-serif"],
-    //   body: ["sofia-pro", "sans-serif"],
-    //   code: ["attribute-mono", "sans-serif"],
     },
     colors: {
       transparent: "transparent",
@@ -44,18 +40,16 @@ module.exports = {
         DEFAULT: {
           css: {
             h1: {
-              "font-weight": "normal",
+              "font-weight": "bold",
               "font-size": "2.5rem",
-			//   "font-family": "cubano, sans-serif"
             },
             h2: {
-              "font-weight": "normal",
+              "font-weight": "bold",
               "font-size": "2rem",
-			//   "font-family": "cubano, sans-serif"
             },
             h3: {
-              "font-weight": "bold",
-              "font-size": "1.75rem",
+              "font-weight": "normal",
+              "font-size": "1.5rem",
             },
             h4: {
               "font-weight": "normal",

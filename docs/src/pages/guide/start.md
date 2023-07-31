@@ -5,7 +5,7 @@ description: How to install SvelteFire
 layout: ../../layouts/MainLayout.astro
 ---
 
-## QuickStart
+# QuickStart
 
 SvelteFire works in both SvelteKit and standalone Svelte apps. This guide assumes you're using SvelteKit. 
 
@@ -85,14 +85,3 @@ Or you can use components to more easily pass data around. Notice how slot props
     {/each}
 </Collection>
 ```
-
-You can also access the Firebase instance directly from the context. This is useful when using the Firebase SDK directly.
-
-```svelte
-<script>
-    import { getFirebaseContext } from 'sveltefire';
-
-    const { auth, firestore } = getFirebaseContext();
-</script>
-```
-
