@@ -69,7 +69,7 @@ Hello {$user?.uid}
 
 3. Listen to realtime data. 
 
-Use the `$` as much as you want - it will only result in one Firebase read request. When the all subscriptions are removed, it will automatically unsubscribe. 
+Use the `$` as much as you want - it will only result in one Firebase read request. When all the subscriptions are removed, it will automatically unsubscribe. 
 
 ```svelte
 <script>
