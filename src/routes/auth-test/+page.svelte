@@ -2,7 +2,7 @@
   import SignedIn from '$lib/components/SignedIn.svelte';
   import SignedOut from '$lib/components/SignedOut.svelte';
   import { signInAnonymously } from "firebase/auth";
-
+  import AuthLoading from "$lib/components/AuthLoading.svelte";
 
 </script>
 
@@ -18,3 +18,8 @@
      <h2>Signed Out</h2>
     <button on:click={() => signInAnonymously(auth)}>Sign In</button>
 </SignedOut>
+
+<AuthLoading>
+    <h2>Checking Auth</h2>
+    <p>Loading...</p>
+</AuthLoading>
