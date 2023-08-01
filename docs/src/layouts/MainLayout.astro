@@ -4,7 +4,7 @@ import TopNav from "../components/TopNav.astro";
 import Footer from "../components/Footer.astro";
 ---
 
-<script>
+<script is:inline>
   // On page load or when changing themes, best to add inline in `head` to avoid FOUC
   if (
     localStorage.theme === "dark" ||
@@ -32,7 +32,7 @@ import Footer from "../components/Footer.astro";
     <title>SvelteFire Documentation</title>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </head>
-  <body class="dark:bg-gray6 dark:text-white">
+  <body class="dark:bg-gray6 dark:text-white transition-colors duration-500">
     <TopNav />
     <div class="flex items-stretch">
       <SideNav />
