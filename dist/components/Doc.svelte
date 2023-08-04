@@ -1,4 +1,4 @@
-<script>import { docStore } from "../stores/firestore.js";
+<script generics="Data extends DocumentData">import { docStore } from "../stores/firestore.js";
 import { getFirebaseContext } from "../stores/sdk.js";
 export let ref;
 export let startWith = void 0;
