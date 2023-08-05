@@ -10,7 +10,7 @@ declare class __sveltets_Render<Data extends DocumentData> {
     };
     slots(): {
         default: {
-            data: any;
+            data: Data;
             ref: DocumentReference<Data> | null;
             firestore?: Firestore | undefined;
         };

@@ -16,7 +16,7 @@
 
   interface $$Slots {
     default: {
-      data: any;
+      data: Data;
       ref: DocumentReference<Data> | null;
       firestore?: Firestore;
     };
@@ -24,7 +24,7 @@
   }
 </script>
 
-{#if $store !== undefined}
+{#if $store !== undefined && $store !== null}
   <slot data={$store} ref={store.ref} {firestore} />
 {:else}
   <slot name="loading" />

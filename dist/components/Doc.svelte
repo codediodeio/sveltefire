@@ -6,7 +6,7 @@ const { firestore } = getFirebaseContext();
 let store = docStore(firestore, ref, startWith);
 </script>
 
-{#if $store !== undefined}
+{#if $store !== undefined && $store !== null}
   <slot data={$store} ref={store.ref} {firestore} />
 {:else}
   <slot name="loading" />
