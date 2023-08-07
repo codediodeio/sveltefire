@@ -17,5 +17,5 @@
 <ul>
   <li data-testid="auth">Auth Context: {!!ctx.auth}</li>
   <li data-testid="firestore">Firestore Context: {!!ctx.firestore}</li>
-  <li data-testid="firestore">Storage Context: {!!ctx.storage}</li>
+  <li data-testid="storage">Storage Context: {!!ctx.storage}</li>
 </ul>
