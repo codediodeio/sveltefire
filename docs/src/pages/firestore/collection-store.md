@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # collectionStore
 
-Subscribes to Firestore collection data and listens to realtime updates. 
+Subscribes to Firestore collection data and listens to real-time updates. 
 
 ### Parameters
 
@@ -22,10 +22,10 @@ Subscribes to Firestore collection data and listens to realtime updates.
     import { collectionStore } from 'sveltefire';
     import { firestore } from '$lib/firebase'; // your firestore instance
 
-    const post = collectionStore(firestore, 'posts');
+    const posts = collectionStore(firestore, 'posts');
 </script>
 
-{#each $post as post}
+{#each $posts as post}
     <p>{post.title}</p>
 {/each}
 ```
@@ -56,8 +56,10 @@ With TypeScript:
         content?: string;
     }
 
-    const post = collectionStore<Post>(firestore, 'posts');
+    const posts = collectionStore<Post[]>(firestore, 'posts');
 </script>
 
-{$post?.title}
+{#each $posts as post}
+    <p>{post.title}</p>
+{/each}
 ```
