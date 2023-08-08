@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { readable } from "svelte/store";
 import { getDownloadURL, list, ref } from "firebase/storage";
 
 import type { 
@@ -31,7 +31,7 @@ export function storageListStore(
 
   // Fallback for SSR
   if (!globalThis.window) {
-    const { subscribe } = writable(startWith);
+    const { subscribe } = readable(startWith);
     return {
       subscribe,
       reference: null,
@@ -43,7 +43,7 @@ export function storageListStore(
     console.warn(
       "Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?"
     );
-    const { subscribe } = writable(defaultListResult);
+    const { subscribe } = readable(defaultListResult);
     return {
       subscribe,
       reference: null,
@@ -52,7 +52,7 @@ export function storageListStore(
 
   const storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
 
-  const { subscribe } = writable(startWith, (set) => {
+  const { subscribe } = readable(startWith, (set) => {
     list(storageRef).then((snapshot) => {
       set(snapshot);
     });
@@ -83,7 +83,7 @@ export function downloadUrlStore(
 
   // Fallback for SSR
   if (!globalThis.window) {
-    const { subscribe } = writable(startWith);
+    const { subscribe } = readable(startWith);
     return {
       subscribe,
       reference: null,
@@ -95,7 +95,7 @@ export function downloadUrlStore(
     console.warn(
       "Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?"
     );
-    const { subscribe } = writable(null);
+    const { subscribe } = readable(null);
     return {
       subscribe,
       reference: null,
@@ -104,7 +104,7 @@ export function downloadUrlStore(
 
   const storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
 
-  const { subscribe } = writable(startWith, (set) => {
+  const { subscribe } = readable(startWith, (set) => {
     getDownloadURL(storageRef).then((snapshot) => {
       set(snapshot);
     });
