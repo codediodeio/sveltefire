@@ -15,7 +15,7 @@
             {#each list.items as item}
                 <li>
                     <DownloadLink ref={item} let:link let:ref>
-                        <a href="{link}" download>{ref?.name}</a>
+                        <a data-testid="download-link" href="{link}" download>{ref?.name}</a>
                     </DownloadLink>
                 </li>
             {/each}
