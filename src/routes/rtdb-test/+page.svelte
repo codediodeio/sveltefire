@@ -1,8 +1,8 @@
 <script lang="ts">
-  import DataRef from "$lib/components/DataRef.svelte";
-  import DataList from "$lib/components/DataList.svelte";
-  import SignedOut from "$lib/components/SignedOut.svelte";
+  import Node from "$lib/components/Node.svelte";
+  import NodeList from "$lib/components/NodeList.svelte";
   import SignedIn from "$lib/components/SignedIn.svelte";
+  import SignedOut from "$lib/components/SignedOut.svelte";
   import { signInAnonymously } from "firebase/auth";
   import { push, ref } from "firebase/database";
   import { getFirebaseContext } from "$lib/stores/sdk.js";
@@ -22,12 +22,12 @@
 
 <h2>Single Data Reference</h2>
 
-<DataRef ref="posts/test" let:data={post}>
+<Node path="posts/test" let:data={post}>
   <p data-testid="ref-data">{post?.title}</p>
   <div slot="loading">
     <p data-testid="loading">Loading...</p>
   </div>
-</DataRef>
+</Node>
 
 <h2>User Owned Data</h2>
 
@@ -38,8 +38,8 @@
 
 <SignedIn let:user>
   <h2>Data List</h2>
-  <DataList
-    ref={`users/${user.uid}/posts`}
+  <NodeList
+    path={`users/${user.uid}/posts`}
     startWith={[]}
     let:data={posts}
     let:count
@@ -47,11 +47,11 @@
     <p data-testid="count">You've made {count} posts</p>
 
     <ul>
-      {#each posts as post (post.ref.key)}
-        <li>{post?.content} ... {post.ref.key}</li>
+      {#each posts as post (post.nodeKey)}
+        <li>{post?.content} ... {post.nodeKey}</li>
       {/each}
     </ul>
 
     <button on:click={() => addPost(user.uid)}>Add Data</button>
-  </DataList>
+  </NodeList>
 </SignedIn>
