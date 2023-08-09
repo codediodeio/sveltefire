@@ -1,12 +1,12 @@
-import { writable } from "svelte/store";
 import type { Firestore } from "firebase/firestore";
+import type { Database } from "firebase/database";
 import type { Auth } from "firebase/auth";
 import { getContext, setContext } from "svelte";
-
 
 export interface FirebaseSDKContext {
   auth?: Auth;
   firestore?: Firestore;
+  rtdb?: Database;
 }
 
 export const contextKey = "firebase";

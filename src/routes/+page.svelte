@@ -1,9 +1,7 @@
 <script lang="ts">
   import { getFirebaseContext } from "$lib/stores/sdk.js";
 
-
   const ctx = getFirebaseContext();
-
 </script>
 
 <h1>Welcome to SvelteFire</h1>
@@ -11,6 +9,7 @@
 <ul>
   <li><a href="/auth-test">Auth Test</a></li>
   <li><a href="/firestore-test">Firestore Test</a></li>
+  <li><a href="/rtdb-test">Realtime Database Test</a></li>
   <li><a href="/ssr-test">SSR Test</a></li>
 </ul>
 <ul>
