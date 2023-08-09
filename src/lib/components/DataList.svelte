@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { listStore } from "../stores/realtimeDatabase.js";
+  import { listStore } from "../stores/rtdb.js";
   import { getFirebaseContext } from "../stores/sdk.js";
   import type { DatabaseReference, Database } from "firebase/database";
 
-  export let path: string;
+  export let ref: string;
   export let startWith: any[] = [];
 
   const { rtdb } = getFirebaseContext();
-  let store = listStore(rtdb!, path, startWith);
+  let store = listStore(rtdb!, ref, startWith);
 
   interface $$Slots {
     default: {

@@ -4,12 +4,12 @@ import type { Database } from "firebase/database";
 
 /**
  * @param {Database} rtdb - Firebase Realtime Database instance.
- * @param {string} path - Path to the database reference.
+ * @param {string} ref - Database path or reference.
  * @param {T | undefined} startWith - Optional default data.
  * @returns a store with realtime updates on individual database reference data.
  */
-export function refStore<T = any>(rtdb: Database, path: string, startWith?: T) {
-  const dataRef = dbRef(rtdb, path);
+export function refStore<T = any>(rtdb: Database, ref: string, startWith?: T) {
+  const dataRef = dbRef(rtdb, ref);
 
   const { subscribe } = writable<T | null>(startWith, (set) => {
     const unsubscribe = onValue(dataRef, (snapshot) => {
@@ -27,25 +27,25 @@ export function refStore<T = any>(rtdb: Database, path: string, startWith?: T) {
 
 /**
  * @param {Database} rtdb - Firebase Realtime Database instance.
- * @param {string} path - Path to the database reference.
+ * @param {string} ref - Database path or reference.
  * @param {T[]} startWith - Optional default data.
  * @returns a store with realtime updates on lists of data.
  */
 export function listStore<T = any>(
   rtdb: Database,
-  path: string,
+  ref: string,
   startWith: T[] = []
 ) {
-  const listRef = dbRef(rtdb, path);
+  const listRef = dbRef(rtdb, ref);
 
   const { subscribe } = writable<T[]>(startWith, (set) => {
     const unsubscribe = onValue(listRef, (snapshot) => {
       const dataArr: T[] = [];
       snapshot.forEach((childSnapshot) => {
         dataArr.push({
-          key: childSnapshot.ref.key,
-          ...(childSnapshot.val() as T),
-        });
+          ref: childSnapshot.ref,
+          ...childSnapshot.val(),
+        } as T);
       });
       set(dataArr);
     });

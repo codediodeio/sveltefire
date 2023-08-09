@@ -9,9 +9,9 @@
 
   const rtdb = getFirebaseContext().rtdb!;
 
-  async function addData(uid: string) {
-    const dataRef = ref(rtdb, `users/${uid}/data`);
-    await push(dataRef, {
+  async function addPost(uid: string) {
+    const postsRef = ref(rtdb, `users/${uid}/posts`);
+    await push(postsRef, {
       content: "RTDB item " + (Math.random() + 1).toString(36).substring(7),
       created: Date.now(),
     });
@@ -22,8 +22,8 @@
 
 <h2>Single Data Reference</h2>
 
-<DataRef path="test" let:data>
-  <p data-testid="ref-data">{data.key}</p>
+<DataRef ref="posts/test" let:data={post}>
+  <p data-testid="ref-data">{post?.title}</p>
   <div slot="loading">
     <p data-testid="loading">Loading...</p>
   </div>
@@ -38,15 +38,20 @@
 
 <SignedIn let:user>
   <h2>Data List</h2>
-  <DataList path={`users/${user.uid}/data`} startWith={[]} let:data let:count>
-    <p data-testid="count">You've {count} items</p>
+  <DataList
+    ref={`users/${user.uid}/posts`}
+    startWith={[]}
+    let:data={posts}
+    let:count
+  >
+    <p data-testid="count">You've made {count} posts</p>
 
     <ul>
-      {#each data as item (item.key)}
-        <li>{item.content} ... {item.key}</li>
+      {#each posts as post (post.ref.key)}
+        <li>{post?.content} ... {post.ref.key}</li>
       {/each}
     </ul>
 
-    <button on:click={() => addData(user.uid)}>Add Data</button>
+    <button on:click={() => addPost(user.uid)}>Add Data</button>
   </DataList>
 </SignedIn>

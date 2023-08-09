@@ -9,7 +9,7 @@ import SignedIn from "./components/SignedIn.svelte";
 import SignedOut from "./components/SignedOut.svelte";
 import { userStore } from "./stores/auth.js";
 import { docStore, collectionStore } from "./stores/firestore.js";
-import { refStore, listStore } from './stores/realtimeDatabase.js';
+import { refStore, listStore } from './stores/rtdb.js';
 import { getFirebaseContext } from "./stores/sdk.js";
 
 export {

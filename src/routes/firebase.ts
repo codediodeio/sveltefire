@@ -5,7 +5,12 @@ import {
   getFirestore,
   setDoc,
 } from "firebase/firestore";
-import { connectDatabaseEmulator, getDatabase, ref, set } from "firebase/database";
+import {
+  connectDatabaseEmulator,
+  getDatabase,
+  ref,
+  set,
+} from "firebase/database";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { dev } from "$app/environment";
 
@@ -37,5 +42,8 @@ if (dev) {
   });
 
   // Seed Realtime Database
-  set(ref(rtdb, "test"), { key: "value" });
+  set(ref(rtdb, "posts/test"), {
+    title: "Hi Mom",
+    content: "this is a test",
+  });
 }
