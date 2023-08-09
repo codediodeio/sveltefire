@@ -1,6 +1,6 @@
-import { writable } from "svelte/store";
 import type { Firestore } from "firebase/firestore";
 import type { Auth } from "firebase/auth";
+import type { RemoteConfig } from "firebase/remote-config";
 import { getContext, setContext } from "svelte";
 
 
