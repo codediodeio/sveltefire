@@ -13,23 +13,23 @@ A minimal, yet powerful library that puts realtime Firebase data into Svelte sto
 
         <p>Howdy, {user.uid}</p>
 
-        <!-- 3. 📜 Get a Firestore document owned by a user -->
+        <!-- 3 (a). 📜 Get a Firestore document owned by a user -->
         <Doc ref={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
 
             <h2>{post.title}</h2>
 
-            <!-- 4. 💬 Get all the comments in its subcollection -->
+            <!-- 4 (a). 💬 Get all the comments in its subcollection -->
             <Collection ref={postRef.path + '/comments'} let:data={comments}>
                 {#each comments as comment}
 
                 {/each}
 
-        <!-- 3. 📜 Get a Realtime Database node owned by a user -->
+        <!-- 3 (b). 📜 Get a Realtime Database node owned by a user -->
         <Node path={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
 
             <h2>{post.title}</h2>
 
-            <!-- 4. 💬 Get all the comments in its subnodes -->
+            <!-- 4 (b). 💬 Get all the comments in its subnodes -->
             <NodeList path={postRef.path + '/comments'} let:data={comments}>
                 {#each comments as comment}
 
