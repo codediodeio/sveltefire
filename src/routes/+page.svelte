@@ -15,4 +15,5 @@
 <ul>
   <li data-testid="auth">Auth Context: {!!ctx.auth}</li>
   <li data-testid="firestore">Firestore Context: {!!ctx.firestore}</li>
+  <li data-testid="rtdb">Realtime Database Context: {!!ctx.rtdb}</li>
 </ul>

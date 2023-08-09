@@ -23,7 +23,7 @@
 <h2>Single Data Reference</h2>
 
 <Node path="posts/test" let:data={post}>
-  <p data-testid="ref-data">{post?.title}</p>
+  <p data-testid="node-data">{post?.title}</p>
   <div slot="loading">
     <p data-testid="loading">Loading...</p>
   </div>
@@ -52,6 +52,6 @@
       {/each}
     </ul>
 
-    <button on:click={() => addPost(user.uid)}>Add Data</button>
+    <button on:click={() => addPost(user.uid)}>Add Post</button>
   </NodeList>
 </SignedIn>

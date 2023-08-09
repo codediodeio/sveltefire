@@ -1,4 +1,3 @@
-import { writable } from "svelte/store";
 import { getContext, setContext } from "svelte";
 export const contextKey = "firebase";
 export function setFirebaseContext(sdks) {
