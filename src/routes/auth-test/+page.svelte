@@ -2,8 +2,6 @@
   import SignedIn from '$lib/components/SignedIn.svelte';
   import SignedOut from '$lib/components/SignedOut.svelte';
   import { signInAnonymously } from "firebase/auth";
-
-
 </script>
 
 <h1>Auth Test</h1>

@@ -279,6 +279,47 @@ Collections can also take a Firestore Query instead of a path:
 </Collection>
 ```
 
+### DownloadLink
+
+DownloadLink provides a `link` to download a file from Firebase Storage and its `reference`. 
+
+```svelte
+<DownloadLink ref={item} let:link let:ref>
+    <a href="{link}" download>Download {ref?.name}</a>
+</DownloadLink>
+```
+
+### StorageList
+
+StorageList provides a list of `items` and `prefixes` corresponding to the list of objects and sub-folders at a given Firebase Storage path. 
+
+```svelte
+<StorageList ref="/" let:list>
+    <ul>
+        {#if list === null}
+            <li>Loading...</li>
+        {:else if list.prefixes.length === 0 && list.items.length === 0}
+            <li>Empty</li>
+        {:else}
+          <!-- Listing the prefixes -->
+          {#each list.prefixes as prefix}
+              <li>
+                  {prefix.name}
+              </li>
+          {/each}
+          <!-- Listing the objects in the given folder -->
+          {#each list.items as item}
+              <li>
+                  {item.name}
+              </li>
+          {/each}
+        {/if}
+    </ul>
+</StorageList>
+```
+
+You can combine 
+
 ### Using Components Together
 
 These components can be combined to build complex realtime apps. It's especially powerful when fetching data that requires the current user's UID or a related document's path.

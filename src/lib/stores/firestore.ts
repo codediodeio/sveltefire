@@ -7,7 +7,6 @@ import type {
   Firestore,
 } from "firebase/firestore";
 
-
 interface DocStore<T> {
   subscribe: (cb: (value: T | null) => void) => void | (() => void);
   ref: DocumentReference<T> | null;
@@ -25,7 +24,6 @@ export function docStore<T = any>(
   ref: string | DocumentReference<T>,
   startWith?: T
 ): DocStore<T> {
-
   let unsubscribe: () => void;
 
   // Fallback for SSR
@@ -51,7 +49,10 @@ export function docStore<T = any>(
     };
   }
 
-  const docRef = typeof ref === 'string' ? doc(firestore, ref) as DocumentReference<T> : ref;
+  const docRef =
+    typeof ref === "string"
+      ? (doc(firestore, ref) as DocumentReference<T>)
+      : ref;
 
   const { subscribe } = writable<T | null>(startWith, (set) => {
     unsubscribe = onSnapshot(docRef, (snapshot) => {
@@ -70,7 +71,7 @@ export function docStore<T = any>(
 
 interface CollectionStore<T> {
   subscribe: (cb: (value: T | []) => void) => void | (() => void);
-  ref: CollectionReference | Query | null;
+  ref: CollectionReference<T> | Query<T> | null;
 }
 
 /**
@@ -81,10 +82,9 @@ interface CollectionStore<T> {
  */
 export function collectionStore<T>(
   firestore: Firestore,
-  ref: string | Query | CollectionReference,
+  ref: string | Query<T> | CollectionReference<T>,
   startWith: T[] = []
 ): CollectionStore<T[]> {
-
   let unsubscribe: () => void;
 
   // Fallback for SSR
@@ -126,4 +126,3 @@ export function collectionStore<T>(
     ref: colRef,
   };
 }
-

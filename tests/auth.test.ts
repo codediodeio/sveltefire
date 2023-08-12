@@ -6,6 +6,9 @@ test.describe.serial("Auth", () => {
     page = await browser.newPage();
     await page.goto("/auth-test");
   });
+  test.afterAll(async () => {
+    await page.close();
+  });
 
   test("Renders UI conditionally based on auth state", async () => {
     await expect(page.getByText("Signed Out")).toBeVisible();
@@ -13,6 +16,7 @@ test.describe.serial("Auth", () => {
   });
 
   test("User can sign in and out", async () => {
+    
     await expect(page.getByRole("button", { name: "Sign In" })).toBeVisible();
     await page.getByRole("button", { name: "Sign In" }).click({delay: 1000});
     await expect(page.getByRole("button", { name: "Sign Out" })).toBeVisible();
