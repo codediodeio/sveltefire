@@ -1,10 +1,12 @@
 import { SvelteComponent } from "svelte";
 import type { Auth } from "firebase/auth";
 import type { Firestore } from "firebase/firestore";
+import type { FirebaseStorage } from "firebase/storage";
 declare const __propDef: {
     props: {
         firestore: Firestore;
         auth: Auth;
+        storage: FirebaseStorage;
     };
     events: {
         [evt: string]: CustomEvent<any>;

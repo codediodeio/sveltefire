@@ -7,6 +7,8 @@ test('SvelteFire app initializes properly', async ({ page }) => {
 
 test('Firebase SDK context is defined via FirebaseApp component', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.getByTestId('auth')).toContainText('true');
-	await expect(page.getByTestId('firestore')).toContainText('true');
+  
+	await expect( page.getByTestId('auth')).toContainText('true');
+	await expect( page.getByTestId('firestore')).toContainText('true');
+	await expect( page.getByTestId('storage')).toContainText('true');
 });
