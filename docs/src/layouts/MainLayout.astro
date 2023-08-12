@@ -1,22 +1,9 @@
 ---
+import { ViewTransitions } from "astro:transitions";
 import SideNav from "../components/SideNav.astro";
 import TopNav from "../components/TopNav.astro";
 import Footer from "../components/Footer.astro";
 ---
-
-<script is:inline>
-  // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-  if (
-    localStorage.theme === "dark" ||
-    (!("theme" in localStorage) &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
-  ) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-</script>
-
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -31,12 +18,15 @@ import Footer from "../components/Footer.astro";
 
     <title>SvelteFire Documentation</title>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <ViewTransitions />
   </head>
   <body class="dark:bg-gray6 dark:text-white transition-colors duration-500">
     <TopNav />
-    <div class="flex items-stretch">
+    <div class="flex items-stretch overflow-x-hidden">
       <SideNav />
-      <main class="max-w-screen-2xl min-h-screen p-20 mx-auto prose dark:prose-invert w-full flex flex-col justify-between">
+      <main
+        class="max-w-screen-2xl min-h-screen p-6 lg:p-20 mx-auto prose dark:prose-invert w-full flex flex-col justify-between"
+      >
         <article>
           <slot />
         </article>
@@ -44,5 +34,22 @@ import Footer from "../components/Footer.astro";
         <Footer />
       </main>
     </div>
+
+    <script>
+      function colorMode() {
+        if (
+          localStorage.theme === "dark" ||
+          (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+    
+      colorMode();
+      document.addEventListener('astro:beforeload', colorMode);
+    </script>
   </body>
 </html>
