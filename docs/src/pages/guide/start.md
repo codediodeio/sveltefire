@@ -18,7 +18,7 @@ npm i sveltefire firebase
 
 ### 2. Initialize
 
-Initialize Firebase and add the `FirebaseApp` component to the component tree. Typically, this is done in the root `+layout.svelte` file to access Firebase in all pages. 
+Initialize Firebase and add the `FirebaseApp` component to the component tree. Typically, this is done in the root `+layout.svelte` file to access Firebase on all pages. 
 
 #### +layout.svelte
 ```svelte
@@ -30,7 +30,7 @@ Initialize Firebase and add the `FirebaseApp` component to the component tree. T
 
     // Initialize Firebase
     const app = initializeApp(/* your firebase config */);
-    const db = getFirestore(app);
+    const firestore = getFirestore(app);
     const auth = getAuth(app);
 </script>
 
