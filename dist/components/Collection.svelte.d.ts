@@ -1,26 +1,26 @@
 import { SvelteComponent } from "svelte";
-import type { CollectionReference, Firestore, Query } from 'firebase/firestore';
-declare const __propDef: {
-    props: {
-        ref: string | CollectionReference | Query;
-        startWith?: any;
+import type { CollectionReference, DocumentData, Firestore, Query } from "firebase/firestore";
+declare class __sveltets_Render<Data extends DocumentData> {
+    props(): {
+        ref: string | CollectionReference<Data> | Query<Data>;
+        startWith?: Data[] | undefined;
     };
-    events: {
+    events(): {} & {
         [evt: string]: CustomEvent<any>;
     };
-    slots: {
+    slots(): {
         default: {
-            data: any[];
-            ref: CollectionReference | Query | null;
+            data: Data[];
+            ref: CollectionReference<Data[]> | Query<Data[]> | null;
             count: number;
             firestore?: Firestore | undefined;
         };
         loading: {};
     };
-};
-export type CollectionProps = typeof __propDef.props;
-export type CollectionEvents = typeof __propDef.events;
-export type CollectionSlots = typeof __propDef.slots;
-export default class Collection extends SvelteComponent<CollectionProps, CollectionEvents, CollectionSlots> {
+}
+export type CollectionProps<Data extends DocumentData> = ReturnType<__sveltets_Render<Data>['props']>;
+export type CollectionEvents<Data extends DocumentData> = ReturnType<__sveltets_Render<Data>['events']>;
+export type CollectionSlots<Data extends DocumentData> = ReturnType<__sveltets_Render<Data>['slots']>;
+export default class Collection<Data extends DocumentData> extends SvelteComponent<CollectionProps<Data>, CollectionEvents<Data>, CollectionSlots<Data>> {
 }
 export {};

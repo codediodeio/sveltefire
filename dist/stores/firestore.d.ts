@@ -13,7 +13,7 @@ interface DocStore<T> {
 export declare function docStore<T = any>(firestore: Firestore, ref: string | DocumentReference<T>, startWith?: T): DocStore<T>;
 interface CollectionStore<T> {
     subscribe: (cb: (value: T | []) => void) => void | (() => void);
-    ref: CollectionReference | Query | null;
+    ref: CollectionReference<T> | Query<T> | null;
 }
 /**
  * @param  {Firestore} firestore firebase firestore instance
@@ -21,5 +21,5 @@ interface CollectionStore<T> {
  * @param  {[]} startWith optional default data
  * @returns a store with realtime updates on collection data
  */
-export declare function collectionStore<T>(firestore: Firestore, ref: string | Query | CollectionReference, startWith?: T[]): CollectionStore<T[]>;
+export declare function collectionStore<T>(firestore: Firestore, ref: string | Query<T> | CollectionReference<T>, startWith?: T[]): CollectionStore<T[]>;
 export {};

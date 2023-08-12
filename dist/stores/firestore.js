@@ -27,7 +27,9 @@ export function docStore(firestore, ref, startWith) {
             id: "",
         };
     }
-    const docRef = typeof ref === 'string' ? doc(firestore, ref) : ref;
+    const docRef = typeof ref === "string"
+        ? doc(firestore, ref)
+        : ref;
     const { subscribe } = writable(startWith, (set) => {
         unsubscribe = onSnapshot(docRef, (snapshot) => {
             set(snapshot.data() ?? null);
