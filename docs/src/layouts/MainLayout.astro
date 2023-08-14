@@ -18,6 +18,7 @@ import Footer from "../components/Footer.astro";
 
     <title>SvelteFire Documentation</title>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="preconnect" href="https://FPK5SXN3GJ-dsn.algolia.net" crossorigin />
     <ViewTransitions />
   </head>
   <body class="dark:bg-gray6 dark:text-white transition-colors duration-500">
@@ -53,3 +54,25 @@ import Footer from "../components/Footer.astro";
     </script>
   </body>
 </html>
+
+
+<style is:global>
+
+  .DocSearch-Button {
+      @apply flex items-center justify-center px-0;
+  }
+
+  .DocSearch-Button:hover, .DocSearch-Button:focus {
+      @apply shadow-none bg-transparent text-gray4;
+  }
+
+
+  .DocSearch-Search-Icon path {
+      @apply stroke-gray4;
+  }
+
+  .DocSearch-Button-Placeholder {
+      @apply font-code lowercase ml-2;
+  }
+
+</style>
