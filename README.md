@@ -182,7 +182,7 @@ The `FirebaseApp` component puts the FirebaseSDK into Svelte context. This avoid
 <!-- +layout.svelte -->
 <script>
   // Initialize Firebase...
-  const db = getFirestore(app);
+  const firestore = getFirestore(app);
   const auth = getAuth(app);
 </script>
 
