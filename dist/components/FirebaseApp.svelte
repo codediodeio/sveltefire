@@ -2,7 +2,8 @@
 export let firestore;
 export let rtdb;
 export let auth;
-setFirebaseContext({ firestore, rtdb, auth });
+export let storage;
+setFirebaseContext({ firestore, rtdb, auth, storage });
 </script>
 
 <slot />

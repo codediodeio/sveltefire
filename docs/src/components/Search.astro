@@ -1,0 +1,18 @@
+<button
+  id="docsearch"
+  class="p-2 mr-2 hidden md:flex justify-between items-center bg-gray3 bg-opacity-10 hover:bg-opacity-20 border border-gray4 hover:border-orange-500 transition-all"
+>
+</button>
+
+<script>
+  import docsearch from "@docsearch/js";
+  import "@docsearch/css";
+  console.log("docsearch");
+
+  docsearch({
+    container: "#docsearch",
+    appId: "FPK5SXN3GJ",
+    indexName: "sveltefire-fireship",
+    apiKey: "15bb134d41bb45724983679a6126b5f8",
+  });
+</script>
