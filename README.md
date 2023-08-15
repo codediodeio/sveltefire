@@ -279,14 +279,14 @@ Collections can also take a Firestore Query instead of a path:
 </Collection>
 ```
 
-### DownloadLink
+### DownloadURL
 
-DownloadLink provides a `link` to download a file from Firebase Storage and its `reference`. 
+DownloadURL provides a `link` to download a file from Firebase Storage and its `reference`. 
 
 ```svelte
-<DownloadLink ref={item} let:link let:ref>
-    <a href="{link}" download>Download {ref?.name}</a>
-</DownloadLink>
+<DownloadURL ref={item} let:link let:ref>
+    <a href={link} download>Download {ref?.name}</a>
+</DownloadURL>
 ```
 
 ### StorageList
@@ -318,9 +318,26 @@ StorageList provides a list of `items` and `prefixes` corresponding to the list 
 </StorageList>
 ```
 
-You can combine 
+### UploadTask
 
-### Using Components Together
+Upload a file with progress tracking
+
+```svelte
+<UploadTask ref="filename.txt" data={someBlob} let:progress let:snapshot>
+  {#if snapshot?.state === "running"}
+    {progress}% uploaded
+  {/if}
+
+  {#if snapshot?.state === "success"}
+    <DownloadURL ref={snapshot?.ref} let:link>
+      <a href={link} download>Download</a>
+    </DownloadURL>
+  {/if}
+</UploadTask>
+```
+
+
+## Using Components Together
 
 These components can be combined to build complex realtime apps. It's especially powerful when fetching data that requires the current user's UID or a related document's path.
 

@@ -8,3 +8,9 @@ test('Renders download links', async ({ page }) => {
 	expect( linksCount ).toBeGreaterThan(0);
 });
 
+test.only('Uploads a file', async ({ page }) => {
+	await page.goto('/storage-test');
+	await page.getByRole('button', { name: 'Make File' }).click();
+	await expect(page.getByTestId('progress')).toContainText('100% uploaded');
+	await expect(page.getByTestId('download-link2')).toContainText('test-upload.txt');
+});
