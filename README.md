@@ -8,32 +8,32 @@ A minimal, yet powerful library that puts realtime Firebase data into Svelte sto
 <!-- 1. 🔥 Firebase App -->
 <FirebaseApp {auth} {firestore} {rtdb}>
 
-    <!-- 2. 👤 Get the current user -->
-    <SignedIn let:user>
+  <!-- 2. 👤 Get the current user -->
+  <SignedIn let:user>
 
-        <p>Howdy, {user.uid}</p>
+    <p>Howdy, {user.uid}</p>
 
-        <!-- 3 (a). 📜 Get a Firestore document owned by a user -->
-        <Doc ref={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
+    <!-- 3 (a). 📜 Get a Firestore document owned by a user -->
+    <Doc ref={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
 
-            <h2>{post.title}</h2>
+      <h2>{post.title}</h2>
 
-            <!-- 4 (a). 💬 Get all the comments in its subcollection -->
-            <Collection ref={postRef.path + '/comments'} let:data={comments}>
-                {#each comments as comment}
+      <!-- 4 (a). 💬 Get all the comments in its subcollection -->
+      <Collection ref={postRef.path + '/comments'} let:data={comments}>
+        {#each comments as comment}
 
-                {/each}
+        {/each}
 
-        <!-- 3 (b). 📜 Get a Realtime Database node owned by a user -->
-        <Node path={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
+    <!-- 3 (b). 📜 Get a Realtime Database node owned by a user -->
+    <Node path={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
 
-            <h2>{post.title}</h2>
+      <h2>{post.title}</h2>
 
-            <!-- 4 (b). 💬 Get all the comments in its subnodes -->
-            <NodeList path={postRef.path + '/comments'} let:data={comments}>
-                {#each comments as comment}
+      <!-- 4 (b). 💬 Get all the comments in its subnodes -->
+      <NodeList path={postRef.path + '/comments'} let:data={comments}>
+        {#each comments as comment}
 
-                {/each}
+        {/each}
 ...
 ```
 
@@ -114,9 +114,9 @@ Listen to the current user. Render UI conditionally based on the auth state:
 </script>
 
 {#if $user}
-    <p>Hi {$user.uid}</p>
+  <p>Hi {$user.uid}</p>
 {:else}
-    <p>Sign in...</p>
+  <p>Sign in...</p>
 {/if}
 ```
 
@@ -198,11 +198,11 @@ First, fetch data from a load function like so:
 import { doc, getDoc } from 'firebase/firestore';
 
 export const load = (async () => {
-    const ref = doc(firestore, 'posts', 'first-post');
-    const snapshot = await getDoc(ref);
-    return {
-      post: snapshot.data();
-    };
+  const ref = doc(firestore, 'posts', 'first-post');
+  const snapshot = await getDoc(ref);
+  return {
+    post: snapshot.data();
+  };
 });
 ```
 
@@ -235,8 +235,8 @@ The `FirebaseApp` component puts the FirebaseSDK into Svelte context. This avoid
 
 <FirebaseApp {auth} {firestore} {rtdb} >
 
-    <User let:user></User>
-    <!-- other sveltefire components here -->
+  <User let:user></User>
+  <!-- other sveltefire components here -->
 
 </FirebaseApp>
 ```
@@ -256,11 +256,11 @@ Get the current user.
 
 ```svelte
 <SignedIn let:user>
-    Hello {user.uid}
+  Hello {user.uid}
 </SignedIn>
 
 <SignedOut>
-    You need to sign in!
+  You need to sign in!
 </SignedOut>
 ```
 
@@ -270,8 +270,8 @@ Fetch a single document and listen to data in realtime. The `data` slot prop pro
 
 ```svelte
 <Doc ref="posts/test" let:data let:ref>
-    {data.content}
-    {ref.path}
+  {data.content}
+  {ref.path}
 </Doc>
 ```
 
@@ -279,8 +279,8 @@ Slot props can be renamed:
 
 ```svelte
 <Doc ref="posts/test" let:data={post} let:ref={postRef}>
-    {post.content}
-    {postRef.path}
+  {post.content}
+  {postRef.path}
 </Doc>
 ```
 
@@ -288,8 +288,8 @@ Firestore components can also handle loading states:
 
 ```svelte
 <Doc path="posts/test">
-    <!-- data renders here in the default slot -->
-    <div slot="loading">Loading.... This will disappear when data is defined</div>
+  <!-- data renders here in the default slot -->
+  <div slot="loading">Loading.... This will disappear when data is defined</div>
 </Doc>
 ```
 
@@ -318,22 +318,21 @@ Collections can also take a Firestore Query instead of a path:
 
 ```svelte
 <script>
-    const myQuery = query(collection(firestore, 'posts'), where('test', '==', 'test'));
+  const myQuery = query(collection(firestore, 'posts'), where('test', '==', 'test'));
 </script>
 
 <Collection ref={myQuery} let:data>
 </Collection>
 ```
 
-<<<<<<< HEAD
 ### Node
 
 Fetch a single node from the Realtime Database and listen to its data in realtime. The `data` slot prop gives you access to the fetched data, and the `ref` provides the Realtime Database reference.
 
 ```svelte
 <Node path="posts/test" let:data let:ref>
-    {data.content}
-    {ref.key}
+  {data.content}
+  {ref.key}
 </Node>
 ```
 
@@ -341,8 +340,8 @@ Slot props can be renamed:
 
 ```svelte
 <Node path="posts/test" let:data={post} let:ref={postRef}>
-    {post.content}
-    {postRef.key}
+  {post.content}
+  {postRef.key}
 </Node>
 ```
 
@@ -350,8 +349,8 @@ Realtime Database components can also handle loading states:
 
 ```svelte
 <Node path="posts/test">
-    <!-- data renders here in the default slot -->
-    <div slot="loading">Loading.... This will disappear when data is defined</div>
+  <!-- data renders here in the default slot -->
+  <div slot="loading">Loading.... This will disappear when data is defined</div>
 </Node>
 ```
 
@@ -374,15 +373,15 @@ Fetch lists of nodes from the Realtime Database and listen to their data in real
   {/each}
 </NodeList>
 ```
-=======
-### DownloadLink
 
-DownloadLink provides a `link` to download a file from Firebase Storage and its `reference`. 
+### DownloadURL
+
+DownloadURL provides a `link` to download a file from Firebase Storage and its `reference`. 
 
 ```svelte
-<DownloadLink ref={item} let:link let:ref>
-    <a href="{link}" download>Download {ref?.name}</a>
-</DownloadLink>
+<DownloadURL ref={item} let:link let:ref>
+  <a href={link} download>Download {ref?.name}</a>
+</DownloadURL>
 ```
 
 ### StorageList
@@ -391,31 +390,46 @@ StorageList provides a list of `items` and `prefixes` corresponding to the list 
 
 ```svelte
 <StorageList ref="/" let:list>
-    <ul>
-        {#if list === null}
-            <li>Loading...</li>
-        {:else if list.prefixes.length === 0 && list.items.length === 0}
-            <li>Empty</li>
-        {:else}
-          <!-- Listing the prefixes -->
-          {#each list.prefixes as prefix}
-              <li>
-                  {prefix.name}
-              </li>
-          {/each}
-          <!-- Listing the objects in the given folder -->
-          {#each list.items as item}
-              <li>
-                  {item.name}
-              </li>
-          {/each}
-        {/if}
-    </ul>
+  <ul>
+    {#if list === null}
+      <li>Loading...</li>
+    {:else if list.prefixes.length === 0 && list.items.length === 0}
+      <li>Empty</li>
+    {:else}
+      <!-- Listing the prefixes -->
+      {#each list.prefixes as prefix}
+        <li>
+          {prefix.name}
+        </li>
+      {/each}
+      <!-- Listing the objects in the given folder -->
+      {#each list.items as item}
+        <li>
+          {item.name}
+        </li>
+      {/each}
+    {/if}
+  </ul>
 </StorageList>
 ```
 
-You can combine 
->>>>>>> upstream/master
+### UploadTask
+
+Upload a file with progress tracking
+
+```svelte
+<UploadTask ref="filename.txt" data={someBlob} let:progress let:snapshot>
+  {#if snapshot?.state === "running"}
+    {progress}% uploaded
+  {/if}
+
+  {#if snapshot?.state === "success"}
+    <DownloadURL ref={snapshot?.ref} let:link>
+      <a href={link} download>Download</a>
+    </DownloadURL>
+  {/if}
+</UploadTask>
+```
 
 ### Using Components Together
 
@@ -424,54 +438,54 @@ These components can be combined to build complex realtime apps. It's especially
 ```svelte
 <FirebaseApp {auth} {firestore}>
   <SignedIn let:user>
-      <p>UID: {user.uid}</p>
+    <p>UID: {user.uid}</p>
 
-      <h3>Profile</h3>
+    <h3>Profile</h3>
 
-      <!-- 📜 Fetch data using Firestore -->
-      <Doc ref={`posts/${user.uid}`} let:data={profile} let:ref={profileRef}>
+    <!-- 📜 Fetch data using Firestore -->
+    <Doc ref={`posts/${user.uid}`} let:data={profile} let:ref={profileRef}>
 
-        {profile.content}
+      {profile.content}
 
-        <h4>Comments</h4>
-        <Collection ref={profileRef.path + '/comments'} let:data={comments}>
-          {#each comments as comment}
-            <strong>{comment.content}</strong>
-          {/each}
+      <h4>Comments</h4>
+      <Collection ref={profileRef.path + '/comments'} let:data={comments}>
+        {#each comments as comment}
+          <strong>{comment.content}</strong>
+        {/each}
 
-          <div slot="loading">Loading Comments...</div>
-        </Collection>
+        <div slot="loading">Loading Comments...</div>
+      </Collection>
 
-        <div slot="loading">Loading Profile...</div>
-      </Doc>
+      <div slot="loading">Loading Profile...</div>
+    </Doc>
 
-      <!-- 📜 Fetch data using Realtime Database -->
-      <Node path={`posts/${user.uid}`} let:data={profile} let:ref={profileRef}>
+    <!-- 📜 Fetch data using Realtime Database -->
+    <Node path={`posts/${user.uid}`} let:data={profile} let:ref={profileRef}>
 
-        {profile.content}
+      {profile.content}
 
-        <h4>Comments</h4>
-        <NodeList path={profileRef.path + '/comments'} let:data={comments}>
-          {#each comments as comment}
-            <strong>{comment.content}</strong>
-          {/each}
+      <h4>Comments</h4>
+      <NodeList path={profileRef.path + '/comments'} let:data={comments}>
+        {#each comments as comment}
+          <strong>{comment.content}</strong>
+        {/each}
 
-          <div slot="loading">Loading Comments...</div>
-        </NodeList>
+        <div slot="loading">Loading Comments...</div>
+      </NodeList>
 
-        <div slot="loading">Loading Profile...</div>
-      </Node>
+      <div slot="loading">Loading Profile...</div>
+    </Node>
   </SignedIn>
 
   <SignedOut>
-      <p>Sign in to see your profile</p>
+    <p>Sign in to see your profile</p>
   </SignedOut>
 </FirebaseApp>
 ```
 
 ## Roadmap
 
-- Add support for Firebase Storage
+- ~~Add support for Firebase Storage~~ (Added in latest release!)
 - ~~Add support for Firebase RTDB~~ (Added in latest release!)
 - Add support for Firebase Analytics in SvelteKit
 - Find a way to make TS generics with with Doc/Collection components
