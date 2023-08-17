@@ -31,7 +31,6 @@ export function configStore(remoteConfig: RemoteConfig, defaultValue: any = {}, 
   remoteConfig.settings.minimumFetchIntervalMillis = minimumFetchIntervalMillis;
   remoteConfig.defaultConfig = defaultValue;
 
-
   const { subscribe } = readable(defaultValue, (set) => {
     isSupported().then((isSupported) => {
       if (isSupported) {
