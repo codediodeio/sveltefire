@@ -42,14 +42,17 @@ module.exports = {
             h1: {
               "font-weight": "bold",
               "font-size": "2.5rem",
+              "overflow-wrap": "break-word"
             },
             h2: {
               "font-weight": "bold",
               "font-size": "2rem",
+              "overflow-wrap": "break-word"
             },
             h3: {
               "font-weight": "normal",
               "font-size": "1.5rem",
+              "overflow-wrap": "break-word"
             },
             h4: {
               "font-weight": "normal",

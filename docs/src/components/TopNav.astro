@@ -1,60 +1,88 @@
-<nav class="flex justify-between mx-auto h-20 px-6 w-full bg-gray1 dark:bg-gray7 z-50 relative">
-    <a
-      class="grid place-items-center w-14"
-      href="/"
-    >
+---
+import Search from './Search.astro'
+---
+
+
+<nav
+  transition:persist
+  class="flex justify-between mx-auto h-20 px-6 w-full bg-gray1 dark:bg-gray7 z-50 relative"
+>
+  <div class="flex justify-center items-center">
+    <button id="sidebarBtn" class="lg:hidden">
+      <svg
+        class="fill-gray6 dark:fill-gray2 w-8 mx-2"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM7 12C7 11.4477 7.44772 11 8 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H8C7.44772 13 7 12.5523 7 12ZM13 18C13 17.4477 13.4477 17 14 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H14C13.4477 19 13 18.5523 13 18Z"
+        ></path>
+      </svg>
+    </button>
+    <a class="grid place-items-center w-14" href="/">
       <img id="logo" src="/logo.svg" alt="sveltefire logo" />
     </a>
-  
-    <ul class="flex justify-center items-center list-none">
+  </div>
 
-      <li class="mx-2 md:mx-4">
-        <a href="/guide/start" class="font-code font-bold text-gray5 dark:text-gray2">start</a>
-      </li>
+  <ul class="flex justify-center items-center list-none">
+    <li class="mx-2 md:mx-4 hidden md:block">
+      <a
+        href="/guide/start"
+        class="font-code font-bold text-gray5 dark:text-gray2">start</a
+      >
+    </li>
 
-      <li class="mx-4">
-          <button class="p-2 mr-2 hidden md:flex justify-between items-center bg-gray3 bg-opacity-10 hover:bg-opacity-20 border border-gray4 hover:border-orange-500 
-                    transition-all">
-            <span class="text-gray4 dark:text-gray2 w-4 mx-2">
-              <svg aria-hidden="true" focusable="false" data-prefix="fad" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fk-search fk-w-16 fk-9x">
-                <g class="fk-group"><path fill="currentColor" d="M208 80a128 128 0 1 1-90.51 37.49A127.15 127.15 0 0 1 208 80m0-80C93.12 0 0 93.12 0 208s93.12 208 208 208 208-93.12 208-208S322.88 0 208 0z" class="fk-secondary"></path><path fill="currentColor" d="M504.9 476.7L476.6 505a23.9 23.9 0 0 1-33.9 0L343 405.3a24 24 0 0 1-7-17V372l36-36h16.3a24 24 0 0 1 17 7l99.7 99.7a24.11 24.11 0 0 1-.1 34z" class="fk-primary">
-                </path></g></svg>
-            </span>
-            <span class="mr-12 font-code">search</span>
-            <span class="mx-2 text-xs border border-gray4 rounded-md p-1 px-2">/</span>
-          </button>
-          <button class="flex md:hidden">
-            <span class="text-gray2 w-6 mx-2"></span>
-          </button>
-        </li>
-        
+    <li class="mx-4">
+      <Search />
+      <button class="flex md:hidden">
+        <span class="text-gray2 w-6 mx-2"></span>
+      </button>
+    </li>
 
-        <li id="dark" class="w-5 cursor-pointer fill-gray3 dark:fill-orange-500 mr-2"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="enable-background:new 0 0 312.812 312.812" viewBox="0 0 312.812 312.812"><path d="M305.2 178.159c-3.2-.8-6.4 0-9.2 2-10.4 8.8-22.4 16-35.6 20.8-12.4 4.8-26 7.2-40.4 7.2-32.4 0-62-13.2-83.2-34.4-21.2-21.2-34.4-50.8-34.4-83.2 0-13.6 2.4-26.8 6.4-38.8 4.4-12.8 10.8-24.4 19.2-34.4 3.6-4.4 2.8-10.8-1.6-14.4-2.8-2-6-2.8-9.2-2-34 9.2-63.6 29.6-84.8 56.8-20.4 26.8-32.4 60-32.4 96 0 43.6 17.6 83.2 46.4 112s68 46.4 112 46.4c36.8 0 70.8-12.8 98-34 27.6-21.6 47.6-52.4 56-87.6 1.6-5.6-1.6-11.2-7.2-12.4z"/></svg></li>
-        <li id="light" class="w-5 cursor-pointer fill-orange-500 dark:fill-gray3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M100.307 168.213a180.083 180.083 0 0 1 67.905-67.905L90.7 71.547A14.9 14.9 0 0 0 71.547 90.7zM77.22 256c0-16.617 2.287-32.71 6.549-47.986L8.687 242.457a14.9 14.9 0 0 0 0 27.086l75.083 34.443A178.326 178.326 0 0 1 77.22 256zM256 77.22a178.32 178.32 0 0 1 47.986 6.549L269.543 8.687a14.9 14.9 0 0 0-27.086 0L208.014 83.77A178.28 178.28 0 0 1 256 77.22zM411.693 168.213l28.76-77.513A14.9 14.9 0 0 0 421.3 71.547l-77.513 28.76a180.102 180.102 0 0 1 67.906 67.906zM256 434.78a178.32 178.32 0 0 1-47.986-6.549l34.443 75.083a14.9 14.9 0 0 0 27.086-.001l34.444-75.083A178.333 178.333 0 0 1 256 434.78zM100.307 343.787 71.547 421.3A14.9 14.9 0 0 0 90.7 440.453l77.513-28.76a180.102 180.102 0 0 1-67.906-67.906zM503.313 242.457l-75.083-34.444c4.262 15.277 6.549 31.369 6.549 47.986s-2.287 32.71-6.549 47.986l75.083-34.443a14.9 14.9 0 0 0 0-27.085zM411.693 343.787a180.083 180.083 0 0 1-67.905 67.905l77.513 28.76a14.897 14.897 0 0 0 15.719-3.434 14.9 14.9 0 0 0 3.434-15.719zM256 404.98c-82.148 0-148.98-66.832-148.98-148.98S173.852 107.02 256 107.02 404.98 173.852 404.98 256 338.148 404.98 256 404.98z"/></svg></li>
-  
-    </ul>
-  </nav>
-  
+    <li
+      id="dark"
+      class="w-5 cursor-pointer fill-gray3 dark:fill-orange-500 mr-2"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xml:space="preserve"
+        style="enable-background:new 0 0 312.812 312.812"
+        viewBox="0 0 312.812 312.812"
+        ><path
+          d="M305.2 178.159c-3.2-.8-6.4 0-9.2 2-10.4 8.8-22.4 16-35.6 20.8-12.4 4.8-26 7.2-40.4 7.2-32.4 0-62-13.2-83.2-34.4-21.2-21.2-34.4-50.8-34.4-83.2 0-13.6 2.4-26.8 6.4-38.8 4.4-12.8 10.8-24.4 19.2-34.4 3.6-4.4 2.8-10.8-1.6-14.4-2.8-2-6-2.8-9.2-2-34 9.2-63.6 29.6-84.8 56.8-20.4 26.8-32.4 60-32.4 96 0 43.6 17.6 83.2 46.4 112s68 46.4 112 46.4c36.8 0 70.8-12.8 98-34 27.6-21.6 47.6-52.4 56-87.6 1.6-5.6-1.6-11.2-7.2-12.4z"
+        ></path></svg>
+    </li>
+    <li id="light" class="w-5 cursor-pointer fill-orange-500 dark:fill-gray3">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+        ><path
+          d="M100.307 168.213a180.083 180.083 0 0 1 67.905-67.905L90.7 71.547A14.9 14.9 0 0 0 71.547 90.7zM77.22 256c0-16.617 2.287-32.71 6.549-47.986L8.687 242.457a14.9 14.9 0 0 0 0 27.086l75.083 34.443A178.326 178.326 0 0 1 77.22 256zM256 77.22a178.32 178.32 0 0 1 47.986 6.549L269.543 8.687a14.9 14.9 0 0 0-27.086 0L208.014 83.77A178.28 178.28 0 0 1 256 77.22zM411.693 168.213l28.76-77.513A14.9 14.9 0 0 0 421.3 71.547l-77.513 28.76a180.102 180.102 0 0 1 67.906 67.906zM256 434.78a178.32 178.32 0 0 1-47.986-6.549l34.443 75.083a14.9 14.9 0 0 0 27.086-.001l34.444-75.083A178.333 178.333 0 0 1 256 434.78zM100.307 343.787 71.547 421.3A14.9 14.9 0 0 0 90.7 440.453l77.513-28.76a180.102 180.102 0 0 1-67.906-67.906zM503.313 242.457l-75.083-34.444c4.262 15.277 6.549 31.369 6.549 47.986s-2.287 32.71-6.549 47.986l75.083-34.443a14.9 14.9 0 0 0 0-27.085zM411.693 343.787a180.083 180.083 0 0 1-67.905 67.905l77.513 28.76a14.897 14.897 0 0 0 15.719-3.434 14.9 14.9 0 0 0 3.434-15.719zM256 404.98c-82.148 0-148.98-66.832-148.98-148.98S173.852 107.02 256 107.02 404.98 173.852 404.98 256 338.148 404.98 256 404.98z"
+        ></path></svg>
+    </li>
+  </ul>
+</nav>
+
 <script>
-    function light() {
-        // Whenever the user explicitly chooses light mode
-        localStorage.theme = 'light'
-        document.documentElement.classList.add('light')
-        document.documentElement.classList.remove('dark')
-    }
-    function dark() {
-        // Whenever the user explicitly chooses dark mode
-        localStorage.theme = 'dark'
-        document.documentElement.classList.add('dark')
-        document.documentElement.classList.remove('light')
-    }
-    document.getElementById("light")!.addEventListener("click", light);
-    document.getElementById("dark")!.addEventListener("click", dark);
+  function light() {
+    // Whenever the user explicitly chooses light mode
+    localStorage.theme = "light";
+    document.documentElement.classList.add("light");
+    document.documentElement.classList.remove("dark");
+  }
+  function dark() {
+    // Whenever the user explicitly chooses dark mode
+    localStorage.theme = "dark";
+    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("light");
+  }
+  document.getElementById("light")!.addEventListener("click", light);
+  document.getElementById("dark")!.addEventListener("click", dark);
 
+  const sidebarBtn = document.getElementById("sidebarBtn");
+  sidebarBtn.onclick = function () {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("hidden");
+  };
 </script>
-
-
-
-<style>
-
-</style>

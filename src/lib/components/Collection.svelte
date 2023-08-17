@@ -1,32 +1,29 @@
-<script lang="ts">
+<script lang="ts" generics="Data extends DocumentData">
   import type {
     CollectionReference,
+    DocumentData,
     Firestore,
     Query,
-  } from 'firebase/firestore';
-  import { collectionStore } from '../stores/firestore.js';
-  import { getFirebaseContext } from '../stores/sdk.js';
+  } from "firebase/firestore";
+  import { collectionStore } from "../stores/firestore.js";
+  import { getFirebaseContext } from "../stores/sdk.js";
 
-  // TODO figure out how to make generics work
-  // current setup will not work without mandatory startWith value
-  // type T = $$Generic;
-
-  // interface $$Slots {
-  //   default: { data: T[], ref: CollectionReference | Query, count: number }
-  // }
-
-  export let ref: string | CollectionReference | Query;
-  export let startWith: any = undefined;
+  export let ref: string | CollectionReference<Data> | Query<Data>;
+  export let startWith: Data[] | undefined = undefined;
 
   const { firestore } = getFirebaseContext();
 
-  let store = collectionStore(firestore!, ref, startWith);
+  let store = collectionStore<Data>(firestore!, ref, startWith);
 
   interface $$Slots {
-    default: { data: any[]; ref: CollectionReference | Query | null; count: number; firestore?: Firestore },
-    loading: {},
+    default: {
+      data: Data[];
+      ref: CollectionReference<Data[]> | Query<Data[]> | null;
+      count: number;
+      firestore?: Firestore;
+    };
+    loading: {};
   }
-
 </script>
 
 {#if $store !== undefined}
