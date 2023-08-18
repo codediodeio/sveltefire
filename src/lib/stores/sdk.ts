@@ -1,11 +1,11 @@
 import type { Firestore } from "firebase/firestore";
 import type { Auth } from "firebase/auth";
-import type { RemoteConfig } from "firebase/remote-config";
 import { getContext, setContext } from "svelte";
 import type { FirebaseStorage } from "firebase/storage";
-
+import type { FirebaseApp } from "firebase/app";
 
 export interface FirebaseSDKContext {
+  app?: FirebaseApp;
   auth?: Auth;
   firestore?: Firestore;
   storage?: FirebaseStorage;

@@ -13,6 +13,6 @@
 </SignedIn>
 
 <SignedOut let:auth>
-     <h2>Signed Out</h2>
+    <h2>Signed Out</h2>
     <button on:click={() => signInAnonymously(auth)}>Sign In</button>
 </SignedOut>
