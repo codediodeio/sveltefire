@@ -344,6 +344,7 @@ This components takes care of intializing the RemoteConfig instance from a clien
 ```svelte
 <script>
   import { initializeApp } from 'firebase/app';
+  import { FirebaseApp, RemoteConfig } from 'sveltefire';
   const app = initializeApp(/* your firebase config */);
   const testValue = {
     greetingText: 'Hello World',
@@ -368,6 +369,7 @@ Get a typed value from your RemoteConfig instance.
 ```svelte
 <script>
   import { initializeApp } from 'firebase/app';
+  import { FirebaseApp, RemoteConfig, RemoteConfigString, RemoteConfigBoolean, RemoteConfigNumber } from 'sveltefire';
   const app = initializeApp(/* your firebase config */);
     const testValue = {
     greetingText: 'Hello World',
