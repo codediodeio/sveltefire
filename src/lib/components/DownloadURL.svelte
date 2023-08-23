@@ -9,13 +9,13 @@
     const store = downloadUrlStore(storage!, ref);
 
     interface $$Slots {
-        default: { link: string | null; ref: StorageReference | null; storage?: FirebaseStorage },
+        default: { link: string | null; error: Error | null; ref: StorageReference | null; storage?: FirebaseStorage },
         loading: {},
     }
 </script>
 
-{#if $store !== undefined}
-    <slot link={$store} ref={store.reference} {storage}/>
+{#if $store !== undefined && $store !== null}
+    <slot link={$store.data} error={$store.error} ref={store.reference} {storage}/>
 {:else}
     <slot name="loading" />
 {/if}

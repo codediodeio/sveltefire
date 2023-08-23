@@ -19,6 +19,7 @@
   interface $$Slots {
     default: {
       task: UploadTask | undefined;
+      error: Error | null;
       ref: StorageReference | null;
       snapshot: UploadTaskSnapshot | null;
       progress: number;
@@ -26,9 +27,9 @@
     };
   }
 
-  $: progress = ($upload?.bytesTransferred! / $upload?.totalBytes!) * 100 ?? 0;
+  $: progress = ($upload?.data?.bytesTransferred! / $upload?.data?.totalBytes!) * 100 ?? 0;
 </script>
 
-{#if $upload !== undefined}
-  <slot task={$upload?.task} snapshot={$upload} {progress} ref={upload.reference} {storage} />
+{#if $upload !== undefined && $upload !== null}
+  <slot task={$upload?.data?.task} error={$upload?.error} snapshot={$upload.data} {progress} ref={upload.reference} {storage} />
 {/if}

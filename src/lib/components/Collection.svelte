@@ -18,6 +18,7 @@
   interface $$Slots {
     default: {
       data: Data[];
+      error: Error | null;
       ref: CollectionReference<Data[]> | Query<Data[]> | null;
       count: number;
       firestore?: Firestore;
@@ -27,7 +28,7 @@
 </script>
 
 {#if $store !== undefined}
-  <slot data={$store} ref={store.ref} count={$store?.length ?? 0} {firestore} />
+  <slot data={$store?.data} error={$store?.error} ref={store.ref} count={$store?.data?.length ?? 0} {firestore} />
 {:else}
   <slot name="loading" />
 {/if}
