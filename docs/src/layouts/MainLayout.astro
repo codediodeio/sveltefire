@@ -23,12 +23,12 @@ import Footer from "../components/Footer.astro";
   </head>
   <body class="dark:bg-gray6 dark:text-white transition-colors duration-500">
     <TopNav />
-    <div class="flex items-stretch overflow-x-hidden">
+    <div class="relative flex items-stretch overflow-x-hidden">
       <SideNav />
       <main
         class="max-w-screen-2xl min-h-screen p-6 lg:p-20 mx-auto prose dark:prose-invert w-full flex flex-col justify-between"
       >
-        <article>
+        <article >
           <slot />
         </article>
 
