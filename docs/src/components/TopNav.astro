@@ -81,8 +81,10 @@ import Search from './Search.astro'
   document.getElementById("dark")!.addEventListener("click", dark);
 
   const sidebarBtn = document.getElementById("sidebarBtn");
+  const article = document.querySelector("article")
   sidebarBtn.onclick = function () {
     const sidebar = document.getElementById("sidebar");
     sidebar.classList.toggle("hidden");
+    article.classList.toggle("hidden")
   };
 </script>
