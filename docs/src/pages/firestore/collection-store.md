@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # collectionStore
 
-Subscribes to Firestore collection data and listens to real-time updates. 
+Subscribes to Firestore collection data and listens to real-time updates.
 
 ### Parameters
 
@@ -19,30 +19,29 @@ Subscribes to Firestore collection data and listens to real-time updates.
 
 ```svelte
 <script>
-    import { collectionStore } from 'sveltefire';
-    import { firestore } from '$lib/firebase'; // your firestore instance
+  import { collectionStore } from "sveltefire";
+  import { firestore } from "$lib/firebase"; // your firestore instance
 
-    const posts = collectionStore(firestore, 'posts');
+  const posts = collectionStore(firestore, "posts");
 </script>
 
 {#each $posts as post}
-    <p>{post.title}</p>
+  <p>{post.title}</p>
 {/each}
 ```
-
 
 With a query reference:
 
 ```svelte
 <script>
-    import { collectionStore } from 'sveltefire';
-    import { firestore } from '$lib/firebase'; 
-    import { collection, where, query } from 'firebase/firestore';
+  import { collectionStore } from "sveltefire";
+  import { firestore } from "$lib/firebase";
+  import { collection, where, query } from "firebase/firestore";
 
-    const postsRef = collection('posts');
-    const q = query(postsRef, where('author', '==', 'jeff'));
+  const postsRef = collection("posts");
+  const q = query(postsRef, where("author", "==", "jeff"));
 
-    const postsByJeff = collectionStore(firestore, q);  
+  const postsByJeff = collectionStore(firestore, q);
 </script>
 ```
 
@@ -50,16 +49,15 @@ With TypeScript:
 
 ```svelte
 <script lang="ts">
+  interface Post {
+    title?: string;
+    content?: string;
+  }
 
-    interface Post {
-        title?: string;
-        content?: string;
-    }
-
-    const posts = collectionStore<Post[]>(firestore, 'posts');
+  const posts = collectionStore<Post[]>(firestore, "posts");
 </script>
 
 {#each $posts as post}
-    <p>{post.title}</p>
+  <p>{post.title}</p>
 {/each}
 ```

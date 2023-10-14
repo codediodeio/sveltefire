@@ -17,16 +17,13 @@ The `SignedOut` component renders content when the current user is `null`. It is
 
 ```svelte
 <script>
-    import { SignedOut } from 'sveltefire';
-    import { signInAnonymously } from "firebase/auth";
+  import { SignedOut } from "sveltefire";
+  import { signInAnonymously } from "firebase/auth";
 </script>
 
-<SignedOut>
-    You must be signed in to see this!
-</SignedOut>
-
+<SignedOut>You must be signed in to see this!</SignedOut>
 
 <SignedOut let:auth>
-    <button on:click={() => signInAnonymously(auth)}>Sign In</button>
+  <button on:click={() => signInAnonymously(auth)}>Sign In</button>
 </SignedOut>
 ```

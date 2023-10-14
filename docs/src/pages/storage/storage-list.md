@@ -28,30 +28,29 @@ Returns a list of files stored in Firebase Storage.
 
 ```svelte
 <script>
-  import  { StorageList } from "sveltefire";
+  import { StorageList } from "sveltefire";
 </script>
 
-
 <StorageList ref="images/uid" let:list>
-    <ul>
-        {#if list === null}
-            <li>Loading...</li>
-        {:else if list.prefixes.length === 0 && list.items.length === 0}
-            <li>Empty</li>
-        {:else}
-          <!-- Listing the prefixes -->
-          {#each list.prefixes as prefix}
-              <li>
-                  {prefix.name}
-              </li>
-          {/each}
-          <!-- Listing the objects in the given folder -->
-          {#each list.items as item}
-              <li>
-                  {item.name}
-              </li>
-          {/each}
-        {/if}
-    </ul>
+  <ul>
+    {#if list === null}
+      <li>Loading...</li>
+    {:else if list.prefixes.length === 0 && list.items.length === 0}
+      <li>Empty</li>
+    {:else}
+      <!-- Listing the prefixes -->
+      {#each list.prefixes as prefix}
+        <li>
+          {prefix.name}
+        </li>
+      {/each}
+      <!-- Listing the objects in the given folder -->
+      {#each list.items as item}
+        <li>
+          {item.name}
+        </li>
+      {/each}
+    {/if}
+  </ul>
 </StorageList>
 ```

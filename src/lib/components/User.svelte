@@ -4,11 +4,11 @@
   import { getFirebaseContext } from "$lib/index.js";
 
   const auth = getFirebaseContext().auth!;
-  const user = userStore(auth)
+  const user = userStore(auth);
 
   interface $$Slots {
-    default: { user: User }
-    signedOut: {}
+    default: { user: User };
+    signedOut: {};
   }
 </script>
 

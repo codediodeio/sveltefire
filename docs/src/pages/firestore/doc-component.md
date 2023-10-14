@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # Doc
 
-The `Doc` component is a wrapper around the `docStore`. It renders the document data and handles the loading state. 
+The `Doc` component is a wrapper around the `docStore`. It renders the document data and handles the loading state.
 
 ### Props
 
@@ -29,12 +29,12 @@ The `Doc` component is a wrapper around the `docStore`. It renders the document 
 
 ```svelte
 <script>
-    import { Doc } from 'sveltefire';
+  import { Doc } from "sveltefire";
 </script>
 
-<Doc ref={'posts/id'} let:data>
-    <p>{data?.title}</p>
+<Doc ref={"posts/id"} let:data>
+  <p>{data?.title}</p>
 
-    <p slot="loading">Loading...</p>
+  <p slot="loading">Loading...</p>
 </Doc>
 ```

@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # docStore
 
-Subscribes to Firestore document data and listens to realtime updates. 
+Subscribes to Firestore document data and listens to realtime updates.
 
 ### Parameters
 
@@ -19,10 +19,10 @@ Subscribes to Firestore document data and listens to realtime updates.
 
 ```svelte
 <script>
-    import { docStore } from 'sveltefire';
-    import { firestore } from '$lib/firebase'; // your firestore instance
+  import { docStore } from "sveltefire";
+  import { firestore } from "$lib/firebase"; // your firestore instance
 
-    const post = docStore(firestore, 'posts/id');
+  const post = docStore(firestore, "posts/id");
 </script>
 
 {$post?.title}
@@ -32,12 +32,12 @@ With a document reference:
 
 ```svelte
 <script>
-    import { docStore } from 'sveltefire';
-    import { firestore } from '$lib/firebase'; // your firestore instance
-    import { doc } from 'firebase/firestore';
+  import { docStore } from "sveltefire";
+  import { firestore } from "$lib/firebase"; // your firestore instance
+  import { doc } from "firebase/firestore";
 
-    const postRef = doc('posts/id');
-    const post = docStore(firestore, postRef);  
+  const postRef = doc("posts/id");
+  const post = docStore(firestore, postRef);
 </script>
 ```
 
@@ -45,13 +45,12 @@ With TypeScript:
 
 ```svelte
 <script lang="ts">
+  interface Post {
+    title?: string;
+    content?: string;
+  }
 
-    interface Post {
-        title?: string;
-        content?: string;
-    }
-
-    const post = docStore<Post>(firestore, 'posts/id');
+  const post = docStore<Post>(firestore, "posts/id");
 </script>
 
 {$post?.title}

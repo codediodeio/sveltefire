@@ -1,9 +1,7 @@
 <script lang="ts">
   import { getFirebaseContext } from "$lib/stores/sdk.js";
 
-
   const ctx = getFirebaseContext();
-
 </script>
 
 <h1>Welcome to SvelteFire</h1>

@@ -1,11 +1,6 @@
 import { writable } from "svelte/store";
 import { doc, collection, onSnapshot } from "firebase/firestore";
-import type {
-  Query,
-  CollectionReference,
-  DocumentReference,
-  Firestore,
-} from "firebase/firestore";
+import type { Query, CollectionReference, DocumentReference, Firestore } from "firebase/firestore";
 
 interface DocStore<T> {
   subscribe: (cb: (value: T | null) => void) => void | (() => void);
@@ -49,10 +44,7 @@ export function docStore<T = any>(
     };
   }
 
-  const docRef =
-    typeof ref === "string"
-      ? (doc(firestore, ref) as DocumentReference<T>)
-      : ref;
+  const docRef = typeof ref === "string" ? (doc(firestore, ref) as DocumentReference<T>) : ref;
 
   const { subscribe } = writable<T | null>(startWith, (set) => {
     unsubscribe = onSnapshot(docRef, (snapshot) => {

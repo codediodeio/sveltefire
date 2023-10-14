@@ -28,15 +28,14 @@ Returns the download URL for a file in Firebase Storage.
 
 ```svelte
 <script>
-  import  { DownloadURL } from "sveltefire";
+  import { DownloadURL } from "sveltefire";
 </script>
 
-
 <DownloadURL ref="images/pic.png" let:link let:ref>
-    <!-- show img -->
-    <img src={link} />
+  <!-- show img -->
+  <img src={link} />
 
-    <!-- or download via link -->
-    <a href={link} download>{ref?.name}</a>
+  <!-- or download via link -->
+  <a href={link} download>{ref?.name}</a>
 </DownloadURL>
 ```

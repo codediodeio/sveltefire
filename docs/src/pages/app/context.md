@@ -7,13 +7,13 @@ layout: ../../layouts/MainLayout.astro
 
 # getFirebaseContext
 
-Get the Firebase SDK context from a component. 
+Get the Firebase SDK context from a component.
 
 ### Example
 
 ```svelte
 <script>
-    import { getFirebaseContext } from 'sveltefire'
-    const { auth, firestore, storage } = getFirebaseContext();
+  import { getFirebaseContext } from "sveltefire";
+  const { auth, firestore, storage } = getFirebaseContext();
 </script>
 ```

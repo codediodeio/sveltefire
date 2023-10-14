@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # SignedIn
 
-The `SignedIn` component renders content for the current user. It is a wrapper around the `userStore`. If the user is not signed in, the children will not be rendered. 
+The `SignedIn` component renders content for the current user. It is a wrapper around the `userStore`. If the user is not signed in, the children will not be rendered.
 
 ### Slot Props
 
@@ -19,15 +19,14 @@ The `SignedIn` component renders content for the current user. It is a wrapper a
 
 ```svelte
 <script>
-    import { SignedIn } from 'sveltefire';
+  import { SignedIn } from "sveltefire";
 </script>
 
 <SignedIn let:user>
-    <p>Howdy, {user.uid}</p>
+  <p>Howdy, {user.uid}</p>
 </SignedIn>
 
-
 <SignedIn let:signOut>
-    <button on:click={signOut}>Sign Out</button>
+  <button on:click={signOut}>Sign Out</button>
 </SignedIn>
 ```
