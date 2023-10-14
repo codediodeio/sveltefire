@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # Collection
 
-The `Collection` component is a wrapper around the `collectionStore`. It renders the collection data and handles the loading state. 
+The `Collection` component is a wrapper around the `collectionStore`. It renders the collection data and handles the loading state.
 
 ### Props
 
@@ -30,17 +30,16 @@ The `Collection` component is a wrapper around the `collectionStore`. It renders
 
 ```svelte
 <script>
-    import { Collection } from 'sveltefire';
+  import { Collection } from "sveltefire";
 </script>
 
-<Collection ref={'posts'} let:data let:count>
+<Collection ref={"posts"} let:data let:count>
+  <p>Found {count} posts</p>
 
-    <p>Found {count} posts</p>
-    
-    {#each data as post}
-        <p>{post.title}</p>
-    {/each}
+  {#each data as post}
+    <p>{post.title}</p>
+  {/each}
 
-    <p slot="loading">Loading...</p>
+  <p slot="loading">Loading...</p>
 </Collection>
 ```

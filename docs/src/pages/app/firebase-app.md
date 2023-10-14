@@ -19,18 +19,18 @@ Puts the Firebase app into Svelte's context. It should be used as a parent to al
 
 ```svelte
 <script>
-    import { FirebaseApp } from 'sveltefire';
-    import { initializeApp } from 'firebase/app';
-    import { getFirestore } from 'firebase/firestore';
-    import { getAuth } from 'firebase/auth';
+  import { FirebaseApp } from "sveltefire";
+  import { initializeApp } from "firebase/app";
+  import { getFirestore } from "firebase/firestore";
+  import { getAuth } from "firebase/auth";
 
-    // Initialize Firebase
-    const app = initializeApp(/* your firebase config */);
-    const firestore = getFirestore(app);
-    const auth = getAuth(app);
+  // Initialize Firebase
+  const app = initializeApp(/* your firebase config */);
+  const firestore = getFirestore(app);
+  const auth = getAuth(app);
 </script>
 
 <FirebaseApp {auth} {firestore}>
-    <slot />
+  <slot />
 </FirebaseApp>
 ```

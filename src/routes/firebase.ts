@@ -4,15 +4,14 @@ import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { dev } from "$app/environment";
 import { connectStorageEmulator, getStorage, ref, uploadString } from "firebase/storage";
 
-
 const firebaseConfig = {
-    apiKey: "AIzaSyAMHfJp1ec85QBo-mnke89qtiYGen9zTSE",
-    authDomain: "sveltefire-testing.firebaseapp.com",
-    databaseURL: "https://sveltefire-testing.firebaseio.com",
-    projectId: "sveltefire-testing",
-    storageBucket: "sveltefire-testing.appspot.com",
-    messagingSenderId: "1030648105982",
-    appId: "1:1030648105982:web:2afebc34841fa242ed4eaf"
+  apiKey: "AIzaSyAMHfJp1ec85QBo-mnke89qtiYGen9zTSE",
+  authDomain: "sveltefire-testing.firebaseapp.com",
+  databaseURL: "https://sveltefire-testing.firebaseio.com",
+  projectId: "sveltefire-testing",
+  storageBucket: "sveltefire-testing.appspot.com",
+  messagingSenderId: "1030648105982",
+  appId: "1:1030648105982:web:2afebc34841fa242ed4eaf",
 };
 
 // Initialize Firebase
@@ -22,27 +21,25 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 
 if (dev || import.meta.env.MODE === "ci") {
-    connectAuthEmulator(auth, "http://localhost:9099");
-    connectFirestoreEmulator(db, "localhost", 8080);
-    connectStorageEmulator(storage, "localhost", 9199);
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectFirestoreEmulator(db, "localhost", 8080);
+  connectStorageEmulator(storage, "localhost", 9199);
 
-    // Seed Firestore
-    setDoc(doc(db, "posts", "test"), {
-        title: "Hi Mom",
-        content: "this is a test"
+  // Seed Firestore
+  setDoc(doc(db, "posts", "test"), {
+    title: "Hi Mom",
+    content: "this is a test",
+  });
+
+  // Create a reference to the file to create
+  const fileRef = ref(storage, "test.txt");
+
+  // Upload a string to the file
+  uploadString(fileRef, "Hello, world!", "raw")
+    .then(() => {
+      console.log("File created successfully!");
+    })
+    .catch((error) => {
+      console.error("Error creating file:", error);
     });
-
-    
-    // Create a reference to the file to create
-    const fileRef = ref(storage, "test.txt");
-
-    // Upload a string to the file
-    uploadString(fileRef, "Hello, world!", "raw")
-        .then(() => {
-            console.log("File created successfully!");
-        })
-        .catch((error) => {
-            console.error("Error creating file:", error);
-        });
 }
-

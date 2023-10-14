@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # UploadTask
 
-Uploads a file to a Firebase storage bucket. 
+Uploads a file to a Firebase storage bucket.
 
 ### Props
 
@@ -15,10 +15,9 @@ Uploads a file to a Firebase storage bucket.
 - `data` - the file data to be uploaded as `Blob | Uint8Array | ArrayBuffer`
 - `metadata` - (optional) file metadata
 
-
 ### Slots
 
-- `default` 
+- `default`
 
 ### Slot Props
 
@@ -31,7 +30,7 @@ Uploads a file to a Firebase storage bucket.
 
 ```svelte
 <script>
-  import  { DownloadURL, UploadTask } from "sveltefire";
+  import { DownloadURL, UploadTask } from "sveltefire";
 
   let file;
 

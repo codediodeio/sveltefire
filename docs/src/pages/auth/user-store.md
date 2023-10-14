@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 # userStore
 
-Listens the current Firebase user. 
+Listens the current Firebase user.
 
 ### Parameters
 
@@ -17,10 +17,10 @@ Listens the current Firebase user.
 
 ```svelte
 <script>
-    import { userStore } from 'sveltefire';
-    import { auth } from '$lib/firebase'; // your firebase auth instance
+  import { userStore } from "sveltefire";
+  import { auth } from "$lib/firebase"; // your firebase auth instance
 
-    const user = userStore(auth);
+  const user = userStore(auth);
 </script>
 
 Hello {$user.uid}

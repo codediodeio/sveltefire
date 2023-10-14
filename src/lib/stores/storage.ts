@@ -1,10 +1,5 @@
 import { readable } from "svelte/store";
-import {
-  getDownloadURL,
-  list,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, list, ref, uploadBytesResumable } from "firebase/storage";
 
 import type {
   StorageReference,
@@ -56,8 +51,7 @@ export function storageListStore(
     };
   }
 
-  const storageRef =
-    typeof reference === "string" ? ref(storage, reference) : reference;
+  const storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
 
   const { subscribe } = readable(startWith, (set) => {
     list(storageRef).then((snapshot) => {
@@ -108,8 +102,7 @@ export function downloadUrlStore(
     };
   }
 
-  const storageRef =
-    typeof reference === "string" ? ref(storage, reference) : reference;
+  const storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
 
   const { subscribe } = readable(startWith, (set) => {
     getDownloadURL(storageRef).then((snapshot) => {
@@ -124,9 +117,7 @@ export function downloadUrlStore(
 }
 
 interface UploadTaskStore {
-  subscribe: (
-    cb: (value: UploadTaskSnapshot | null) => void
-  ) => void | (() => void);
+  subscribe: (cb: (value: UploadTaskSnapshot | null) => void) => void | (() => void);
   reference: StorageReference | null;
 }
 
@@ -157,8 +148,7 @@ export function uploadTaskStore(
     };
   }
 
-  const storageRef =
-    typeof reference === "string" ? ref(storage, reference) : reference;
+  const storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
 
   let unsubscribe: () => void;
 

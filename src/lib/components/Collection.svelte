@@ -1,10 +1,5 @@
 <script lang="ts" generics="Data extends DocumentData">
-  import type {
-    CollectionReference,
-    DocumentData,
-    Firestore,
-    Query,
-  } from "firebase/firestore";
+  import type { CollectionReference, DocumentData, Firestore, Query } from "firebase/firestore";
   import { collectionStore } from "../stores/firestore.js";
   import { getFirebaseContext } from "../stores/sdk.js";
 

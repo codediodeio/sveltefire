@@ -1,19 +1,19 @@
 ---
 title: SvelteFire?
 pubDate: 2023-07-23
-description: 'Why use SvelteFire over vanilla Firebase?'
+description: "Why use SvelteFire over vanilla Firebase?"
 layout: ../layouts/MainLayout.astro
 ---
 
 # 🔥 SvelteFire
 
-SvelteFire is a minimal, yet powerful library that puts realtime Firebase data into Svelte stores. 
+SvelteFire is a minimal, yet powerful library that puts realtime Firebase data into Svelte stores.
 
 ## Why?
 
-Firebase realtime APIs are callback-based, but we can dramatically improve the developer experience by leveraging Svelte's reactive stores. 
+Firebase realtime APIs are callback-based, but we can dramatically improve the developer experience by leveraging Svelte's reactive stores.
 
-- Access users and realtime Firestore data as Svelte stores 
+- Access users and realtime Firestore data as Svelte stores
 - Automatic subscription disposal to prevent duplicate reads
 - Better TypeScript experience for Firebase
 - Handle complex relational data between Auth and Firestore
@@ -23,9 +23,9 @@ Firebase realtime APIs are callback-based, but we can dramatically improve the d
 
 Get the current user:
 
-```svelte   
+```svelte
 <script>
-    const user = userStore();
+  const user = userStore();
 </script>
 
 Hello {$user.uid}
@@ -35,7 +35,7 @@ Get a Firestore document. Any changes to the document will be reflected instantl
 
 ```svelte
 <script>
-    const post = docStore('posts/hi-mom');
+  const post = docStore("posts/hi-mom");
 </script>
 
 {$post.title}
@@ -44,7 +44,7 @@ Get a Firestore document. Any changes to the document will be reflected instantl
 
 ## Component Example
 
-We can take this a step further with components and slot props. Under the hood, these components use the same stores as above, but make common patterns dead simple. The example below renders content for the signed-in user while fetching multiple levels of relational data `user->post->comments`. 
+We can take this a step further with components and slot props. Under the hood, these components use the same stores as above, but make common patterns dead simple. The example below renders content for the signed-in user while fetching multiple levels of relational data `user->post->comments`.
 
 ```svelte
 <!-- 1. 🔥 Firebase App -->
@@ -57,7 +57,7 @@ We can take this a step further with components and slot props. Under the hood, 
 
         <!-- 3. 📜 Get a Firestore document owned by a user -->
         <Doc ref={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
-            
+
             <h2>{post.title}</h2>
 
             <!-- 4. 💬 Get all the comments in its subcollection -->

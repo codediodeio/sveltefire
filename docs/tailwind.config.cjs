@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-		sans: ["Overpass", "sans-serif"],
-		body: ["Overpass", "sans-serif"],
-		code: ["Fira Mono", "sans-serif"],
+      sans: ["Overpass", "sans-serif"],
+      body: ["Overpass", "sans-serif"],
+      code: ["Fira Mono", "sans-serif"],
     },
     colors: {
       transparent: "transparent",
@@ -42,17 +42,17 @@ module.exports = {
             h1: {
               "font-weight": "bold",
               "font-size": "2.5rem",
-              "overflow-wrap": "break-word"
+              "overflow-wrap": "break-word",
             },
             h2: {
               "font-weight": "bold",
               "font-size": "2rem",
-              "overflow-wrap": "break-word"
+              "overflow-wrap": "break-word",
             },
             h3: {
               "font-weight": "normal",
               "font-size": "1.5rem",
-              "overflow-wrap": "break-word"
+              "overflow-wrap": "break-word",
             },
             h4: {
               "font-weight": "normal",
@@ -67,6 +67,6 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [require("@tailwindcss/typography")],
   darkMode: "class",
 };
