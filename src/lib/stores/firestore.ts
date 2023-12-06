@@ -70,7 +70,7 @@ export function docStore<T = any>(
 }
 
 interface CollectionStore<T> {
-  subscribe: (cb: (value: T | []) => void) => void | (() => void);
+  subscribe: (cb: (value: T | []|undefined) => void) => void | (() => void);
   ref: CollectionReference<T> | Query<T> | null;
 }
 
@@ -83,7 +83,7 @@ interface CollectionStore<T> {
 export function collectionStore<T>(
   firestore: Firestore,
   ref: string | Query<T> | CollectionReference<T>,
-  startWith: T[] = []
+  startWith: T[]|undefined = undefined
 ): CollectionStore<T[]> {
   let unsubscribe: () => void;
 
@@ -110,9 +110,9 @@ export function collectionStore<T>(
 
   const colRef = typeof ref === "string" ? collection(firestore, ref) : ref;
 
-  const { subscribe } = writable(startWith, (set) => {
-    unsubscribe = onSnapshot(colRef, (snapshot) => {
-      const data = snapshot.docs.map((s) => {
+  const { subscribe } = writable<T[]|undefined>(startWith, (set) => {
+    unsubscribe = onSnapshot(colRef, (snapshot: { docs: any[]; }) => {
+      const data = snapshot.docs.map((s: { id: any; ref: any; data: () => T; }) => {
         return { id: s.id, ref: s.ref, ...s.data() } as T;
       });
       set(data);
