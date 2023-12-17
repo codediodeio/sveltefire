@@ -10,6 +10,7 @@ import StorageList from './components/StorageList.svelte';
 import UploadTask from './components/UploadTask.svelte';
 import { userStore } from './stores/auth.js';
 import { docStore, collectionStore  } from './stores/firestore.js';
+import { nodeStore, nodeListStore } from './stores/rtdb.js';
 import { getFirebaseContext } from './stores/sdk.js';
 import { downloadUrlStore, storageListStore, uploadTaskStore } from './stores/storage.js';
 
@@ -28,6 +29,8 @@ export {
     uploadTaskStore,
     docStore,
     collectionStore,
+    nodeStore,
+    nodeListStore,
     userStore,
     getFirebaseContext,
 }
