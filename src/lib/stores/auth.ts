@@ -1,5 +1,4 @@
 import { writable } from "svelte/store";
-import { getFirebaseContext } from "./sdk.js";
 import { onAuthStateChanged, type Auth } from "firebase/auth";
 
 /**

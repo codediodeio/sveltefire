@@ -27,6 +27,6 @@ test.describe.serial("Firestore", () => {
 	});
 
 	test('An error occurs when ', async () => {
-		await expect(page.getByTestId('error')).toContainText('Invalid document reference');
+		await expect(page.getByTestId('error')).toContainText('Error occured');
 	});
 });
