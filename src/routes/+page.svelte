@@ -12,8 +12,10 @@
   <li><a href="/rtdb-test">Realtime Database Test</a></li>
   <li><a href="/ssr-test">SSR Test</a></li>
   <li><a href="/storage-test">Storage Test</a></li>
+  <li><a href="/remote-config-test">Remote Config Test</a></li>
 </ul>
 <ul>
+  <li data-testid="app">Firebase App Context: {!!ctx.app}</li>
   <li data-testid="auth">Auth Context: {!!ctx.auth}</li>
   <li data-testid="firestore">Firestore Context: {!!ctx.firestore}</li>
   <li data-testid="rtdb">Realtime Database Context: {!!ctx.rtdb}</li>

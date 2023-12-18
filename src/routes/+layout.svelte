@@ -1,8 +1,8 @@
 <script lang="ts">
-  import FirebaseApp from "$lib/components/FirebaseApp.svelte";
-  import { db as firestore, auth, rtdb, storage } from "./firebase.js";
+    import FirebaseApp from '$lib/components/FirebaseApp.svelte';
+    import { db as firestore, auth, rtdb, storage, app } from './firebase.js';
 </script>
 
-<FirebaseApp {auth} {firestore} {rtdb} {storage}>
-  <slot />
+<FirebaseApp {app} {auth} {rtdb} {firestore} {storage}>
+    <slot />
 </FirebaseApp>

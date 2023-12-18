@@ -62,7 +62,7 @@ import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 // Initialize Firebase
-const app = initializeApp(/* your firebase config */);
+export const app = initializeApp(/* your firebase config */);
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
 export const auth = getAuth(app);
@@ -431,7 +431,65 @@ Upload a file with progress tracking
 </UploadTask>
 ```
 
-### Using Components Together
+### RemoteConfig
+
+Instantiate a `RemoteConfig` instance from your initialized `FirebaseApp` and fetch Firebase Remote Config variables. It's possible to configure a `defaultValue` to give a fallback value for non-available variables and a `minimumFetchIntervalMillis` to let RemoteConfig caches the values for a given time. *Be careful not to fetch too often, as your requests might be throttled.*
+This components takes care of intializing the RemoteConfig instance from a client side context only, as RemoteConfig is brower-dependant.
+
+```svelte
+<script>
+  import { initializeApp } from 'firebase/app';
+  import { FirebaseApp, RemoteConfig } from 'sveltefire';
+  const app = initializeApp(/* your firebase config */);
+  const testValue = {
+    greetingText: 'Hello World',
+    answer: 42,
+    isActive: true
+  };
+</script>
+<FirebaseApp {app}>
+  <RemoteConfig defaultValue={testValue} let:remoteConfig>
+    <!-- You can use the built remote config here -->
+    <!-- This type of configuration is due to RemoteConfig being dependant of the browser -->
+  </RemoteConfig>
+</FirebaseApp>
+```
+
+When initialized, you can use the `remoteConfig` store to access your remote configurations by using a `RemoteConfigBoolean`, `RemoteConfigNumber`, `RemoteConfigString` or `RemoteConfigValue`.
+
+### RemoteConfigBoolean, RemoteConfigNumber, RemoteConfigString
+
+Get a typed value from your RemoteConfig instance.
+
+```svelte
+<script>
+  import { initializeApp } from 'firebase/app';
+  import { FirebaseApp, RemoteConfig, RemoteConfigString, RemoteConfigBoolean, RemoteConfigNumber } from 'sveltefire';
+  const app = initializeApp(/* your firebase config */);
+    const testValue = {
+    greetingText: 'Hello World',
+    answer: 42,
+    isActive: true
+  };
+</script>
+<FirebaseApp {app}>
+  <RemoteConfig defaultValue={testValue} let:remoteConfig>
+      <RemoteConfigString {remoteConfig} variableName="greetingText" let:configValue>
+        <p>Greeting text: {configValue}</p>
+      </RemoteConfigString>
+
+      <RemoteConfigBoolean {remoteConfig} variableName="isActive" let:configValue>
+        <p>Is active? {configValue}</p>
+      </RemoteConfigBoolean>
+
+      <RemoteConfigNumber {remoteConfig} variableName="answer" let:configValue>
+        <p>Answer: {configValue}</p>
+      </RemoteConfigNumber>
+  </RemoteConfig>
+</FirebaseApp>
+```
+
+## Using Components Together
 
 These components can be combined to build complex realtime apps. It's especially powerful when fetching data that requires the current user's UID or a related document's path.
 
@@ -487,5 +545,5 @@ These components can be combined to build complex realtime apps. It's especially
 
 - ~~Add support for Firebase Storage~~ (Added in latest release!)
 - ~~Add support for Firebase RTDB~~ (Added in latest release!)
+
 - Add support for Firebase Analytics in SvelteKit
-- Find a way to make TS generics with with Doc/Collection components
