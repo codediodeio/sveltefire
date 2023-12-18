@@ -7,6 +7,7 @@ test.describe.serial("Firestore", () => {
 		await page.goto("/firestore-test");
 	});
 
+
 	test('Renders a single document', async () => {
 		await expect(page.getByTestId('doc-data')).toContainText('Hi Mom');
 	});
