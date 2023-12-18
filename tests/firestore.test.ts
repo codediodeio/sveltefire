@@ -7,7 +7,7 @@ test('Renders a single document', async ({ page }) => {
 
 test('Renders a collection of items for an authenticated user in realtime', async ({ page }) => {
 	await page.goto('/firestore-test');
-	await page.getByRole('button', { 'name': 'Sign In'}).click();
+	await page.getByRole('button', { 'name': 'Sign In'}).click({delay: 1000});
 	await expect(page.getByTestId('count')).toContainText('0 posts');
 	await page.getByRole('button', { name: 'Add Post' }).click();
 	await expect(page.getByTestId('count')).toContainText('1 posts');
