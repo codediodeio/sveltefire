@@ -8,11 +8,12 @@ import SignedOut from './components/SignedOut.svelte';
 import DownloadURL from './components/DownloadURL.svelte';
 import StorageList from './components/StorageList.svelte';
 import UploadTask from './components/UploadTask.svelte';
-import { userStore } from './stores/auth.js';
-import { docStore, collectionStore  } from './stores/firestore.js';
-import { nodeStore, nodeListStore } from './stores/rtdb.js';
-import { getFirebaseContext } from './stores/sdk.js';
-import { downloadUrlStore, storageListStore, uploadTaskStore } from './stores/storage.js';
+import PageView from './components/PageView.svelte';
+import { userStore } from './stores/auth';
+import { docStore, collectionStore  } from './stores/firestore';
+import { nodeStore, nodeListStore } from './stores/rtdb';
+import { getFirebaseContext } from './stores/sdk';
+import { downloadUrlStore, storageListStore, uploadTaskStore } from './stores/storage';
 
 export {
     Doc,
@@ -24,6 +25,7 @@ export {
     UploadTask,
     StorageList,
     DownloadURL,
+    PageView,
     downloadUrlStore,
     storageListStore,
     uploadTaskStore,

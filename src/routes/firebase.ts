@@ -19,6 +19,7 @@ import {
   ref as storageRef,
   uploadString,
 } from "firebase/storage";
+import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMHfJp1ec85QBo-mnke89qtiYGen9zTSE",
@@ -28,6 +29,7 @@ const firebaseConfig = {
   storageBucket: "sveltefire-testing.appspot.com",
   messagingSenderId: "1030648105982",
   appId: "1:1030648105982:web:2afebc34841fa242ed4eaf",
+  measurementId: "G-RT6GM89V6K"
 };
 
 // Initialize Firebase
@@ -36,6 +38,7 @@ export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
+export const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
 
 if (dev || import.meta.env.MODE === "ci") {
   connectAuthEmulator(auth, "http://localhost:9099");

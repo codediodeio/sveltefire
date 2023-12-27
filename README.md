@@ -2,7 +2,7 @@
 
 A minimal, yet powerful library that puts realtime Firebase data into Svelte stores.
 
-[Documentation](https://sveltefire.fireship.io)
+[Full Documentation](https://sveltefire.fireship.io)
 
 ```svelte
 <!-- 1. 🔥 Firebase App -->
@@ -23,17 +23,6 @@ A minimal, yet powerful library that puts realtime Firebase data into Svelte sto
         {#each comments as comment}
 
         {/each}
-
-    <!-- 3 (b). 📜 Get a Realtime Database node owned by a user -->
-    <Node path={`posts/${user.uid}`} let:data={post} let:ref={postRef}>
-
-      <h2>{post.title}</h2>
-
-      <!-- 4 (b). 💬 Get all the comments in its subnodes -->
-      <NodeList path={postRef.path + '/comments'} let:data={comments}>
-        {#each comments as comment}
-
-        {/each}
 ...
 ```
 
@@ -46,6 +35,7 @@ Svelte makes it possible to dramatically simplify the way developers work with F
 - Better TypeScript experience for Firebase
 - Handle complex relational data between Auth, Firestore, and Realtime Database
 - Easily hydrate SvelteKit server data into a realtime Firebase stream
+- Simple Google Analytics integration for SvelteKit
 
 ## Quick Start
 
@@ -60,12 +50,14 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
+import { getAnalytics } from "firebase/analytics";
 
 // Initialize Firebase
 const app = initializeApp(/* your firebase config */);
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
 export const auth = getAuth(app);
+export const auth = getAnalytics(app);
 ```
 
 2. Get the Current user
@@ -97,6 +89,24 @@ Use the `$` as much as you want - it will only result in one Firebase read reque
 ```
 
 Or better yet, use the built in `Doc` and `Collection` components for Firestore, or `Node` and `NodeList` components for Realtime Database. See below.
+
+4. Add Firebase/Google Analytics
+
+Easily generate a `page_view` event on every route change with SvelteKit layouts - works for both client and server rendered pages.
+
+```svelte
+<!-- +layout.svelte  --> 
+<script lang="ts">
+  import { page } from "$app/stores";
+  import { PageView } from "sveltefire";
+</script>
+
+<slot />
+
+{#key $page.route.id}
+  <PageView />
+{/key}
+```
 
 ## Stores
 
