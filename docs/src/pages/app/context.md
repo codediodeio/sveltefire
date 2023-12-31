@@ -14,6 +14,6 @@ Get the Firebase SDK context from a component.
 ```svelte
 <script>
     import { getFirebaseContext } from 'sveltefire'
-    const { auth, firestore, storage } = getFirebaseContext();
+    const { auth, firestore, storage, rtdb, analytics } = getFirebaseContext();
 </script>
 ```

@@ -13,9 +13,15 @@ Puts the Firebase app into Svelte's context. It should be used as a parent to al
 
 - `firestore` - Firebase Auth instance
 - `auth` - Firestore instance
-- `storage` - Firebase Storage instance
+- `storage` - Storage instance
+- `rtdb` - RealtimeDB instance
+- `analytics` - Firebase Analytics instance
+
+
 
 ### Example
+
+Initialize Firebase with the SDKs you need in your app, then pass them to `FirebaseApp` as props.
 
 ```svelte
 <script>

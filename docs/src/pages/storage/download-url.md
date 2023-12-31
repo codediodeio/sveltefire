@@ -22,7 +22,7 @@ Returns the download URL for a file in Firebase Storage.
 
 - `link` - The download URL
 - `ref` - Storage reference
-- `storage` - The Firestore instance
+- `storage` - The Firebase Storage instance
 
 ### Example
 

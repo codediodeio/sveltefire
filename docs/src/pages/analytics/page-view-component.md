@@ -48,5 +48,5 @@ For fine-grained control, you can include `PageView` on a page-by-page basis. Th
 </script>
 
 
-<PageView eventName="my_page_view" customParams={myData} setUser={false} />
+<PageView eventName="special_page_view" customParams={myData} setUser={false} />
 ```

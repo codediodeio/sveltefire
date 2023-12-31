@@ -25,7 +25,7 @@ Uploads a file to a Firebase storage bucket.
 - `snapshot` - Firebase UploadTaskSnapshot
 - `task` - Firebase UploadTask
 - `progress` - Number as a percentage of the upload progress
-- `storage` - The Firestore instance
+- `storage` - The Firebase Storage instance
 
 ### Example
 

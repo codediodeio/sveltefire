@@ -39,7 +39,7 @@ Initialize Firebase and add the `FirebaseApp` component to the component tree. T
 </FirebaseApp>
 ```
 
-## 3. Use Firebase!
+### 3. Use Firebase!
 
 You can use stores to access the current user and Firestore.
 

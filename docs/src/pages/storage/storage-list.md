@@ -22,7 +22,7 @@ Returns a list of files stored in Firebase Storage.
 
 - `list` - The list of files and prefixes
 - `ref` - Storage reference
-- `storage` - The Firestore instance
+- `storage` - The Firebase Storage instance
 
 ### Example
 

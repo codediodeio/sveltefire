@@ -18,6 +18,7 @@ Firebase realtime APIs are callback-based, but we can dramatically improve the d
 - Better TypeScript experience for Firebase
 - Handle complex relational data between Auth and Firestore
 - Easily hydrate SvelteKit server data into a realtime Firebase stream
+- Simple Google Analytics integration for SvelteKit
 
 ## Store Example
 
