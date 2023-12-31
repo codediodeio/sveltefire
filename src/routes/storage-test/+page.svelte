@@ -16,6 +16,8 @@
 
 <h1>Storage Test</h1>
 
+<h2>Storage List</h2>
+
 <StorageList ref="/" let:list>
   <ul>
     {#if list === null}
@@ -33,6 +35,12 @@
     {/if}
   </ul>
 </StorageList>
+
+<h2>Error handling (trying to fetch an invalid ref)</h2>
+
+<DownloadURL ref={'invalid'} let:error>
+  <p data-testid="download-url-error" >{error?.message}</p>
+</DownloadURL>
 
 <h2>Upload Task</h2>
 

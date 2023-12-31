@@ -1,14 +1,21 @@
-import { writable } from "svelte/store";
+import { readable } from "svelte/store";
 import { doc, collection, onSnapshot } from "firebase/firestore";
 import type {
   Query,
   CollectionReference,
   DocumentReference,
   Firestore,
+  DocumentData,
 } from "firebase/firestore";
+import type { FirebaseError } from "firebase/app";
+
+type DocValue<T> = {
+  data: T | null | undefined;
+  error: Error | null;
+};
 
 interface DocStore<T> {
-  subscribe: (cb: (value: T | null) => void) => void | (() => void);
+  subscribe: (cb: (value: DocValue<T>) => void) => void | (() => void);
   ref: DocumentReference<T> | null;
   id: string;
 }
@@ -28,7 +35,7 @@ export function docStore<T = any>(
 
   // Fallback for SSR
   if (!globalThis.window) {
-    const { subscribe } = writable(startWith);
+    const { subscribe } = readable({data: startWith, error: null});
     return {
       subscribe,
       ref: null,
@@ -38,10 +45,7 @@ export function docStore<T = any>(
 
   // Fallback for missing SDK
   if (!firestore) {
-    console.warn(
-      "Firestore is not initialized. Are you missing FirebaseApp as a parent component?"
-    );
-    const { subscribe } = writable(null);
+    const { subscribe } = readable({data: null, error: new Error("Firestore is not initialized. Are you missing FirebaseApp as a parent component?")});
     return {
       subscribe,
       ref: null,
@@ -49,16 +53,25 @@ export function docStore<T = any>(
     };
   }
 
-  const docRef =
-    typeof ref === "string"
-      ? (doc(firestore, ref) as DocumentReference<T>)
-      : ref;
+  let docRef: DocumentReference<T>;
+  
+  try {
+    docRef = typeof ref === "string" ? (doc(firestore, ref) as DocumentReference<T>) : ref;
+  } catch (error) {
+    const { subscribe } = readable({data: null, error: new Error(`Failed to create DocumentReference from path "${ref}" : ${error}`)});
+    return {
+      subscribe,
+      ref: null,
+      id: "",
+    };
+  }
 
-  const { subscribe } = writable<T | null>(startWith, (set) => {
+  const { subscribe } = readable<DocValue<T>>({data: startWith, error: null}, (set) => {
     unsubscribe = onSnapshot(docRef, (snapshot) => {
-      set((snapshot.data() as T) ?? null);
+      set({data: (snapshot.data() as T) ?? null, error: null});
+    }, (error: FirebaseError) => {
+      set({data: null, error});
     });
-
     return () => unsubscribe();
   });
 
@@ -69,8 +82,13 @@ export function docStore<T = any>(
   };
 }
 
+type CollectionValue<T> = {
+  data: T | [];
+  error: Error | null;
+};
+
 interface CollectionStore<T> {
-  subscribe: (cb: (value: T | []) => void) => void | (() => void);
+  subscribe: (cb: (value: CollectionValue<T>) => void) => void | (() => void);
   ref: CollectionReference<T> | Query<T> | null;
 }
 
@@ -89,7 +107,7 @@ export function collectionStore<T>(
 
   // Fallback for SSR
   if (!globalThis.window) {
-    const { subscribe } = writable(startWith);
+    const { subscribe } = readable({data: startWith, error: null});
     return {
       subscribe,
       ref: null,
@@ -101,21 +119,34 @@ export function collectionStore<T>(
     console.warn(
       "Firestore is not initialized. Are you missing FirebaseApp as a parent component?"
     );
-    const { subscribe } = writable([]);
+    const { subscribe } = readable({data: [], error: new Error("Firestore is not initialized. Are you missing FirebaseApp as a parent component?")});
     return {
       subscribe,
       ref: null,
     };
   }
 
-  const colRef = typeof ref === "string" ? collection(firestore, ref) : ref;
+  let colRef: CollectionReference<DocumentData> | Query<T>;
 
-  const { subscribe } = writable(startWith, (set) => {
-    unsubscribe = onSnapshot(colRef, (snapshot) => {
-      const data = snapshot.docs.map((s) => {
+  try {
+    colRef = typeof ref === "string" ? collection(firestore, ref) : ref;
+  } catch (error) {
+    const { subscribe } = readable({data: [], error: new Error(`Failed to create DocumentReference from path "${ref}" : ${error}`)});
+    return {
+      subscribe,
+      ref: null,
+    };
+  }
+
+  const { subscribe } = readable<CollectionValue<T[]>>({data: startWith, error: null}, (set) => {
+    unsubscribe = onSnapshot(colRef, (snapshot): void => {
+      const data = snapshot.docs.map((s: DocumentData) => {
         return { id: s.id, ref: s.ref, ...s.data() } as T;
       });
-      set(data);
+      set({data, error: null});
+    },
+    (error: FirebaseError) => {
+      set({data: [], error});
     });
 
     return () => unsubscribe();

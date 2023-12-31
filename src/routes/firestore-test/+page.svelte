@@ -69,4 +69,16 @@
 
     <button on:click={() => addPost(user.uid)}>Add Post</button>
   </Collection>
+
+  <h2>Should show an error</h2>
+  <Doc ref="invalid" let:error>
+    <div slot="loading">
+      <p data-testid="loading">Loading...</p>
+    </div>
+    {#if error !== null}
+      <p data-testid="error">Error occured {error}</p>
+    {:else}
+      <p data-testid="error">No error while retrieving data</p>
+    {/if}
+  </Doc>
 </SignedIn>

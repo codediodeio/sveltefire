@@ -74,7 +74,9 @@ Hello {$user?.uid}
 
 3. Listen to realtime data.
 
-Use the `$` as much as you want - it will only result in one Firebase read request. When all the subscriptions are removed, it will automatically unsubscribe.
+Use the `$` as much as you want - it will only result in one Firebase read request. When all the subscriptions are removed, it will automatically unsubscribe. To get the data from stores, use the `data` property, if an
+error occurs, the error property will be set with an Error instance.
+
 
 ```svelte
 <script>
@@ -84,8 +86,9 @@ Use the `$` as much as you want - it will only result in one Firebase read reque
   const post = docStore(firestore, 'posts/test');
 </script>
 
-{$post?.content}
-{$post?.title}
+{$post?.data?.content}
+{$post?.data?.title}
+{$post?.error?.message}
 ```
 
 Or better yet, use the built in `Doc` and `Collection` components for Firestore, or `Node` and `NodeList` components for Realtime Database. See below.
@@ -145,9 +148,9 @@ Subscribe to realtime data. The store will unsubscribe automatically to avoid un
   const posts = collectionStore(firestore, 'posts');
 </script>
 
-{$post?.content}
+{$post?.data?.content}
 
-{#each $posts as post}
+{#each $posts?.data as post}
 
 {/each}
 ```
@@ -311,16 +314,19 @@ Pass a `startWith` value to bypass the loading state. This is useful in SvelteKi
 
 ### Collection
 
-Collections provides array of objects containing the document data, as well as the `id` and `ref` for each result. It also provides a `count` slot prop for number of docs in the query.
+Collections provides array of objects containing the document data, as well as the `id` and `ref` for each result. It also provides a `count` slot prop for number of docs in the query. Errors can be handled with the `error` slot prop.
 
 ```svelte
-<Collection ref="posts" let:data let:count>
+<Collection ref="posts" let:data let:count let:error>
   <p>Fetched {count} documents</p>
   {#each data as post}
     {post.id}
     {post.ref.path}
     {post.content}
   {/each}
+  {#if error}
+    <p>Error: {error.message}</p>
+  {/if}
 </Collection>
 ```
 
@@ -386,49 +392,55 @@ Fetch lists of nodes from the Realtime Database and listen to their data in real
 
 ### DownloadURL
 
-DownloadURL provides a `link` to download a file from Firebase Storage and its `reference`. 
+DownloadURL provides a `link` to download a file from Firebase Storage and its `reference`. Errors can be handled with the `error` slot prop.
 
 ```svelte
-<DownloadURL ref={item} let:link let:ref>
-  <a href={link} download>Download {ref?.name}</a>
+<DownloadURL ref={item} let:link let:ref let:error>
+    <a href={link} download>Download {ref?.name}</a>
+    {#if error}
+        <p>Error: {error.message}</p>
+    {/if}
 </DownloadURL>
 ```
 
 ### StorageList
 
-StorageList provides a list of `items` and `prefixes` corresponding to the list of objects and sub-folders at a given Firebase Storage path. 
+StorageList provides a list of `items` and `prefixes` corresponding to the list of objects and sub-folders at a given Firebase Storage path. Errors can be handled with the `error` slot prop.
 
 ```svelte
-<StorageList ref="/" let:list>
-  <ul>
-    {#if list === null}
-      <li>Loading...</li>
-    {:else if list.prefixes.length === 0 && list.items.length === 0}
-      <li>Empty</li>
-    {:else}
-      <!-- Listing the prefixes -->
-      {#each list.prefixes as prefix}
-        <li>
-          {prefix.name}
-        </li>
-      {/each}
-      <!-- Listing the objects in the given folder -->
-      {#each list.items as item}
-        <li>
-          {item.name}
-        </li>
-      {/each}
+<StorageList ref="/" let:list let:error>
+    <ul>
+        {#if list === null}
+            <li>Loading...</li>
+        {:else if list.prefixes.length === 0 && list.items.length === 0}
+            <li>Empty</li>
+        {:else}
+          <!-- Listing the prefixes -->
+          {#each list.prefixes as prefix}
+              <li>
+                  {prefix.name}
+              </li>
+          {/each}
+          <!-- Listing the objects in the given folder -->
+          {#each list.items as item}
+              <li>
+                  {item.name}
+              </li>
+          {/each}
+        {/if}
+    </ul>  
+    {#if error}
+        <p>Error: {error.message}</p>
     {/if}
-  </ul>
 </StorageList>
 ```
 
 ### UploadTask
 
-Upload a file with progress tracking
+Upload a file with progress tracking. If error occurs, the `error` slot prop will be defined. The `snapshot` slot prop provides access to the upload task's `state`, `ref`, and `progress` percentage.
 
 ```svelte
-<UploadTask ref="filename.txt" data={someBlob} let:progress let:snapshot>
+<UploadTask ref="filename.txt" data={someBlob} let:progress let:snapshot let:error>
   {#if snapshot?.state === "running"}
     {progress}% uploaded
   {/if}
@@ -437,6 +449,10 @@ Upload a file with progress tracking
     <DownloadURL ref={snapshot?.ref} let:link>
       <a href={link} download>Download</a>
     </DownloadURL>
+  {/if}
+  
+  {#if error}
+    <p>Error: {error.message}</p>
   {/if}
 </UploadTask>
 ```

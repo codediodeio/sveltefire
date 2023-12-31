@@ -13,14 +13,20 @@ import type {
   UploadTaskSnapshot,
   UploadMetadata,
 } from "firebase/storage";
+import { error } from "@sveltejs/kit";
 
 const defaultListResult: ListResult = {
   prefixes: [],
   items: [],
 };
 
+type StorageListValue = {
+  data: ListResult | null | undefined;
+  error: Error | null;
+};
+
 interface StorageListStore {
-  subscribe: (cb: (value: ListResult) => void) => void | (() => void);
+  subscribe: (cb: (value: StorageListValue) => void) => void | (() => void);
   reference: StorageReference | null;
 }
 
@@ -37,7 +43,7 @@ export function storageListStore(
 ): StorageListStore {
   // Fallback for SSR
   if (!globalThis.window) {
-    const { subscribe } = readable(startWith);
+    const { subscribe } = readable({ data: startWith, error: null });
     return {
       subscribe,
       reference: null,
@@ -46,22 +52,34 @@ export function storageListStore(
 
   // Fallback for missing SDK
   if (!storage) {
-    console.warn(
-      "Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?"
-    );
-    const { subscribe } = readable(defaultListResult);
+    console.error("Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?");
+    const { subscribe } = readable({data: null, error: new Error("Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?")});
     return {
       subscribe,
       reference: null,
     };
   }
 
-  const storageRef =
-    typeof reference === "string" ? ref(storage, reference) : reference;
+  let storageRef: StorageReference;
+  
+  try{
+    storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
+  } 
+  catch(error) {
+    console.error(`Failed to create StorageReference from path "${reference}" : ${error}`);
+    const { subscribe } = readable({data: null, error: new Error(`Failed to create StorageReference from path "${reference}" : ${error}`)});
+    return {
+      subscribe,
+      reference: null,
+    };
+  }
 
-  const { subscribe } = readable(startWith, (set) => {
+  const { subscribe } = readable<StorageListValue>({data: startWith, error: null}, (set) => {
     list(storageRef).then((snapshot) => {
-      set(snapshot);
+      set({data: snapshot, error: null});
+    },
+    (error) => {
+      set({data: null, error});
     });
   });
 
@@ -71,8 +89,12 @@ export function storageListStore(
   };
 }
 
+type DownloadUrlValue = {
+  data: string | null;
+  error: Error | null;
+}
 interface DownloadUrlStore {
-  subscribe: (cb: (value: string | null) => void) => void | (() => void);
+  subscribe: (cb: (value: DownloadUrlValue) => void) => void | (() => void);
   reference: StorageReference | null;
 }
 
@@ -89,7 +111,7 @@ export function downloadUrlStore(
 ): DownloadUrlStore {
   // Fallback for SSR
   if (!globalThis.window) {
-    const { subscribe } = readable(startWith);
+    const { subscribe } = readable({data: startWith, error: null});
     return {
       subscribe,
       reference: null,
@@ -98,22 +120,36 @@ export function downloadUrlStore(
 
   // Fallback for missing SDK
   if (!storage) {
-    console.warn(
+    console.error(
       "Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?"
     );
-    const { subscribe } = readable(null);
+    const { subscribe } = readable({data: null, error: new Error("Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?")});
     return {
       subscribe,
       reference: null,
     };
   }
 
-  const storageRef =
-    typeof reference === "string" ? ref(storage, reference) : reference;
+  let storageRef: StorageReference;
+  
+  try{
+    storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
+  }
+  catch(error) {
+    console.error(`Failed to create StorageReference from path "${reference}" : ${error}`);
+    const { subscribe } = readable({data: null, error: new Error(`Failed to create StorageReference from path "${reference}" : ${error}`)});
+    return {
+      subscribe,
+      reference: null,
+    };
+  }
 
-  const { subscribe } = readable(startWith, (set) => {
+  const { subscribe } = readable<DownloadUrlValue>({data: startWith, error: null}, (set) => {
     getDownloadURL(storageRef).then((snapshot) => {
-      set(snapshot);
+      set({data: snapshot, error: null});
+    },
+    (error) => {
+      set({data: null, error});
     });
   });
 
@@ -123,9 +159,14 @@ export function downloadUrlStore(
   };
 }
 
+type UploadTaskValue = {
+  data: UploadTaskSnapshot | null;
+  error: Error | null;
+}
+
 interface UploadTaskStore {
   subscribe: (
-    cb: (value: UploadTaskSnapshot | null) => void
+    cb: (value: UploadTaskValue) => void
   ) => void | (() => void);
   reference: StorageReference | null;
 }
@@ -138,7 +179,7 @@ export function uploadTaskStore(
 ): UploadTaskStore {
   // Fallback for SSR
   if (!globalThis.window) {
-    const { subscribe } = readable(null);
+    const { subscribe } = readable({data: null, error: null});
     return {
       subscribe,
       reference: null,
@@ -150,31 +191,42 @@ export function uploadTaskStore(
     console.warn(
       "Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?"
     );
-    const { subscribe } = readable(null);
+    const { subscribe } = readable({data: null, error: new Error("Cloud Storage is not initialized. Are you missing FirebaseApp as a parent component?")});
     return {
       subscribe,
       reference: null,
     };
   }
 
-  const storageRef =
-    typeof reference === "string" ? ref(storage, reference) : reference;
+  let storageRef: StorageReference;
+  
+  try{
+    storageRef = typeof reference === "string" ? ref(storage, reference) : reference;
+  } 
+  catch(error) {
+    console.error(`Failed to create StorageReference from path "${reference}" : ${error}`);
+    const { subscribe } = readable({data: null, error: new Error(`Failed to create StorageReference from path "${reference}" : ${error}`)});
+    return {
+      subscribe,
+      reference: null,
+    };
+  }
 
   let unsubscribe: () => void;
 
-  const { subscribe } = readable<UploadTaskSnapshot | null>(null, (set) => {
+  const { subscribe } = readable<UploadTaskValue>({data: null, error: null}, (set) => {
     const task = uploadBytesResumable(storageRef, data, metadata);
     unsubscribe = task.on(
       "state_changed",
       (snapshot) => {
-        set(snapshot);
+        set({data: snapshot, error: null});
       },
       (error) => {
         console.error(error);
-        set(task.snapshot);
+        set({data: task.snapshot, error});
       },
       () => {
-        set(task.snapshot);
+        set({data: task.snapshot, error: null});
       }
     );
     return () => unsubscribe();

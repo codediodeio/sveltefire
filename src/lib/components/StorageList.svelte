@@ -9,13 +9,13 @@
     const listStore = storageListStore(storage!, ref);
 
     interface $$Slots {
-        default: { list: ListResult | null; ref: StorageReference | null; storage?: FirebaseStorage },
+        default: { list: ListResult | null; ref: StorageReference | null; storage?: FirebaseStorage, error: Error | null },
         loading: {},
     }
 </script>
 
-{#if $listStore !== undefined}
-    <slot list={$listStore} ref={listStore.reference} {storage} />
+{#if $listStore !== undefined && $listStore !== null}
+    <slot list={$listStore.data ?? null} error={$listStore.error} ref={listStore.reference} {storage} />
 {:else}
     <slot name="loading" />
 {/if}
