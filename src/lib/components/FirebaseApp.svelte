@@ -6,11 +6,11 @@
   import type { FirebaseStorage } from "firebase/storage";
   import type { Analytics } from "firebase/analytics";
 
-  export let firestore: Firestore;
-  export let rtdb: Database;
-  export let auth: Auth;
-  export let storage: FirebaseStorage;
-  export let analytics: Analytics | null;
+  export let firestore: Firestore | undefined = undefined;
+  export let rtdb: Database | undefined = undefined;
+  export let auth: Auth | undefined = undefined;
+  export let storage: FirebaseStorage | undefined = undefined;
+  export let analytics: Analytics | undefined = undefined;
 
   setFirebaseContext({ firestore, rtdb, auth, storage, analytics });
 </script>
