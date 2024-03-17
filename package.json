@@ -1,6 +1,6 @@
 {
 	"name": "sveltefire",
-	"version": "0.4.5",
+	"version": "0.4.6",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
@@ -25,7 +25,7 @@
 		"!dist/**/*.spec.*"
 	],
 	"peerDependencies": {
-		"firebase": "^9.0.0",
+		"firebase": "^10.0.0",
 		"svelte": "^4.0.0"
 	},
 	"devDependencies": {
