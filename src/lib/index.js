@@ -9,6 +9,8 @@ import DownloadURL from './components/DownloadURL.svelte';
 import StorageList from './components/StorageList.svelte';
 import UploadTask from './components/UploadTask.svelte';
 import PageView from './components/PageView.svelte';
+import Node from './components/Node.svelte';
+import NodeList from './components/NodeList.svelte';
 import { userStore } from './stores/auth';
 import { docStore, collectionStore  } from './stores/firestore';
 import { nodeStore, nodeListStore } from './stores/rtdb';
@@ -26,6 +28,8 @@ export {
     StorageList,
     DownloadURL,
     PageView,
+    Node,
+    NodeList,
     downloadUrlStore,
     storageListStore,
     uploadTaskStore,
