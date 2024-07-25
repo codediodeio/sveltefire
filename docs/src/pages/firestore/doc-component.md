@@ -18,6 +18,7 @@ The `Doc` component is a wrapper around the `docStore`. It renders the document 
 
 - `default` - The document data
 - `loading` - Loading state
+- `notExist` - A document does not exist for the provided ref
 
 ### Slot Props
 
@@ -36,5 +37,6 @@ The `Doc` component is a wrapper around the `docStore`. It renders the document 
     <p>{data?.title}</p>
 
     <p slot="loading">Loading...</p>
+    <p slot="notExist">Post does not exist</p>
 </Doc>
 ```

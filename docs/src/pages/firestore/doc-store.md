@@ -56,3 +56,26 @@ With TypeScript:
 
 {$post?.title}
 ```
+
+Check if post does not exist:
+
+```svelte
+<script lang="ts">
+
+    interface Post {
+        title?: string;
+        content?: string;
+    }
+
+    const post = docStore<Post>(firestore, 'posts/id');
+    const postState = post.stateStore;
+</script>
+
+{#if !$postState.loading && !$postState.exists}
+    Post does not exist
+{:else} 
+     {$post?.title}
+{/if}
+```
+
+

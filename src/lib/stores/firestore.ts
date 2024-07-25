@@ -7,8 +7,16 @@ import type {
   Firestore,
 } from "firebase/firestore";
 
+interface DocState {
+  loading: boolean;
+  exists: boolean | null;
+}
+
 interface DocStore<T> {
   subscribe: (cb: (value: T | null) => void) => void | (() => void);
+  stateStore: {
+    subscribe: (cb: (value: DocState) => void) => void | (() => void);
+  };
   ref: DocumentReference<T> | null;
   id: string;
 }
@@ -26,14 +34,26 @@ export function docStore<T = any>(
 ): DocStore<T> {
   let unsubscribe: () => void;
 
-  // Fallback for SSR
-  if (!globalThis.window) {
+  function noopStore() {
     const { subscribe } = writable(startWith);
+    const { subscribe: existsSubscribe } = writable({
+      loading: true,
+      exists: null,
+    });
+
     return {
       subscribe,
+      stateStore: {
+        subscribe: existsSubscribe,
+      },
       ref: null,
       id: "",
     };
+  }
+
+  // Fallback for SSR
+  if (!globalThis.window) {
+    return noopStore();
   }
 
   // Fallback for missing SDK
@@ -41,12 +61,7 @@ export function docStore<T = any>(
     console.warn(
       "Firestore is not initialized. Are you missing FirebaseApp as a parent component?"
     );
-    const { subscribe } = writable(null);
-    return {
-      subscribe,
-      ref: null,
-      id: "",
-    };
+    return noopStore();
   }
 
   const docRef =
@@ -54,8 +69,17 @@ export function docStore<T = any>(
       ? (doc(firestore, ref) as DocumentReference<T>)
       : ref;
 
+  const state = writable<DocState>({
+    loading: true,
+    exists: null,
+  });
+
   const { subscribe } = writable<T | null>(startWith, (set) => {
     unsubscribe = onSnapshot(docRef, (snapshot) => {
+      state.set({
+        loading: false,
+        exists: snapshot.exists(),
+      });
       set((snapshot.data() as T) ?? null);
     });
 
@@ -64,6 +88,9 @@ export function docStore<T = any>(
 
   return {
     subscribe,
+    stateStore: {
+      subscribe: state.subscribe,
+    },
     ref: docRef,
     id: docRef.id,
   };
